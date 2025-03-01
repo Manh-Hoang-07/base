@@ -21,7 +21,7 @@ class AuthService
      */
     public function login(array $credentials, bool $remember): array
     {
-        if (empty($data['email']) || empty($data['password'])) {
+        if (empty($credentials['email']) || empty($credentials['password'])) {
             return ['success' => false, 'message' => 'Email và mật khẩu không được để trống.'];
         }
         $return = ['success' => false, 'message' => 'Email hoặc mật khẩu không đúng.'];
