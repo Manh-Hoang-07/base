@@ -8,12 +8,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Authenticate
 {
+    /**
+     * Xử lý chuyển hướng về trang đăng nhập
+     * @param Request $request
+     * @param Closure $next
+     * @return Response
+     */
     public function handle(Request $request, Closure $next): Response
     {
         if (!auth()->check()) {
-            return redirect()->route('loginForm'); // Chuyển về trang login
+            return redirect()->route('loginForm');
         }
-
         return $next($request);
     }
 }
