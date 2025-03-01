@@ -12,7 +12,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 
-class AuthController extends Controller
+class LoginController extends Controller
 {
     protected AuthService $authService;
 
@@ -25,7 +25,7 @@ class AuthController extends Controller
      * Hàm gọi giao diện đăng nhập
      * @return View|Application|Factory
      */
-    public function loginForm(): View|Application|Factory
+    public function index(): View|Application|Factory
     {
         return view('auth.login');
     }
@@ -44,29 +44,6 @@ class AuthController extends Controller
             return redirect()->route('dashboard')->with('success', $result['message']);
         }
         return redirect()->route('loginForm')->with('error', $result['message']);
-    }
-
-    /**
-     * Hàm gọi giao diện đăng ký
-     * @return View
-     */
-    public function registerForm(): View
-    {
-        return view('auth.register');
-    }
-
-    /**
-     * Hàm xử lý đăng ký
-     * @param RegisterRequest $request
-     * @return RedirectResponse
-     */
-    public function register(RegisterRequest $request): RedirectResponse
-    {
-        $result = $this->authService->register($request->validated());
-        if ($result['success']) {
-            return redirect()->route('dashboard')->with('success', $result['message']);
-        }
-        return redirect()->route('registerForm')->with('error', $result['message']);
     }
 
     /**
