@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Services\Auth\AuthService;
+use App\Services\Auth\LoginService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
-    protected AuthService $authService;
+    protected LoginService $loginService;
 
-    public function __construct(AuthService $authService)
+    public function __construct(LoginService $loginService)
     {
-        $this->authService = $authService;
+        $this->loginService = $loginService;
     }
 
     /**
@@ -38,7 +38,7 @@ class LoginController extends Controller
     {
         $credentials = $request->validated();
         $remember = $request->has('remember');
-        $result = $this->authService->login($credentials, $remember);
+        $result = $this->loginService->login($credentials, $remember);
         if ($result['success']) {
             return redirect()->route('dashboard')->with('success', $result['message']);
         }
@@ -51,7 +51,7 @@ class LoginController extends Controller
      */
     public function logout(): RedirectResponse
     {
-        $this->authService->logout();
+        $this->loginService->logout();
         Session::invalidate();
         return redirect()->route('loginForm')->with('success', 'Bạn đã đăng xuất thành công.');
     }

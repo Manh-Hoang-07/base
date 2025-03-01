@@ -4,17 +4,17 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Services\Auth\AuthService;
+use App\Services\Auth\RegisterService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
 class RegisterController extends Controller
 {
-    protected AuthService $authService;
+    protected RegisterService $registerService;
 
-    public function __construct(AuthService $authService)
+    public function __construct(RegisterService $registerService)
     {
-        $this->authService = $authService;
+        $this->registerService = $registerService;
     }
 
     /**
@@ -33,7 +33,7 @@ class RegisterController extends Controller
      */
     public function register(RegisterRequest $request): RedirectResponse
     {
-        $result = $this->authService->register($request->validated());
+        $result = $this->registerService->register($request->validated());
         if ($result['success']) {
             return redirect()->route('dashboard')->with('success', $result['message']);
         }
