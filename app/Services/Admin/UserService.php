@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
-    public function listUsers(array $filters = [], int $perPage = 20, string $sortBy = 'id', string $sortOrder = 'asc'): LengthAwarePaginator
+    public function list(array $filters = [], int $perPage = 20, string $sortBy = 'id', string $sortOrder = 'asc'): LengthAwarePaginator
     {
         $query = User::query();
         if (!empty($filters['name'])) {
@@ -26,7 +26,7 @@ class UserService
         return $query->orderBy($sortBy, $sortOrder)->paginate($perPage);
     }
 
-    public function createUser(array $data)
+    public function create(array $data)
     {
         return User::create([
             'name' => $data['name'],
@@ -36,7 +36,7 @@ class UserService
         ]);
     }
 
-    public function updateUser(User $user, array $data): User
+    public function update(User $user, array $data): User
     {
         $user->update([
             'name' => $data['name'],
@@ -49,7 +49,7 @@ class UserService
         return $user;
     }
 
-    public function deleteUser(User $user): ?bool
+    public function delete(User $user): ?bool
     {
         return $user->delete();
     }

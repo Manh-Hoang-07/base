@@ -26,7 +26,7 @@ class UserController extends Controller
         $filters = $request->only(['name', 'email', 'role']);
         $sortBy = $request->get('sortBy', 'id');
         $sortOrder = $request->get('sortOrder', 'asc');
-        $users = $this->userService->listUsers($filters, 10, $sortBy, $sortOrder);
+        $users = $this->userService->list($filters, 10, $sortBy, $sortOrder);
         return view('admin.users.index', compact('users', 'filters', 'sortBy', 'sortOrder'));
     }
 
@@ -37,7 +37,7 @@ class UserController extends Controller
 
     public function store(UserRequest $request): RedirectResponse
     {
-        $this->userService->createUser($request->validated());
+        $this->userService->create($request->validated());
         return redirect()->route('admin.users.index')->with('success', 'Tạo tài khoản thành công.');
     }
 
@@ -50,14 +50,14 @@ class UserController extends Controller
     public function update(UserRequest $request, $id): RedirectResponse
     {
         $user = User::findOrFail($id);
-        $this->userService->updateUser($user, $request->validated());
+        $this->userService->update($user, $request->validated());
         return redirect()->route('admin.users.index')->with('success', 'Cập nhật thành công.');
     }
 
     public function destroy($id): RedirectResponse
     {
         $user = User::findOrFail($id);
-        $this->userService->deleteUser($user);
+        $this->userService->delete($user);
         return redirect()->route('admin.users.index')->with('success', 'Xóa tài khoản thành công.');
     }
 }
