@@ -2,6 +2,7 @@
 
 include('admin.php');
 
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
@@ -18,3 +19,19 @@ Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, '
 Route::middleware('auth')->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.home.dashboard');
+    })->name('dashboard');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/index', [UserController::class, 'index'])->name('index');
+        Route::get('/create', [UserController::class, 'create'])->name('create');
+        Route::post('/store', [UserController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [UserController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [UserController::class, 'update'])->name('update');
+        Route::post('/delete/{id}', [UserController::class, 'destroy'])->name('delete');
+    });
+});

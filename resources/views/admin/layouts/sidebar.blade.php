@@ -3,9 +3,9 @@
     <ul class="metismenu side-nav">
         <li class="side-nav-title side-nav-item bg-primary-lighten text-white"><h6>For Products</h6></li>
         <li class="side-nav-item">
-            <a href="" class="side-nav-link">
+            <a href="{{ route('admin.users.index') }}" class="side-nav-link">
                 <i class="dripicons-chevron-right"></i>
-                <span>Create roles</span>
+                <span>Quản lý tài khoản</span>
             </a>
         </li>
     </ul>
@@ -13,5 +13,4 @@
 
     <div class="clearfix"></div>
     <!-- Sidebar -left -->
-
 </div>
