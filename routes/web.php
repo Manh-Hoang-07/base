@@ -26,12 +26,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::prefix('users')->name('users.')->group(function () {
-        Route::get('/index', [UserController::class, 'index'])->name('index');
-        Route::get('/create', [UserController::class, 'create'])->name('create');
-        Route::post('/store', [UserController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [UserController::class, 'edit'])->name('edit');
-        Route::post('/update/{id}', [UserController::class, 'update'])->name('update');
-        Route::post('/delete/{id}', [UserController::class, 'destroy'])->name('delete');
+    Route::prefix('users')->name('users.')->group(function () { // Chức năng quản lý tài khoản
+        Route::get('/index', [UserController::class, 'index'])->name('index'); // Hiển thị danh sách tài khoản
+        Route::get('/create', [UserController::class, 'create'])->name('create'); // Hiển thị form tạo tài khoản
+        Route::post('/store', [UserController::class, 'store'])->name('store'); // Xử lý tạo tài khoản
+        Route::get('/edit/{id}', [UserController::class, 'edit'])->name('edit'); // Hiển thị form chỉnh sửa
+        Route::post('/update/{id}', [UserController::class, 'update'])->name('update'); // Xử lý chỉnh sửa
+        Route::post('/delete/{id}', [UserController::class, 'destroy'])->name('delete'); // Xử lý xóa
     });
 });
