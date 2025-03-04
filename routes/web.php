@@ -3,9 +3,8 @@
 include('admin.php');
 
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\RoleController;
 
 
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('loginForm'); // Hiển thị form login
@@ -33,5 +32,24 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/edit/{id}', [UserController::class, 'edit'])->name('edit'); // Hiển thị form chỉnh sửa
         Route::post('/update/{id}', [UserController::class, 'update'])->name('update'); // Xử lý chỉnh sửa
         Route::post('/delete/{id}', [UserController::class, 'destroy'])->name('delete'); // Xử lý xóa
+        // 🚀 Hiển thị giao diện phân vai trò
+        Route::get('/assign-roles/{id}', [UserController::class, 'showAssignRolesForm'])->name('showAssignRolesForm');
+        // 🚀 Xử lý gán vai trò cho người dùng
+        Route::post('/assign-roles/{id}', [UserController::class, 'assignRoles'])->name('assignRoles');
+    });
+
+    Route::prefix('roles')->name('roles.')->group(function () { // Chức năng quản lý vai trò
+        Route::get('/index', [RoleController::class, 'index'])->name('index'); // Hiển thị danh sách vai trò
+        Route::get('/create', [RoleController::class, 'create'])->name('create'); // Hiển thị form tạo mới vai trò
+        Route::post('/store', [RoleController::class, 'store'])->name('store'); // Xử lý thêm mới vai trò
+        Route::get('/edit/{id}', [RoleController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [RoleController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [RoleController::class, 'destroy'])->name('delete');
     });
 });
+
+
+//Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+//    Route::resource('users', UserController::class);
+//    Route::resource('roles', RoleController::class);
+//});

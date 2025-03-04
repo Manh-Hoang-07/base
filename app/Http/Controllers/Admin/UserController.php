@@ -11,6 +11,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -44,7 +45,8 @@ class UserController extends Controller
     public function edit($id): View|Application|Factory
     {
         $user = User::findOrFail($id);
-        return view('admin.users.edit', compact('user'));
+        $roles = \Spatie\Permission\Models\Role::all(); // Lấy tất cả vai trò
+        return view('admin.users.edit', compact('user', 'roles'));
     }
 
     public function update(UserRequest $request, $id): RedirectResponse
@@ -60,4 +62,29 @@ class UserController extends Controller
         $this->userService->delete($user);
         return redirect()->route('admin.users.index')->with('success', 'Xóa tài khoản thành công.');
     }
+
+    public function assignRoles(Request $request, $id): RedirectResponse
+    {
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'roles' => 'array',
+        ]);
+
+        $user->syncRoles($request->roles);
+
+
+        return redirect()->back()->with('success', 'Cập nhật vai trò thành công.');
+    }
+
+    public function showAssignRolesForm($id)
+    {
+        $user = User::findOrFail($id);
+        $roles = Role::all();
+        $userRoles = $user->roles->pluck('name')->toArray();
+
+        return view('admin.users.assign-roles', compact('user', 'roles', 'userRoles'));
+    }
+
+
 }

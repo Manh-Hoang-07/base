@@ -24,24 +24,31 @@
     </form>
 
     <!-- Bảng danh sách tài khoản -->
-    <table class="table">
+    <table class="table table-bordered mt-3">
         <thead>
         <tr>
             <th>ID</th>
             <th>Tên</th>
             <th>Email</th>
             <th>Ngày tạo</th>
-            <th>Hành động</th>
+            <th>Vai Trò</th>
+            <th>Hành Động</th>
         </tr>
         </thead>
         <tbody>
-        @foreach ($users as $user)
+        @foreach($users as $user)
             <tr>
                 <td>{{ $user->id }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->created_at->format('d/m/Y') }}</td>
                 <td>
+                    @foreach($user->roles as $role)
+                        <span class="badge bg-primary">{{ $role->name }}</span>
+                    @endforeach
+                </td>
+                <td>
+                    <a href="{{ route('admin.users.showAssignRolesForm', $user->id) }}">Gán Vai Trò</a>
                     <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">Sửa</a>
                     <form action="{{ route('admin.users.delete', $user->id) }}" method="POST" style="display:inline;">
                         @csrf

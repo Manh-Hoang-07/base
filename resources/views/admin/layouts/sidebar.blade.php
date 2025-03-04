@@ -2,10 +2,26 @@
     <!--- Sidemenu -->
     <ul class="metismenu side-nav">
         <li class="side-nav-title side-nav-item bg-primary-lighten text-white"><h6>For Products</h6></li>
+        @canany(['manage_users', 'view_users', 'create_users', 'edit_users', 'delete_users', 'assign_users'])
         <li class="side-nav-item">
             <a href="{{ route('admin.users.index') }}" class="side-nav-link">
                 <i class="dripicons-chevron-right"></i>
                 <span>Quản lý tài khoản</span>
+            </a>
+        </li>
+        @endcan
+        @canany(['manage_roles', 'view_roles', 'create_roles', 'edit_roles', 'delete_roles'])
+        <li class="side-nav-item">
+            <a href="{{ route('admin.roles.index') }}" class="side-nav-link">
+                <i class="dripicons-chevron-right"></i>
+                <span>Quản lý vai trò</span>
+            </a>
+        </li>
+        @endcanany
+        <li class="side-nav-item">
+            <a href="{{ route('admin.permissions.index') }}" class="side-nav-link">
+                <i class="dripicons-chevron-right"></i>
+                <span>Quản lý quyền</span>
             </a>
         </li>
     </ul>
