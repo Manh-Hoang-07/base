@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\Permission\PermissionController;
+use App\Http\Controllers\Admin\Role\RoleController;
+use App\Http\Controllers\Admin\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {

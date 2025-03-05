@@ -1,9 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Role;
 
 use App\Http\Controllers\Controller;
-use App\Services\RoleService;
+use App\Services\Admin\Role\RoleService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -18,7 +22,7 @@ class RoleController extends Controller
     /**
      * Hiển thị danh sách vai trò
      */
-    public function index()
+    public function index(): View|Application|Factory
     {
         $roles = $this->roleService->getAllRoles();
         return view('admin.roles.index', compact('roles'));
@@ -27,7 +31,7 @@ class RoleController extends Controller
     /**
      * Hiển thị form tạo vai trò
      */
-    public function create()
+    public function create(): View|Application|Factory
     {
         $permissions = $this->roleService->getAllPermissions();
         return view('admin.roles.create', compact('permissions'));
@@ -36,7 +40,7 @@ class RoleController extends Controller
     /**
      * Xử lý tạo vai trò
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'title' => 'required',
@@ -52,7 +56,7 @@ class RoleController extends Controller
     /**
      * Hiển thị form sửa vai trò
      */
-    public function edit($id)
+    public function edit($id): View|Application|Factory
     {
         $role = $this->roleService->getRoleById($id);
         $permissions = $this->roleService->getAllPermissions();
@@ -62,7 +66,7 @@ class RoleController extends Controller
     /**
      * Xử lý cập nhật vai trò
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
         $request->validate([
             'title' => 'required',
@@ -78,7 +82,7 @@ class RoleController extends Controller
     /**
      * Xóa vai trò
      */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
         $this->roleService->deleteRole($id);
         return redirect()->route('admin.roles.index')->with('success', 'Xóa vai trò thành công!');

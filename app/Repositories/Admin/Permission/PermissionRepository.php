@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Admin;
+namespace App\Repositories\Admin\Permission;
 
 use Spatie\Permission\Models\Permission;
 
@@ -11,7 +11,7 @@ class PermissionRepository
      */
     public function getAll()
     {
-        return Permission::all();
+        return Permission::get();
     }
 
     /**

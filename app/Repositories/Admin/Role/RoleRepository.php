@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Admin\Role;
 
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleRepository
 {

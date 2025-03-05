@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Admin\Role;
 
-use App\Repositories\RoleRepository;
+use App\Repositories\Admin\Role\RoleRepository;
 
 class RoleService
 {
-    protected $roleRepository;
+    protected RoleRepository $roleRepository;
 
     public function __construct(RoleRepository $roleRepository)
     {

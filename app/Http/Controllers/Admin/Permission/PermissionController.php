@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Permission;
 
 use App\Http\Controllers\Controller;
-use App\Services\Admin\PermissionService;
+use App\Services\Admin\Permission\PermissionService;
 use Illuminate\Http\Request;
 
 class PermissionController extends Controller
