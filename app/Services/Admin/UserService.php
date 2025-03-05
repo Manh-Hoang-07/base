@@ -29,10 +29,10 @@ class UserService
     public function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'role' => $data['role'],
-            'password' => Hash::make($data['password']),
+            'name' => $data['name'] ?? '',
+            'email' => $data['email'] ?? '',
+            'roles' => $data['roles'] ?? '',
+            'password' => Hash::make($data['password'] ?? '12345678'),
         ]);
     }
 
@@ -42,9 +42,6 @@ class UserService
             'name' => $data['name'],
             'email' => $data['email'],
         ]);
-        if (!empty($data['password'])) {
-            $user->update(['password' => Hash::make($data['password'])]);
-        }
         return $user;
     }
 

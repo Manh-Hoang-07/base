@@ -4,6 +4,9 @@
 
 @section('content')
     <h2>Danh sách tài khoản</h2>
+    @canany(['create_users'])
+        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">Thêm Tài khoản</a>
+    @endcanany
 
     <!-- Form lọc -->
     <form action="{{ route('admin.users.index') }}" method="GET" class="mb-3">
@@ -48,12 +51,19 @@
                     @endforeach
                 </td>
                 <td>
-                    <a href="{{ route('admin.users.showAssignRolesForm', $user->id) }}">Gán Vai Trò</a>
-                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">Sửa</a>
-                    <form action="{{ route('admin.users.delete', $user->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
-                    </form>
+                    @canany(['assign_users'])
+                        <a href="{{ route('admin.users.showAssignRolesForm', $user->id) }}">Gán Vai Trò</a>
+                    @endcanany
+                    @canany(['edit_users'])
+                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">Sửa</a>
+                    @endcanany
+                    @canany(['delete_users'])
+                        <form action="{{ route('admin.users.delete', $user->id) }}" method="POST"
+                              style="display:inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                        </form>
+                    @endcanany
                 </td>
             </tr>
         @endforeach

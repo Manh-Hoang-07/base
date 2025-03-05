@@ -49,4 +49,33 @@ class User extends Authenticatable {
         ];
     }
 
+    public function can($permission, $arguments = [])
+    {
+        // Nếu user có quyền trực tiếp, trả về true
+        if (parent::can($permission, $arguments)) {
+            return true;
+        }
+
+        // Kiểm tra nếu quyền này có quyền cha nhiều cấp
+        $perm = Permission::where('name', $permission)->with('parent')->first();
+        while ($perm && $perm->parent) {
+            $perm = $perm->parent;
+            if (parent::can($perm->name, $arguments)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function canAny($permissions, $arguments = [])
+    {
+        foreach ($permissions as $permission) {
+            if ($this->can($permission, $arguments)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

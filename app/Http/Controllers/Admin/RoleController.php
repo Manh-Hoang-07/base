@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    protected $roleService;
+    protected RoleService $roleService;
 
     public function __construct(RoleService $roleService)
     {
