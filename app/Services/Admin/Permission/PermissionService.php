@@ -2,16 +2,22 @@
 
 namespace App\Services\Admin\Permission;
 
+use App\Repositories\Admin\Permission\PermissionRepository;
 use Spatie\Permission\Models\Permission;
 
 class PermissionService
 {
+    protected PermissionRepository $permissionRepository;
+
+    public function __construct(PermissionRepository $permissionRepository) {
+        $this->permissionRepository = $permissionRepository;
+    }
     /**
      * Lấy danh sách tất cả quyền
      */
     public function getAllPermissions()
     {
-        return Permission::all();
+        return $this->permissionRepository->getAll();
     }
 
     /**
@@ -19,10 +25,7 @@ class PermissionService
      */
     public function createPermission(array $data)
     {
-        return Permission::create([
-            'name' => $data['name'],
-            'guard_name' => $data['guard_name'] ?? 'web',
-        ]);
+        return $this->permissionRepository->create($data);
     }
 
     /**
@@ -30,7 +33,7 @@ class PermissionService
      */
     public function getPermissionById($id)
     {
-        return Permission::findOrFail($id);
+        return $this->permissionRepository->findById($id);
     }
 
     /**
@@ -38,13 +41,7 @@ class PermissionService
      */
     public function updatePermission($id, array $data)
     {
-        $permission = Permission::findOrFail($id);
-        $permission->update([
-            'name' => $data['name'],
-            'guard_name' => $data['guard_name'] ?? 'web',
-        ]);
-
-        return $permission;
+        return $this->permissionRepository->update($id, $data);
     }
 
     /**
@@ -52,7 +49,6 @@ class PermissionService
      */
     public function deletePermission($id)
     {
-        $permission = Permission::findOrFail($id);
-        return $permission->delete();
+        return $this->permissionRepository->delete($id);
     }
 }

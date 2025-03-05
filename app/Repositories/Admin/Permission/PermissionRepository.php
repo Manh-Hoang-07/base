@@ -11,7 +11,7 @@ class PermissionRepository
      */
     public function getAll()
     {
-        return Permission::get();
+        return Permission::all();
     }
 
     /**
