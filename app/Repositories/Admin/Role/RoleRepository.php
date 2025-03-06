@@ -2,34 +2,24 @@
 
 namespace App\Repositories\Admin\Role;
 
-use Spatie\Permission\Models\Permission;
+use App\Repositories\BaseRepository;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Role;
 
-class RoleRepository
+class RoleRepository extends BaseRepository
 {
-    /**
-     * Lấy tất cả vai trò kèm quyền
-     */
-    public function getAllRoles()
+    public function __construct(Role $role)
     {
-        return Role::with('permissions')->get();
-    }
-
-    /**
-     * Lấy thông tin 1 vai trò theo ID
-     */
-    public function getRoleById($id)
-    {
-        return Role::with('permissions')->findOrFail($id);
+        $this->model = $role;
     }
 
     /**
      * Tạo mới vai trò và gán quyền
      */
-    public function createRole(array $data)
+    public function create(array $data): Model
     {
-        $role = Role::create(['name' => $data['name']]);
-        if (!empty($data['permissions'])) {
+        $role = $this->model->create(['name' => $data['name'] ?? '', 'title' => $data['title'] ?? '']);
+        if ($role && !empty($data['permissions'])) {
             $role->syncPermissions($data['permissions']);
         }
         return $role;
@@ -38,32 +28,17 @@ class RoleRepository
     /**
      * Cập nhật thông tin vai trò
      */
-    public function updateRole($id, array $data)
+    public function update(Model $model, array $data): bool
     {
-        $role = Role::findOrFail($id);
-        $role->update(['name' => $data['name'] ?? '', 'title' => $data['title'] ?? '']);
-        if (!empty($data['permissions'])) {
-            $role->syncPermissions($data['permissions']);
-        } else {
-            $role->syncPermissions([]); // Xóa hết quyền nếu không có quyền nào được chọn
+        $update = $model->update(['name' => $data['name'] ?? '', 'title' => $data['title'] ?? '']);
+        if ($update) {
+            if (!empty($data['permissions'])) {
+                $model->syncPermissions($data['permissions']);
+            } else {
+                $model->syncPermissions([]); // Xóa hết quyền nếu không có quyền nào được chọn
+            }
         }
-        return $role;
+        return $update;
     }
 
-    /**
-     * Xóa vai trò
-     */
-    public function deleteRole($id)
-    {
-        $role = Role::findOrFail($id);
-        return $role->delete();
-    }
-
-    /**
-     * Lấy tất cả quyền
-     */
-    public function getAllPermissions()
-    {
-        return Permission::all();
-    }
 }

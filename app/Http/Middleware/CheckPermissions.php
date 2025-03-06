@@ -35,27 +35,23 @@ class CheckPermissions
         abort(403, 'Bạn không có quyền truy cập.');
     }
 
-    private function getAllUserPermissions($user)
+    private function getAllUserPermissions($user): array
     {
         // Lấy danh sách tất cả quyền trực tiếp của user
         $permissions = $user->getPermissionNames()->toArray();
-
         // Lấy thêm các quyền cha dựa trên parent_id
         $allPermissions = [];
         foreach ($permissions as $permission) {
             $this->collectParentPermissions($permission, $allPermissions);
         }
-
         return array_unique(array_merge($permissions, $allPermissions));
     }
 
-    private function collectParentPermissions($permissionName, &$collected)
+    private function collectParentPermissions($permissionName, &$collected): void
     {
         $permission = Permission::where('name', $permissionName)->first();
-
         if ($permission && $permission->parent_id) {
             $parent = Permission::find($permission->parent_id);
-
             if ($parent && !in_array($parent->name, $collected)) {
                 $collected[] = $parent->name;
                 $this->collectParentPermissions($parent->name, $collected);

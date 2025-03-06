@@ -6,7 +6,23 @@
         @canany(['manage_permissions', 'create_permissions'])
         <a href="{{ route('admin.permissions.create') }}" class="btn btn-primary mb-3">Thêm quyền</a>
         @endcanany
-
+        <!-- Form lọc -->
+        <form action="{{ route('admin.permissions.index') }}" method="GET" class="mb-3">
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="text" name="title" class="form-control" placeholder="Nhập ý nghĩa"
+                           value="{{ request('title') }}">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="name" class="form-control" placeholder="Nhập tên"
+                           value="{{ request('name') }}">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">Lọc</button>
+                    <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
@@ -42,5 +58,10 @@
             @endforeach
             </tbody>
         </table>
+    </div>
+
+    <!-- Hiển thị phân trang -->
+    <div class="d-flex justify-content-center">
+        {{ $permissions->links('vendor.pagination.bootstrap-5') }}
     </div>
 @endsection

@@ -6,6 +6,23 @@
         @canany(['manage_roles', 'create_roles'])
         <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">Thêm Vai Trò</a>
         @endcanany
+        <!-- Form lọc -->
+        <form action="{{ route('admin.roles.index') }}" method="GET" class="mb-3">
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="text" name="title" class="form-control" placeholder="Nhập ý nghĩa"
+                           value="{{ request('title') }}">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="name" class="form-control" placeholder="Nhập tên"
+                           value="{{ request('name') }}">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">Lọc</button>
+                    <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
         <table class="table table-bordered mt-3">
             <thead>
             <tr>
@@ -41,5 +58,10 @@
             @endforeach
             </tbody>
         </table>
+    </div>
+
+    <!-- Hiển thị phân trang -->
+    <div class="d-flex justify-content-center">
+        {{ $roles->links('vendor.pagination.bootstrap-5') }}
     </div>
 @endsection

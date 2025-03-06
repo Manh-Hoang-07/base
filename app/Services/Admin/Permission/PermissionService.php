@@ -3,7 +3,8 @@
 namespace App\Services\Admin\Permission;
 
 use App\Repositories\Admin\Permission\PermissionRepository;
-use Spatie\Permission\Models\Permission;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 
 class PermissionService
 {
@@ -12,43 +13,86 @@ class PermissionService
     public function __construct(PermissionRepository $permissionRepository) {
         $this->permissionRepository = $permissionRepository;
     }
+
     /**
      * Lấy danh sách tất cả quyền
+     * @param array $filters
+     * @param array $options
+     * @return LengthAwarePaginator
      */
-    public function getAllPermissions()
+    public function getAll(array $filters = [], array $options = []): LengthAwarePaginator
     {
-        return $this->permissionRepository->getAll();
+        return $this->permissionRepository->getAll($filters, $options);
     }
 
     /**
      * Tạo mới quyền
+     * @param array $data
+     * @return Model
      */
-    public function createPermission(array $data)
+    public function create(array $data): Model
     {
+        $data = [
+            'title' => $data['title'] ?? '',
+            'name' => $data['name'] ?? '',
+            'guard_name' => $data['guard_name'] ?? 'web',
+        ];
         return $this->permissionRepository->create($data);
     }
 
     /**
      * Lấy thông tin quyền theo ID
+     * @param $id
+     * @return Model|null
      */
-    public function getPermissionById($id)
+    public function findById($id): ?Model
     {
         return $this->permissionRepository->findById($id);
     }
 
     /**
      * Cập nhật quyền
+     * @param $id
+     * @param array $data
+     * @return array
      */
-    public function updatePermission($id, array $data)
+    public function update($id, array $data): array
     {
-        return $this->permissionRepository->update($id, $data);
+        $return = [
+            'success' => false,
+            'messages' => 'Cập nhật quyền thất bại'
+        ];
+        $data = [
+            'title' => $data['title'] ?? '',
+            'name' => $data['name'] ?? '',
+            'guard_name' => $data['guard_name'] ?? 'web',
+        ];
+        if (($permission = $this->permissionRepository->findById($id))
+            && $this->permissionRepository->update($permission, $data)
+        ) {
+            $return['success'] = true;
+            $return['messages'] = 'Cập nhật quyền thành công';
+        }
+        return $return;
     }
 
     /**
      * Xóa quyền
+     * @param $id
+     * @return array
      */
-    public function deletePermission($id)
+    public function delete($id): array
     {
-        return $this->permissionRepository->delete($id);
+        $return = [
+            'success' => false,
+            'messages' => 'Cập nhật quyền thất bại'
+        ];
+        if (($role = $this->permissionRepository->findById($id))
+            && $this->permissionRepository->delete($role)
+        ) {
+            $return['success'] = true;
+            $return['messages'] = 'Cập nhật quyền thành công';
+        }
+        return $return;
     }
 }

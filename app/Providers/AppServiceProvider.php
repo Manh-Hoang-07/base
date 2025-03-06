@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        try {
+            DB::connection()->getPdo();
+        } catch (Exception $e) {
+            abort(503, $e->getMessage());
+        }
     }
 }

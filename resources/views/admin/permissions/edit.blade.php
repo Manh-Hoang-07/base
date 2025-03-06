@@ -6,7 +6,6 @@
 
         <form action="{{ route('admin.permissions.update', $permission->id ?? '') }}" method="POST">
             @csrf
-            @method('PUT')
             <div class="mb-3">
                 <label for="title" class="form-label">Ý nghĩa quyền</label>
                 <input type="text" class="form-control" name="title" value="{{ $permission->title ?? '' }}" required>

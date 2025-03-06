@@ -2,51 +2,109 @@
 
 namespace App\Services\Admin\User;
 
+use App\Repositories\Admin\User\UserRepository;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Model;
 
 class UserService
 {
-    public function list(array $filters = [], int $perPage = 20, string $sortBy = 'id', string $sortOrder = 'asc'): LengthAwarePaginator
+    protected UserRepository $userRepository;
+
+    public function __construct(UserRepository $userRepository)
     {
-        $query = User::query();
-        if (!empty($filters['name'])) {
-            $query->where('name', 'like', '%' . $filters['name'] . '%');
-        }
-        if (!empty($filters['email'])) {
-            $query->where('email', 'like', '%' . $filters['email'] . '%');
-        }
-        if (!empty($filters['role'])) {
-            $query->where('role', $filters['role']);
-        }
-        if (!empty($filters) && !$query->exists()) {
-            return new \Illuminate\Pagination\LengthAwarePaginator([], 0, $perPage);
-        }
-        return $query->orderBy($sortBy, $sortOrder)->paginate($perPage);
+        $this->userRepository = $userRepository;
     }
 
-    public function create(array $data)
+    /**
+     * Hàm lấy danh sách người dùng
+     * @param array $filters
+     * @param array $options
+     * @return LengthAwarePaginator
+     */
+    public function getAll(array $filters = [], array $options = []): LengthAwarePaginator
     {
-        return User::create([
-            'name' => $data['name'] ?? '',
-            'email' => $data['email'] ?? '',
-            'roles' => $data['roles'] ?? '',
-            'password' => Hash::make($data['password'] ?? '12345678'),
-        ]);
+        return $this->userRepository->getAll($filters, $options);
     }
 
-    public function update(User $user, array $data): User
+    /**
+     * Hàm lấy thông tin tài khoản
+     * @param $id
+     * @return Model|null
+     */
+    public function findById($id): ?Model
     {
-        $user->update([
-            'name' => $data['name'],
-            'email' => $data['email'],
-        ]);
-        return $user;
+        return $this->userRepository->findById($id);
     }
 
-    public function delete(User $user): ?bool
+    /**
+     * Service xử lý tạo tài khoản
+     * @param array $data
+     * @return array
+     */
+    public function create(array $data): array
     {
-        return $user->delete();
+        $return = [
+            'success' => false,
+            'messages' => 'Thêm mới tài khoản thất bại'
+        ];
+        if ($this->userRepository->create($data)) {
+            $return['success'] = true;
+            $return['messages'] = 'Thêm mới tài khoản thành công';
+        }
+        return $return;
+    }
+
+    /**
+     * Hàm cập nhật tài khoản
+     * @param $id
+     * @param array $data
+     * @return array
+     */
+    public function update($id, array $data): array
+    {
+        $return = [
+            'success' => false,
+            'messages' => 'Cập nhật tài khoản thất bại'
+        ];
+        if (($user = $this->userRepository->findById($id))
+            && $this->userRepository->update($user, $data)
+        ) {
+            $return['success'] = true;
+            $return['messages'] = 'Cập nhật tài khoản thành công';
+        }
+        return $return;
+    }
+
+    /**
+     * Hàm xóa tài khoản
+     * @param $id
+     * @return array
+     */
+    public function delete($id): array
+    {
+        $return = [
+            'success' => false,
+            'messages' => 'Xóa tài khoản thất bại'
+        ];
+        if (($user = $this->userRepository->findById($id))
+            && $this->userRepository->delete($user)
+        ) {
+            $return['success'] = true;
+            $return['messages'] = 'Xóa tài khoản thành công';
+        }
+        return $return;
+    }
+
+    /**
+     * Hàm đồng bộ lại vai trò của người dùng
+     * @param $id
+     * @param array $roles
+     * @return void
+     */
+    public function assignRoles($id, array $roles): void
+    {
+        $user = $this->userRepository->findById($id);
+        $user->syncRoles($roles);
     }
 }
