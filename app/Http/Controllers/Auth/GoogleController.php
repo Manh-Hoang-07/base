@@ -30,15 +30,17 @@ class GoogleController extends Controller
             $googleUser = Socialite::driver('google')->user();
             if ($user = User::where('email', $googleUser->email)->first()) {
                 Auth::login($user);
-                return redirect()->route('dashboard')->with('success', 'Đăng nhập google thành công');
+                $result['success'] = true;
+                $result['message'] = 'Đăng nhập google thành công';
+            } else {
+                $data = [
+                    'email' => $googleUser->getEmail(),
+                    'name' => $googleUser->getName(),
+                    'google_id' => $googleUser->getId(),
+                    'password' => bcrypt('12345678'),
+                ];
+                $result = $this->registerService->register($data);
             }
-            $data = [
-                'email' => $googleUser->getEmail(),
-                'name' => $googleUser->getName(),
-                'google_id' => $googleUser->getId(),
-                'password' => bcrypt('12345678'),
-            ];
-            $result = $this->registerService->register($data);
             if ($result['success']) {
                 return redirect()->route('dashboard')->with('success', $result['message']);
             }
