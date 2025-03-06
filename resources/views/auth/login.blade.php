@@ -42,6 +42,10 @@
             </div>
 
             <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+            <a href="{{ route('google.login') }}" class="btn btn-danger">
+                <i class="fab fa-google"></i> Đăng nhập với Google
+            </a>
+
         </form>
     </div>
 </div>

@@ -21,3 +21,12 @@ Route::middleware('auth')->group(function () {
         return view('admin.home.dashboard');
     })->name('dashboard');
 });
+
+use App\Http\Controllers\Auth\GoogleController;
+
+use Laravel\Socialite\Facades\Socialite;
+
+Route::get('auth/google', [GoogleController::class, 'redirect'])->name('google.login');
+Route::get('auth/google/callback', [GoogleController::class, 'callback']);
+
+
