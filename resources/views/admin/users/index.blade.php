@@ -72,6 +72,6 @@
 
     <!-- Hiển thị phân trang -->
     <div class="d-flex justify-content-center">
-        {{ $users->links() }}
+        {{ $users->links('vendor.pagination.bootstrap-5') }}
     </div>
 @endsection

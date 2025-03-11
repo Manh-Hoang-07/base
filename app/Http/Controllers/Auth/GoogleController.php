@@ -19,11 +19,19 @@ class GoogleController extends Controller
         $this->registerService = $registerService;
     }
 
+    /**
+     * Hiển thị form đăng nhập với google
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|RedirectResponse
+     */
     public function redirect(): \Symfony\Component\HttpFoundation\RedirectResponse|RedirectResponse
     {
         return Socialite::driver('google')->redirect();
     }
 
+    /**
+     * Hàm để google gọi lại
+     * @return RedirectResponse
+     */
     public function callback(): RedirectResponse
     {
         try {
