@@ -2,24 +2,14 @@
 
 namespace App\Services\User;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Repositories\User\User\UserRepository;
 
 class UserService
 {
-    public function updateProfile(User $user, array $data): array
-    {
-        if (!empty($data['name'])) {
-            $user->name = $data['name'];
-        }
-        if (!empty($data['email'])) {
-            $user->email = $data['email'];
-        }
-        if (!empty($data['password'])) {
-            $user->password = Hash::make($data['password']);
-        }
-        $user->save();
+    protected UserRepository $userRepository;
 
-        return ['success' => true, 'message' => 'Cập nhật tài khoản thành công.'];
+    public function findByEmail(string $email, array $options = [])
+    {
+        return $this->userRepository->findByEmail($email, $options);
     }
 }

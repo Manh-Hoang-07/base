@@ -2,6 +2,7 @@
 
 include('admin.php');
 
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
 
@@ -23,4 +24,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.home.dashboard');
     })->name('dashboard');
+});
+
+
+Route::post('/send-otp-forgot-password', [ForgotPasswordController::class, 'sendOtp'])->name('send.forgot.password');
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('reset.password');
+
+Route::get('/forgot-password', function () {
+    return view('auth.forgot_password');
 });
