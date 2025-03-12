@@ -134,10 +134,10 @@
                 method: 'POST',
                 data: $(this).serialize(),
                 success: function(response) {
-                    if(response.status === true) {
+                    if(response.success === true) {
                         toastr.success(response.message || 'Đăng ký tài khoản thành công');
                         setTimeout(function() {
-                            window.location.href = "{{ url('/') }}";
+                            window.location.href = "{{ url('/dashboard') }}";
                         }, 3000);
                     } else {
                         toastr.error(response.message || 'Đăng ký tài khoản thất bại');
