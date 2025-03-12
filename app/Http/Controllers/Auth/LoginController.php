@@ -10,6 +10,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
@@ -23,10 +24,13 @@ class LoginController extends Controller
 
     /**
      * Hàm gọi giao diện đăng nhập
-     * @return View|Application|Factory
+     * @return RedirectResponse|View
      */
-    public function index(): View|Application|Factory
+    public function index(): RedirectResponse|View
     {
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
         return view('auth.login');
     }
 
