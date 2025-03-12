@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Services\Auth\RegisterService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
 class RegisterController extends Controller
@@ -29,14 +30,11 @@ class RegisterController extends Controller
     /**
      * Hàm xử lý đăng ký
      * @param RegisterRequest $request
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function register(RegisterRequest $request): RedirectResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
-        $result = $this->registerService->register($request->validated());
-        if ($result['success']) {
-            return redirect()->route('dashboard')->with('success', $result['message']);
-        }
-        return redirect()->route('registerForm')->with('error', $result['message']);
+        $data = $request->validated();
+        return response()->json($this->registerService->register($data));
     }
 }
