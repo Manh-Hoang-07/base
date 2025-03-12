@@ -8,6 +8,7 @@ use App\Services\Auth\LoginService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 
@@ -32,17 +33,13 @@ class LoginController extends Controller
     /**
      * Hàm xử lý đăng nhập
      * @param LoginRequest $request
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function login(LoginRequest $request): RedirectResponse
+    public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->validated();
         $remember = $request->has('remember');
-        $result = $this->loginService->login($credentials, $remember);
-        if ($result['success']) {
-            return redirect()->route('dashboard')->with('success', $result['message']);
-        }
-        return redirect()->route('loginForm')->with('error', $result['message']);
+        return response()->json($this->loginService->login($credentials, $remember));
     }
 
     /**
@@ -53,6 +50,6 @@ class LoginController extends Controller
     {
         $this->loginService->logout();
         Session::invalidate();
-        return redirect()->route('loginForm')->with('success', 'Bạn đã đăng xuất thành công.');
+        return redirect()->route('login.index')->with('success', 'Bạn đã đăng xuất thành công.');
     }
 }
