@@ -29,7 +29,7 @@ class LoginController extends Controller
     public function index(): RedirectResponse|View
     {
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            return redirect()->route('admin.index');
         }
         return view('auth.login');
     }

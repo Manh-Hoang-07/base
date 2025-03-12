@@ -1,4 +1,4 @@
-@extends('admin.home.dashboard')
+@extends('admin.index')
 
 @section('content')
     <h2>Chỉnh sửa quyền - {{ $role->name ?? '' }}</h2>

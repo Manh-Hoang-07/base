@@ -1,4 +1,4 @@
-@extends('admin.home.dashboard')
+@extends('admin.index')
 
 @section('title', 'Chỉnh sửa tài khoản')
 
