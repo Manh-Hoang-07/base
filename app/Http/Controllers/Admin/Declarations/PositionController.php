@@ -55,7 +55,7 @@ class PositionController extends Controller
         ]);
         $return = $this->positionService->create($request->all());
         if (!empty($return['success'])) {
-            return redirect()->route('admin.permissions.index')
+            return redirect()->route('admin.declarations.positions.index')
                 ->with('success', $return['message'] ?? 'Tạo chức vụ thành công.');
         }
         return redirect()->route('admin.declarations.positions.index')
@@ -87,7 +87,7 @@ class PositionController extends Controller
         ]);
         $return = $this->positionService->update($id, $request->all());
         if (!empty($return['success'])) {
-            return redirect()->route('admin.permissions.index')
+            return redirect()->route('admin.declarations.positions.index')
                 ->with('success', $return['message'] ?? 'Cập nhật chức vụ thành công.');
         }
         return redirect()->route('admin.declarations.positions.index')
@@ -103,7 +103,7 @@ class PositionController extends Controller
     {
         $return = $this->positionService->delete($id);
         if (!empty($return['success'])) {
-            return redirect()->route('admin.permissions.index')
+            return redirect()->route('admin.declarations.positions.index')
                 ->with('success', $return['message'] ?? 'Xóa chức vụ thành công.');
         }
         return redirect()->route('admin.declarations.positions.index')
