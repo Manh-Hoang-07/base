@@ -8,6 +8,7 @@ use App\Services\Auth\RegisterService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -25,6 +26,19 @@ class RegisterController extends Controller
     public function index(): View
     {
         return view('auth.register');
+    }
+
+    /**
+     * Hàm gửi OTP quên mật khẩu về email
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function sendOtp(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+        return response()->json($this->registerService->sendOtp($request->email ?? ''));
     }
 
     /**
