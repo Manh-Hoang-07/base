@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\Declarations;
 
 use App\Http\Controllers\Controller;
-use App\Services\Admin\Permissions\PermissionService;
+use App\Services\Admin\Declarations\PositionService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -12,11 +12,11 @@ use Illuminate\Http\Request;
 
 class PositionController extends Controller
 {
-    protected PermissionService $permissionService;
+    protected PositionService $positionService;
 
-    public function __construct(PermissionService $permissionService)
+    public function __construct(PositionService $positionService)
     {
-        $this->permissionService = $permissionService;
+        $this->positionService = $positionService;
     }
 
     /**
@@ -29,7 +29,7 @@ class PositionController extends Controller
         $filters = $request->only(['name', 'title']);
         $options['sortBy'] = $request->get('sortBy', 'id');
         $options['sortOrder'] = $request->get('sortOrder', 'asc');
-        $positions = $this->permissionService->getAll($filters, $options);
+        $positions = $this->positionService->getAll($filters, $options);
         return view('admin.declarations.positions.index', compact('positions'));
     }
 
@@ -53,7 +53,7 @@ class PositionController extends Controller
             'title' => 'required',
             'name' => 'required|unique:permissions,name'
         ]);
-        $return = $this->permissionService->create($request->all());
+        $return = $this->positionService->create($request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
                 ->with('success', $return['message'] ?? 'Tạo chức vụ thành công.');
@@ -69,7 +69,7 @@ class PositionController extends Controller
      */
     public function edit($id): View|Application|Factory
     {
-        $permission = $this->permissionService->findById($id);
+        $permission = $this->positionService->findById($id);
         return view('admin.declarations.positions.edit', compact('permission'));
     }
 
@@ -85,7 +85,7 @@ class PositionController extends Controller
             'title' => 'required',
             'name' => 'required|unique:permissions,name,' . $id,
         ]);
-        $return = $this->permissionService->update($id, $request->all());
+        $return = $this->positionService->update($id, $request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
                 ->with('success', $return['message'] ?? 'Cập nhật chức vụ thành công.');
@@ -101,7 +101,7 @@ class PositionController extends Controller
      */
     public function delete($id): RedirectResponse
     {
-        $return = $this->permissionService->delete($id);
+        $return = $this->positionService->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
                 ->with('success', $return['message'] ?? 'Xóa chức vụ thành công.');
