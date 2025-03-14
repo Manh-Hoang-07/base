@@ -19,14 +19,16 @@ class PermissionSeeder extends Seeder
             $manage = Permission::create([
                 'title' => 'Quyền manage' . '_' . "{$module}",
                 'name' => "manage_{$module}",
-                'guard_name' => 'web'
+                'guard_name' => 'web',
+                'is_default' => true
             ]);
             foreach ($actions as $action) {
                 Permission::create([
                     'title' => 'Quyền ' . "{$action}" . '_' . "{$module}",
                     'name' => "{$action}" . '_' . "{$module}",
                     'guard_name' => 'web',
-                    'parent_id' => $manage->id
+                    'parent_id' => $manage->id,
+                    'is_default' => true
                 ]);
             }
         }

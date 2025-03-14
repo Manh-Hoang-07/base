@@ -95,7 +95,7 @@ class UserController extends Controller
      * @param $id
      * @return RedirectResponse
      */
-    public function destroy($id): RedirectResponse
+    public function delete($id): RedirectResponse
     {
         $return = $this->userService->delete($id);
         if (!empty($return['success'])) {

@@ -7,6 +7,7 @@ use App\Mail\ForgotPassword;
 use App\Services\Auth\ForgotPasswordService;
 use App\Services\Otp\OtpService;
 use App\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +21,15 @@ class ForgotPasswordController extends Controller
     public function __construct(ForgotPasswordService $forgotPasswordService)
     {
         $this->forgotPasswordService = $forgotPasswordService;
+    }
+
+    /**
+     * Hàm gọi giao diện quên mật khẩu
+     * @return View
+     */
+    public function index(): View
+    {
+        return view('auth.forgot-password');
     }
 
     /**

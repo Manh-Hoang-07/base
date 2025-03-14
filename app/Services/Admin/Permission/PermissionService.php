@@ -67,11 +67,14 @@ class PermissionService
             'name' => $data['name'] ?? '',
             'guard_name' => $data['guard_name'] ?? 'web',
         ];
-        if (($permission = $this->permissionRepository->findById($id))
-            && $this->permissionRepository->update($permission, $data)
-        ) {
-            $return['success'] = true;
-            $return['messages'] = 'Cập nhật quyền thành công';
+        if ($permission = $this->permissionRepository->findById($id)) {
+            if (!empty($permission->is_default)) {
+                $return['success'] = false;
+                $return['messages'] = 'Không thể cập nhật quyền hệ thống';
+            } elseif ($this->permissionRepository->update($permission, $data)) {
+                $return['success'] = true;
+                $return['messages'] = 'Cập nhật quyền thành công';
+            }
         }
         return $return;
     }
@@ -85,13 +88,16 @@ class PermissionService
     {
         $return = [
             'success' => false,
-            'messages' => 'Cập nhật quyền thất bại'
+            'messages' => 'Xóa quyền thất bại'
         ];
-        if (($role = $this->permissionRepository->findById($id))
-            && $this->permissionRepository->delete($role)
-        ) {
-            $return['success'] = true;
-            $return['messages'] = 'Cập nhật quyền thành công';
+        if ($permission = $this->permissionRepository->findById($id)) {
+            if (!empty($permission->is_default)) {
+                $return['success'] = false;
+                $return['messages'] = 'Không thể xóa quyền hệ thống';
+            } elseif ($this->permissionRepository->delete($permission)) {
+                $return['success'] = true;
+                $return['messages'] = 'Xóa quyền thành công';
+            }
         }
         return $return;
     }

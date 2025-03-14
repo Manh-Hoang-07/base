@@ -54,7 +54,7 @@ class GoogleController extends Controller
             }
             return redirect()->route('registerForm')->with('error', $result['message']);
         } catch (Exception $e) {
-            return redirect()->route('loginForm')->with('error', 'Đăng nhập Google thất bại!');
+            return redirect()->route('login.index')->with('error', 'Đăng nhập Google thất bại!');
         }
     }
 }

@@ -36,7 +36,7 @@ class RegisterController extends Controller
     public function sendOtp(Request $request): JsonResponse
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email',
         ]);
         return response()->json($this->registerService->sendOtp($request->email ?? ''));
     }

@@ -109,7 +109,7 @@ class RoleController extends Controller
      * @param $id
      * @return RedirectResponse
      */
-    public function destroy($id): RedirectResponse
+    public function delete($id): RedirectResponse
     {
         $return = $this->roleService->delete($id);
         if (!empty($return['success'])) {

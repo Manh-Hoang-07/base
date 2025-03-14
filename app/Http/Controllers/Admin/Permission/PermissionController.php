@@ -99,7 +99,7 @@ class PermissionController extends Controller
      * @param $id
      * @return RedirectResponse
      */
-    public function destroy($id): RedirectResponse
+    public function delete($id): RedirectResponse
     {
         $return = $this->permissionService->delete($id);
         if (!empty($return['success'])) {

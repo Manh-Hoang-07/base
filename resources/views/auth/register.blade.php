@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Đăng Ký</title>
+    <title>Đăng ký tài khoản</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
@@ -17,7 +17,7 @@
             height: 100vh;
             margin: 0;
         }
-        .register-container {
+        .reset-password-container {
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -25,15 +25,15 @@
             width: 100%;
             max-width: 400px;
         }
-        .register-container h2 {
+        .reset-password-container h2 {
             margin-bottom: 20px;
             font-size: 24px;
             color: #333;
         }
-        .register-container .form-group label {
+        .reset-password-container .form-group label {
             font-weight: bold;
         }
-        .register-container .btn {
+        .reset-password-container .btn {
             background-color: #007bff;
             border: none;
             color: #fff;
@@ -43,29 +43,39 @@
             padding: 10px;
             transition: background-color 0.3s ease;
         }
-        .register-container .btn:hover {
+        .reset-password-container .btn:hover {
             background-color: #0056b3;
         }
-        .error-message {
-            color: red;
-            font-size: 14px;
+        .reset-password-container .send-otp {
+            margin-bottom: 15px;
+            display: block;
+            color: #007bff;
+            cursor: pointer;
+        }
+        .reset-password-container .send-otp:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-<div class="register-container">
-    <h2 class="text-center">Đăng Ký</h2>
+<div class="reset-password-container">
+    <h2 class="text-center">Đăng ký tài khoản</h2>
     <form id="register_form">
         @csrf
-        <div class="form-group">
-            <label for="name">Tên:</label>
-            <input type="text" name="name" id="name" class="form-control" required>
-            <small class="error-message" id="name-error"></small>
-        </div>
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" name="email" id="email" class="form-control" required>
             <small class="error-message" id="email-error"></small>
+        </div>
+        <a id="send_otp" class="send-otp">Gửi OTP đến Email</a>
+        <div class="form-group">
+            <label for="otp">Nhập OTP:</label>
+            <input type="text" name="otp" id="otp" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="name">Tên:</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+            <small class="error-message" id="name-error"></small>
         </div>
         <div class="form-group">
             <label for="password">Mật khẩu:</label>
@@ -87,6 +97,32 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function() {
+        $('#send_otp').on('click', function(event) {
+            event.preventDefault();
+            const email = $('#email').val();
+            if (!email) {
+                toastr.error('Vui lòng nhập email trước khi gửi OTP.');
+                return;
+            }
+
+            $.ajax({
+                url: '{{ route('send.register') }}',
+                method: 'POST',
+                data: { email: email, _token: '{{ csrf_token() }}' },
+                success: function(response) {
+                    if(response.success === true) {
+                        toastr.success(response.message || 'OTP đã được gửi đến email của bạn.');
+                    } else {
+                        toastr.error(response.message || 'Gửi OTP thất bại.');
+                    }
+                },
+                error: function(xhr) {
+                    let message = xhr.responseJSON.message || 'Gửi OTP thất bại';
+                    toastr.error(message);
+                }
+            });
+        });
+
         $('#register_form').on('submit', function(event) {
             event.preventDefault();
 
