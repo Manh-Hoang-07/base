@@ -1,0 +1,98 @@
+<?php
+
+namespace App\Services\Admin\Declarations;
+
+use App\Repositories\Admin\Declarations\PositionRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
+
+class PositionService
+{
+    protected PositionRepository $positionRepository;
+
+    public function __construct(PositionRepository $positionRepository) {
+        $this->positionRepository = $positionRepository;
+    }
+
+    /**
+     * Lấy danh sách tất cả chức vụ
+     * @param array $filters
+     * @param array $options
+     * @return LengthAwarePaginator
+     */
+    public function getAll(array $filters = [], array $options = []): LengthAwarePaginator
+    {
+        return $this->positionRepository->getAll($filters, $options);
+    }
+
+    /**
+     * Tạo mới chức vụ
+     * @param array $data
+     * @return Model
+     */
+    public function create(array $data): Model
+    {
+        $data = [
+            'name' => $data['name'] ?? '',
+            'code' => $data['code'] ?? '',
+            'description' => $data['description'] ?? '',
+        ];
+        return $this->positionRepository->create($data);
+    }
+
+    /**
+     * Lấy thông tin chức vụ theo ID
+     * @param $id
+     * @return Model|null
+     */
+    public function findById($id): ?Model
+    {
+        return $this->positionRepository->findById($id);
+    }
+
+    /**
+     * Cập nhật chức vụ
+     * @param $id
+     * @param array $data
+     * @return array
+     */
+    public function update($id, array $data): array
+    {
+        $return = [
+            'success' => false,
+            'messages' => 'Cập nhật chức vụ thất bại'
+        ];
+        $data = [
+            'name' => $data['name'] ?? '',
+            'code' => $data['code'] ?? '',
+            'description' => $data['description'] ?? '',
+        ];
+        if (($position = $this->positionRepository->findById($id))
+            && ($this->positionRepository->update($position, $data))
+        ) {
+            $return['success'] = true;
+            $return['messages'] = 'Cập nhật chức vụ thành công';
+        }
+        return $return;
+    }
+
+    /**
+     * Xóa chức vụ
+     * @param $id
+     * @return array
+     */
+    public function delete($id): array
+    {
+        $return = [
+            'success' => false,
+            'messages' => 'Xóa chức vụ thất bại'
+        ];
+        if (($position = $this->positionRepository->findById($id))
+            && ($this->positionRepository->delete($position))
+        ) {
+            $return['success'] = true;
+            $return['messages'] = 'Xóa chức vụ thành công';
+        }
+        return $return;
+    }
+}

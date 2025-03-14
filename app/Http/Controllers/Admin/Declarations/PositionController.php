@@ -20,7 +20,7 @@ class PositionController extends Controller
     }
 
     /**
-     * Hiển thị danh sách quyền
+     * Hiển thị danh sách chức vụ
      * @param Request $request
      * @return Factory|Application|View
      */
@@ -34,7 +34,7 @@ class PositionController extends Controller
     }
 
     /**
-     * Hiển thị form tạo quyền
+     * Hiển thị form tạo chức vụ
      * @return View|Application|Factory
      */
     public function create(): View|Application|Factory
@@ -43,7 +43,7 @@ class PositionController extends Controller
     }
 
     /**
-     * Xử lý tạo quyền
+     * Xử lý tạo chức vụ
      * @param Request $request
      * @return RedirectResponse
      */
@@ -56,14 +56,14 @@ class PositionController extends Controller
         $return = $this->permissionService->create($request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
-                ->with('success', $return['message'] ?? 'Tạo quyền thành công.');
+                ->with('success', $return['message'] ?? 'Tạo chức vụ thành công.');
         }
         return redirect()->route('admin.declarations.positions.index')
-            ->with('fail', $return['message'] ?? 'Tạo quyền thất bại.');
+            ->with('fail', $return['message'] ?? 'Tạo chức vụ thất bại.');
     }
 
     /**
-     * Hiển thị form sửa quyền
+     * Hiển thị form sửa chức vụ
      * @param $id
      * @return View|Application|Factory
      */
@@ -74,7 +74,7 @@ class PositionController extends Controller
     }
 
     /**
-     * Xử lý cập nhật quyền
+     * Xử lý cập nhật chức vụ
      * @param Request $request
      * @param $id
      * @return RedirectResponse
@@ -88,14 +88,14 @@ class PositionController extends Controller
         $return = $this->permissionService->update($id, $request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
-                ->with('success', $return['message'] ?? 'Cập nhật quyền thành công.');
+                ->with('success', $return['message'] ?? 'Cập nhật chức vụ thành công.');
         }
         return redirect()->route('admin.declarations.positions.index')
-            ->with('fail', $return['message'] ?? 'Cập nhật quyền thất bại.');
+            ->with('fail', $return['message'] ?? 'Cập nhật chức vụ thất bại.');
     }
 
     /**
-     * Xóa quyền
+     * Xóa chức vụ
      * @param $id
      * @return RedirectResponse
      */
@@ -104,9 +104,9 @@ class PositionController extends Controller
         $return = $this->permissionService->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
-                ->with('success', $return['message'] ?? 'Xóa quyền thành công.');
+                ->with('success', $return['message'] ?? 'Xóa chức vụ thành công.');
         }
         return redirect()->route('admin.declarations.positions.index')
-            ->with('fail', $return['message'] ?? 'Xóa quyền thất bại.');
+            ->with('fail', $return['message'] ?? 'Xóa chức vụ thất bại.');
     }
 }
