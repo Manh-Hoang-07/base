@@ -52,9 +52,10 @@
                 </td>
                 <td>
                     @canany(['assign_users'])
-                        <a href="{{ route('admin.users.showAssignRolesForm', $user->id) }}">Gán Vai Trò</a>
+                        <a href="{{ route('admin.users.showAssignRolesForm', $user->id) }}" class="btn btn-sm btn-warning">Gán Vai Trò</a>
                     @endcanany
                     @canany(['edit_users'])
+                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">Sửa</a>
                         <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">Sửa</a>
                     @endcanany
                     @canany(['delete_users'])

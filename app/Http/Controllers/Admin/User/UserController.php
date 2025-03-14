@@ -128,7 +128,7 @@ class UserController extends Controller
     public function assignRoles(AssignRequest $request, $id): RedirectResponse
     {
         $this->userService->assignRoles($id, $request->roles ?? []);
-        return redirect()->back()->with('success', 'Cập nhật vai trò thành công.');
+        return redirect()->route('admin.users.index')->with('success', 'Cập nhật vai trò thành công.');
     }
 
 }

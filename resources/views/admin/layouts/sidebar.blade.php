@@ -26,6 +26,12 @@
                 </a>
             </li>
         @endcanany
+        <li class="side-nav-item">
+            <a href="{{ route('admin.permissions.index') }}" class="side-nav-link">
+                <i class="dripicons-chevron-right"></i>
+                <span>Quản lý khai báo</span>
+            </a>
+        </li>
     </ul>
     <!-- End Sidebar -->
 

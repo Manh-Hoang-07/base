@@ -79,4 +79,14 @@ class User extends Authenticatable {
         return false;
     }
 
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    public function positions()
+    {
+        return $this->belongsToMany(Position::class, 'position_user');
+    }
+
 }
