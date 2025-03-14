@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Admin\Role;
+namespace App\Services\Admin\Roles;
 
-use App\Repositories\Admin\Role\RoleRepository;
+use App\Repositories\Admin\Roles\RoleRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 

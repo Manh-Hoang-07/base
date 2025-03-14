@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Admin\Permission;
+namespace App\Repositories\Admin\Permissions;
 
 use App\Repositories\BaseRepository;
 use App\Models\Permission;

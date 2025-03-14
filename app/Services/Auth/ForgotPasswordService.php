@@ -3,7 +3,7 @@
 namespace App\Services\Auth;
 
 use App\Mail\Auth\ForgotPassword;
-use App\Repositories\User\User\UserRepository;
+use App\Repositories\User\Users\UserRepository;
 use App\Services\Otp\OtpService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;

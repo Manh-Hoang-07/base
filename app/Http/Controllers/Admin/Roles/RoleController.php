@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Role;
+namespace App\Http\Controllers\Admin\Roles;
 
 use App\Http\Controllers\Controller;
-use App\Services\Admin\Permission\PermissionService;
-use App\Services\Admin\Role\RoleService;
+use App\Services\Admin\Permissions\PermissionService;
+use App\Services\Admin\Roles\RoleService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;

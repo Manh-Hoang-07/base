@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Permission;
+namespace App\Http\Controllers\Admin\Permissions;
 
 use App\Http\Controllers\Controller;
-use App\Services\Admin\Permission\PermissionService;
+use App\Services\Admin\Permissions\PermissionService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;

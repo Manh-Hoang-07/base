@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Admin\User;
+namespace App\Http\Controllers\Admin\Users;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\User\AssignRequest;
-use App\Http\Requests\Admin\User\StoreRequest;
-use App\Http\Requests\Admin\User\UpdateRequest;
-use App\Services\Admin\User\UserService;
+use App\Http\Requests\Admin\Users\AssignRequest;
+use App\Http\Requests\Admin\Users\StoreRequest;
+use App\Http\Requests\Admin\Users\UpdateRequest;
+use App\Services\Admin\Users\UserService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;

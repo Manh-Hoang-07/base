@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Admin\User;
+namespace App\Services\Admin\Users;
 
-use App\Repositories\Admin\User\UserRepository;
+use App\Repositories\Admin\Users\UserRepository;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;

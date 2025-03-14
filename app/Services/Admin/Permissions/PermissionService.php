@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Admin\Permission;
+namespace App\Services\Admin\Permissions;
 
-use App\Repositories\Admin\Permission\PermissionRepository;
+use App\Repositories\Admin\Permissions\PermissionRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 

@@ -4,7 +4,7 @@ namespace App\Services\Auth;
 
 use App\Mail\Auth\Register;
 use App\Repositories\Auth\RegisterRepository;
-use App\Repositories\User\User\UserRepository;
+use App\Repositories\User\Users\UserRepository;
 use App\Services\Otp\OtpService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
