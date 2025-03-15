@@ -131,4 +131,21 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'Cập nhật vai trò thành công.');
     }
 
+    /**
+     * Khóa hoặc mở khóa tài khoản
+     */
+    public function toggleBlock($id, Request $request): RedirectResponse
+    {
+        $request->validate([
+            'status' => 'required',
+        ]);
+        $return = $this->userService->toggleBlock($id, (int)($request->status ?? 0));
+        if (!empty($return['success'])) {
+            return redirect()->route('admin.users.index')
+                ->with('success', $return['message'] ?? 'Thay đổi trạng thái tài khoản thành công.');
+        }
+        return redirect()->route('admin.users.index')
+            ->with('fail', $return['message'] ?? 'Thay đổi trạng thái tài khoản thất bại.');
+    }
+
 }

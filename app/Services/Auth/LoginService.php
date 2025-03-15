@@ -3,14 +3,17 @@
 namespace App\Services\Auth;
 
 use App\Repositories\Auth\LoginRepository;
+use App\Repositories\User\Users\UserRepository;
 
 class LoginService
 {
     protected LoginRepository $loginRepository;
+    protected UserRepository $userRepository;
 
-    public function __construct(LoginRepository $loginRepository)
+    public function __construct(LoginRepository $loginRepository, UserRepository $userRepository)
     {
         $this->loginRepository = $loginRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -25,6 +28,12 @@ class LoginService
             return ['success' => false, 'message' => 'Email và mật khẩu không được để trống.'];
         }
         $return = ['success' => false, 'message' => 'Email hoặc mật khẩu không đúng.'];
+        if (($user = $this->userRepository->findByEmail($credentials['email']))
+            && !empty($user->is_blocked)
+        ) {
+            $return['message'] = 'Tài khoản này đang bị khóa. Vui lòng liên hệ quản trị viên.';
+            return $return;
+        }
         if ($this->loginRepository->login($credentials, $remember)) {
             $return = ['success' => true, 'message' => 'Đăng nhập thành công!'];
         }

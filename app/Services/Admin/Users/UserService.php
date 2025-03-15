@@ -6,6 +6,7 @@ use App\Repositories\Admin\Users\UserRepository;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use lib\DataTable;
 
 class UserService
@@ -113,5 +114,27 @@ class UserService
     {
         $user = $this->userRepository->findById($id);
         $user->syncRoles($roles);
+    }
+
+    public function toggleBlock($id, int $is_blocked = 0): array
+    {
+        $return = [
+            'success' => false,
+            'messages' => 'Thay đổi trạng thái tài khoản thất bại'
+        ];
+        $is_blocked = !empty($is_blocked) ? 1 : 0;
+        if ($user = $this->userRepository->findById($id)) {
+            if ((!empty($user->is_blocked) && !empty($is_blocked))
+                || (empty($user->is_blocked) && empty($is_blocked))
+            ) {
+                $return['messages'] = 'Trạng thái cần không thay đổi không đúng';
+            } elseif ($this->userRepository->update($user, ['is_blocked' => $is_blocked])) {
+                $return['success'] = true;
+                $return['messages'] = 'Thay đổi trạng thái tài khoản thành công';
+            }
+        } else {
+            $return['messages'] = 'Tài khoản không hợp lệ';
+        }
+        return $return;
     }
 }
