@@ -6,6 +6,7 @@ use App\Repositories\Admin\Users\UserRepository;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
+use lib\DataTable;
 
 class UserService
 {
@@ -22,9 +23,9 @@ class UserService
      * @param array $options
      * @return LengthAwarePaginator
      */
-    public function getAll(array $filters = [], array $options = []): LengthAwarePaginator
+    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
     {
-        return $this->userRepository->getAll($filters, $options);
+        return $this->userRepository->getList($filters, $options);
     }
 
     /**
@@ -48,7 +49,10 @@ class UserService
             'success' => false,
             'messages' => 'Thêm mới tài khoản thất bại'
         ];
-        if ($this->userRepository->create($data)) {
+        $keys = ['name', 'email', 'password'];
+        if (($insertData = DataTable::getAllowData($keys, $data))
+            && $this->userRepository->create($insertData)
+        ) {
             $return['success'] = true;
             $return['messages'] = 'Thêm mới tài khoản thành công';
         }
@@ -67,7 +71,10 @@ class UserService
             'success' => false,
             'messages' => 'Cập nhật tài khoản thất bại'
         ];
-        if (($user = $this->userRepository->findById($id))
+        $keys = ['name', 'email'];
+        $updateData = DataTable::getAllowData($keys, $data);
+        if (!empty($updateData)
+            && ($user = $this->userRepository->findById($id))
             && $this->userRepository->update($user, $data)
         ) {
             $return['success'] = true;

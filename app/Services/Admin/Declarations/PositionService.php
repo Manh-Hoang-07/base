@@ -20,9 +20,9 @@ class PositionService
      * @param array $options
      * @return LengthAwarePaginator
      */
-    public function getAll(array $filters = [], array $options = []): LengthAwarePaginator
+    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
     {
-        return $this->positionRepository->getAll($filters, $options);
+        return $this->positionRepository->getList($filters, $options);
     }
 
     /**

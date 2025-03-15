@@ -29,7 +29,7 @@ class PermissionController extends Controller
         $filters = $request->only(['name', 'title']);
         $options['sortBy'] = $request->get('sortBy', 'id');
         $options['sortOrder'] = $request->get('sortOrder', 'asc');
-        $permissions = $this->permissionService->getAll($filters, $options);
+        $permissions = $this->permissionService->getList($filters, $options);
         return view('admin.permissions.index', compact('permissions'));
     }
 
@@ -39,7 +39,8 @@ class PermissionController extends Controller
      */
     public function create(): View|Application|Factory
     {
-        return view('admin.permissions.create');
+        $permissions = $this->permissionService->getAll();
+        return view('admin.permissions.create', compact('permissions'));
     }
 
     /**
@@ -51,7 +52,8 @@ class PermissionController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            'name' => 'required|unique:permissions,name'
+            'name' => 'required|unique:permissions,name',
+            'parent_id' => 'exists:permissions,name'
         ]);
         $return = $this->permissionService->create($request->all());
         if (!empty($return['success'])) {
@@ -70,7 +72,8 @@ class PermissionController extends Controller
     public function edit($id): View|Application|Factory
     {
         $permission = $this->permissionService->findById($id);
-        return view('admin.permissions.edit', compact('permission'));
+        $permissions = $this->permissionService->getAll();
+        return view('admin.permissions.edit', compact('permission', 'permissions'));
     }
 
     /**

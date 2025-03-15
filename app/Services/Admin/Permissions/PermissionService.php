@@ -4,7 +4,9 @@ namespace App\Services\Admin\Permissions;
 
 use App\Repositories\Admin\Permissions\PermissionRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use lib\DataTable;
 
 class PermissionService
 {
@@ -18,26 +20,43 @@ class PermissionService
      * Lấy danh sách tất cả quyền
      * @param array $filters
      * @param array $options
-     * @return LengthAwarePaginator
+     * @return Collection
      */
-    public function getAll(array $filters = [], array $options = []): LengthAwarePaginator
+    public function getAll(array $filters = [], array $options = []): Collection
     {
         return $this->permissionRepository->getAll($filters, $options);
     }
 
     /**
+     * Lấy danh sách tất cả quyền
+     * @param array $filters
+     * @param array $options
+     * @return LengthAwarePaginator
+     */
+    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
+    {
+        return $this->permissionRepository->getList($filters, $options);
+    }
+
+    /**
      * Tạo mới quyền
      * @param array $data
-     * @return Model
+     * @return array
      */
-    public function create(array $data): Model
+    public function create(array $data): array
     {
-        $data = [
-            'title' => $data['title'] ?? '',
-            'name' => $data['name'] ?? '',
-            'guard_name' => $data['guard_name'] ?? 'web',
+        $return = [
+            'success' => false,
+            'messages' => 'Thêm mới quyền thất bại'
         ];
-        return $this->permissionRepository->create($data);
+        $keys = ['title', 'name', 'guard_name', 'parent_id'];
+        if (($insertData = DataTable::getAllowData($keys, $data))
+            && $this->permissionRepository->create($insertData)
+        ) {
+            $return['success'] = true;
+            $return['messages'] = 'Thêm mới quyền thành công';
+        }
+        return $return;
     }
 
     /**
@@ -62,16 +81,15 @@ class PermissionService
             'success' => false,
             'messages' => 'Cập nhật quyền thất bại'
         ];
-        $data = [
-            'title' => $data['title'] ?? '',
-            'name' => $data['name'] ?? '',
-            'guard_name' => $data['guard_name'] ?? 'web',
-        ];
-        if ($permission = $this->permissionRepository->findById($id)) {
+        $keys = ['title', 'name', 'guard_name', 'parent_id'];
+        $updateData = DataTable::getAllowData($keys, $data);
+        if (!empty($updateData)
+            && ($permission = $this->permissionRepository->findById($id))
+        ) {
             if (!empty($permission->is_default)) {
                 $return['success'] = false;
                 $return['messages'] = 'Không thể cập nhật quyền hệ thống';
-            } elseif ($this->permissionRepository->update($permission, $data)) {
+            } elseif ($this->permissionRepository->update($permission, $updateData)) {
                 $return['success'] = true;
                 $return['messages'] = 'Cập nhật quyền thành công';
             }

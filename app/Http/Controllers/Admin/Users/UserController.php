@@ -33,7 +33,7 @@ class UserController extends Controller
         $filters = $request->only(['name', 'email', 'role']);
         $options['sortBy'] = $request->get('sortBy', 'id');
         $options['sortOrder'] = $request->get('sortOrder', 'asc');
-        $users = $this->userService->getAll($filters, $options);
+        $users = $this->userService->getList($filters, $options);
         return view('admin.users.index', compact('users', 'filters', 'options'));
     }
 

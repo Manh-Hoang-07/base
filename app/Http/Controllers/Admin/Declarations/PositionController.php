@@ -29,7 +29,7 @@ class PositionController extends Controller
         $filters = $request->only(['name', 'title']);
         $options['sortBy'] = $request->get('sortBy', 'id');
         $options['sortOrder'] = $request->get('sortOrder', 'asc');
-        $positions = $this->positionService->getAll($filters, $options);
+        $positions = $this->positionService->getList($filters, $options);
         return view('admin.declarations.positions.index', compact('positions'));
     }
 

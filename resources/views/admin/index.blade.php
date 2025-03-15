@@ -18,6 +18,11 @@
     <link href="{{ asset('css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('css/app-modern.min.css') }}" rel="stylesheet" type="text/css" id="light-style" />
     <link href="{{ asset('css/app-modern-dark.min.css') }}" rel="stylesheet" type="text/css" id="dark-style" />
+
+    <!-- Thêm CSS cho Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
@@ -89,6 +94,8 @@
     <script src="{{ asset('js/ui/component.fileupload.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
+    <!-- Thêm JS cho Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     @stack('js')
     <!-- end demo js-->
 </body>

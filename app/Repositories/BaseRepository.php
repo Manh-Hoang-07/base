@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,25 +14,50 @@ abstract class BaseRepository
     protected Model $model;
 
     /**
+     * Lấy tất cả danh sách
+     * @param array $filters
+     * @param array $options
+     * @return Collection
+     */
+    public function getAll(array $filters = [], array $options = []): Collection
+    {
+        $query = $this->applyQueryDefaults($filters, $options);
+        return $query->get();
+    }
+
+    /**
      * Lấy danh sách có bộ lọc, phân trang & sắp xếp
      * @param array $filters
      * @param array $options
      * @return LengthAwarePaginator
      */
-    public function getAll(array $filters = [], array $options = []): LengthAwarePaginator
+    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
+    {
+        $query = $this->applyQueryDefaults($filters, $options);
+        $perPage = $options['perPage'] ?? 10;
+        // Phân trang
+        return $query->paginate($perPage);
+    }
+
+    /**
+     * Hàm chung để xử lý các phần tử cơ bản của query
+     * @param array $filters
+     * @param array $options
+     * @return Builder
+     */
+    private function applyQueryDefaults(array $filters, array $options): Builder
     {
         $relations = $options['relations'] ?? [];
-        $perPage = $options['perPage'] ?? 10;
+        $columns = $options['columns'] ?? ['*'];
         $sortBy = $options['sortBy'] ?? 'id';
         $sortOrder = $options['sortOrder'] ?? 'asc';
-        $columns = $options['columns'] ?? ['*'];
         $query = $this->model->select($columns);
         // Áp dụng quan hệ
         $this->applyRelations($query, $relations);
         // Áp dụng bộ lọc
         $this->applyFilters($query, $filters);
-        // Sắp xếp và phân trang
-        return $query->orderBy($sortBy, $sortOrder)->paginate($perPage);
+        // Sắp xếp
+        return $query->orderBy($sortBy, $sortOrder);
     }
 
     /**
@@ -43,9 +69,13 @@ abstract class BaseRepository
             if (!empty($value)) {
                 if (is_array($value)) {
                     $query->whereIn($column, $value);
-                } else {
+                } elseif (is_string($value)) {
                     $query->where($column, 'like', '%' . $value . '%');
+                } else {
+                    $query->where($column, $value);
                 }
+            } elseif (is_null($value)) {
+                $query->whereNull($column);
             }
         }
     }

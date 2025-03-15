@@ -33,7 +33,7 @@ class RoleController extends Controller
         $options['sortBy'] = $request->get('sortBy', 'id');
         $options['sortOrder'] = $request->get('sortOrder', 'asc');
         $options['relations'] = ['permissions'];
-        $roles = $this->roleService->getAll($filters, $options);
+        $roles = $this->roleService->getList($filters, $options);
         return view('admin.roles.index', compact('roles', 'filters', 'options'));
     }
 
@@ -43,7 +43,7 @@ class RoleController extends Controller
      */
     public function create(): View|Application|Factory
     {
-        $permissions = $this->permissionService->getAll();
+        $permissions = $this->permissionService->getList();
         return view('admin.roles.create', compact('permissions'));
     }
 
@@ -77,7 +77,7 @@ class RoleController extends Controller
     public function edit($id): View|Application|Factory
     {
         $role = $this->roleService->findById($id);
-        $permissions = $this->permissionService->getAll();
+        $permissions = $this->permissionService->getList();
         return view('admin.roles.edit', compact('role', 'permissions'));
     }
 

@@ -5,6 +5,7 @@ namespace App\Services\Admin\Roles;
 use App\Repositories\Admin\Roles\RoleRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
+use lib\DataTable;
 
 class RoleService
 {
@@ -21,9 +22,9 @@ class RoleService
      * @param array $options
      * @return LengthAwarePaginator
      */
-    public function getAll(array $filters = [], array $options = []): LengthAwarePaginator
+    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
     {
-        return $this->roleRepository->getAll($filters, $options);
+        return $this->roleRepository->getList($filters, $options);
     }
 
     /**
@@ -46,11 +47,14 @@ class RoleService
     {
         $return = [
             'success' => false,
-            'messages' => 'Thêm mới vai trò thất bại'
+            'messages' => 'Thêm mới quyền thất bại'
         ];
-        if ($this->roleRepository->create($data)) {
+        $keys = ['title', 'name', 'permissions'];
+        if (($insertData = DataTable::getAllowData($keys, $data))
+            && $this->roleRepository->create($insertData)
+        ) {
             $return['success'] = true;
-            $return['messages'] = 'Thêm mới vai trò thành công';
+            $return['messages'] = 'Thêm mới quyền thành công';
         }
         return $return;
     }
@@ -67,7 +71,10 @@ class RoleService
             'success' => false,
             'messages' => 'Cập nhật vai trò thất bại'
         ];
-        if (($role = $this->roleRepository->findById($id))
+        $keys = ['title', 'name', 'permissions'];
+        $updateData = DataTable::getAllowData($keys, $data);
+        if (!empty($updateData)
+            && ($role = $this->roleRepository->findById($id))
             && $this->roleRepository->update($role, $data)
         ) {
             $return['success'] = true;
