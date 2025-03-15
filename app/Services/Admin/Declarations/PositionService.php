@@ -38,7 +38,7 @@ class PositionService
             'messages' => 'Thêm mới chức vụ thất bại'
         ];
         $keys = ['name', 'code', 'description'];
-        if (($insertData = DataTable::getAllowData($keys, $data))
+        if (($insertData = DataTable::getChangeData($data, $keys))
             && $this->positionRepository->create($insertData)
         ) {
             $return['success'] = true;
@@ -70,7 +70,7 @@ class PositionService
             'messages' => 'Cập nhật chức vụ thất bại'
         ];
         $keys = ['name', 'code', 'description'];
-        $updateData = DataTable::getAllowData($keys, $data);
+        $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
             && ($role = $this->positionRepository->findById($id))
             && $this->positionRepository->update($role, $data)

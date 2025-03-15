@@ -12,6 +12,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use lib\DataTable;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -30,9 +31,8 @@ class UserController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $filters = $request->only(['name', 'email', 'role']);
-        $options['sortBy'] = $request->get('sortBy', 'id');
-        $options['sortOrder'] = $request->get('sortOrder', 'asc');
+        $filters = DataTable::getFiltersData($request->all(), ['name', 'email', 'role']);
+        $options = DataTable::getOptionsData($request->all());
         $users = $this->userService->getList($filters, $options);
         return view('admin.users.index', compact('users', 'filters', 'options'));
     }

@@ -10,6 +10,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use lib\DataTable;
 
 class RoleController extends Controller
 {
@@ -29,9 +30,8 @@ class RoleController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $filters = $request->only(['name', 'title', 'role']);
-        $options['sortBy'] = $request->get('sortBy', 'id');
-        $options['sortOrder'] = $request->get('sortOrder', 'asc');
+        $filters = DataTable::getFiltersData($request->all(), ['name', 'title', 'role']);
+        $options = DataTable::getOptionsData($request->all());
         $options['relations'] = ['permissions'];
         $roles = $this->roleService->getList($filters, $options);
         return view('admin.roles.index', compact('roles', 'filters', 'options'));

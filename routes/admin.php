@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\Declarations\PositionController;
 use App\Http\Controllers\Admin\Permissions\PermissionController;
 use App\Http\Controllers\Admin\Roles\RoleController;
 use App\Http\Controllers\Admin\Users\UserController;
@@ -8,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard');
-    })->name('admin.index');
+    })->name('index');
     Route::prefix('users')->name('users.')->group(function () { // Chức năng quản lý tài khoản
         Route::middleware(['canAny:view_users'])->get('/index', [UserController::class, 'index'])->name('index'); // Hiển thị danh sách tài khoản
         Route::middleware(['canAny:create_users'])->get('/create', [UserController::class, 'create'])->name('create'); // Hiển thị form tạo tài khoản
@@ -38,5 +39,17 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::middleware(['canAny:edit_permissions'])->get('/edit/{id}', [PermissionController::class, 'edit'])->name('edit'); // Hiển thị form sửa quyền
         Route::middleware(['canAny:edit_permissions'])->post('/update/{id}', [PermissionController::class, 'update'])->name('update'); // Xử lý sửa quyền
         Route::middleware(['canAny:delete_permissions'])->delete('/delete/{id}', [PermissionController::class, 'delete'])->name('delete'); // Xử lý xóa quyền
+    });
+
+    Route::prefix('declarations')->name('declarations.')->group(function () { // Chức năng quản lý khai báo
+        Route::prefix('positions')->name('positions.')->group(function () { // Chức năng quản lý chức vụ
+            Route::middleware(['auth'])->get('/index', [PositionController::class, 'index'])->name('index'); // Hiển thị danh sách quyền
+            Route::middleware(['auth'])->get('/create', [PositionController::class, 'create'])->name('create'); // Hiển thị form tạo mới quyền
+            Route::middleware(['auth'])->post('/store', [PositionController::class, 'store'])->name('store'); // Xử lý thêm mới quyền
+            Route::middleware(['auth'])->get('/edit/{id}', [PositionController::class, 'edit'])->name('edit'); // Hiển thị form sửa quyền
+            Route::middleware(['auth'])->post('/update/{id}', [PositionController::class, 'update'])->name('update'); // Xử lý sửa quyền
+            Route::middleware(['auth'])->delete('/delete/{id}', [PositionController::class, 'delete'])->name('delete'); // Xử lý xóa quyền
+        });
+
     });
 });

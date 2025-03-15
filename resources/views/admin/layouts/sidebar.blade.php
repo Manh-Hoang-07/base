@@ -27,9 +27,9 @@
             </li>
         @endcanany
         <li class="side-nav-item">
-            <a href="{{ route('admin.permissions.index') }}" class="side-nav-link">
+            <a href="{{ route('admin.declarations.positions.index') }}" class="side-nav-link">
                 <i class="dripicons-chevron-right"></i>
-                <span>Quản lý khai báo</span>
+                <span>Quản lý chức vụ</span>
             </a>
         </li>
     </ul>

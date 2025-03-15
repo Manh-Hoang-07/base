@@ -9,6 +9,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use lib\DataTable;
 
 class PermissionController extends Controller
 {
@@ -26,9 +27,8 @@ class PermissionController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $filters = $request->only(['name', 'title']);
-        $options['sortBy'] = $request->get('sortBy', 'id');
-        $options['sortOrder'] = $request->get('sortOrder', 'asc');
+        $filters = DataTable::getFiltersData($request->all(), ['name', 'title']);
+        $options = DataTable::getOptionsData($request->all());
         $permissions = $this->permissionService->getList($filters, $options);
         return view('admin.permissions.index', compact('permissions'));
     }

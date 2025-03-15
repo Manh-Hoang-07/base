@@ -50,7 +50,7 @@ class UserService
             'messages' => 'Thêm mới tài khoản thất bại'
         ];
         $keys = ['name', 'email', 'password'];
-        if (($insertData = DataTable::getAllowData($keys, $data))
+        if (($insertData = DataTable::getChangeData($data, $keys))
             && $this->userRepository->create($insertData)
         ) {
             $return['success'] = true;
@@ -72,7 +72,7 @@ class UserService
             'messages' => 'Cập nhật tài khoản thất bại'
         ];
         $keys = ['name', 'email'];
-        $updateData = DataTable::getAllowData($keys, $data);
+        $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
             && ($user = $this->userRepository->findById($id))
             && $this->userRepository->update($user, $data)

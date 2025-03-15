@@ -50,7 +50,7 @@ class RoleService
             'messages' => 'Thêm mới quyền thất bại'
         ];
         $keys = ['title', 'name', 'permissions'];
-        if (($insertData = DataTable::getAllowData($keys, $data))
+        if (($insertData = DataTable::getChangeData($data, $keys))
             && $this->roleRepository->create($insertData)
         ) {
             $return['success'] = true;
@@ -72,7 +72,7 @@ class RoleService
             'messages' => 'Cập nhật vai trò thất bại'
         ];
         $keys = ['title', 'name', 'permissions'];
-        $updateData = DataTable::getAllowData($keys, $data);
+        $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
             && ($role = $this->roleRepository->findById($id))
             && $this->roleRepository->update($role, $data)

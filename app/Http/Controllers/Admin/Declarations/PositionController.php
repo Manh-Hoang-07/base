@@ -9,6 +9,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use lib\DataTable;
 
 class PositionController extends Controller
 {
@@ -26,9 +27,8 @@ class PositionController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $filters = $request->only(['name', 'title']);
-        $options['sortBy'] = $request->get('sortBy', 'id');
-        $options['sortOrder'] = $request->get('sortOrder', 'asc');
+        $filters = DataTable::getFiltersData($request->all(), ['name', 'code']);
+        $options = DataTable::getOptionsData($request->all());
         $positions = $this->positionService->getList($filters, $options);
         return view('admin.declarations.positions.index', compact('positions'));
     }
@@ -50,8 +50,9 @@ class PositionController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'title' => 'required',
-            'name' => 'required|unique:permissions,name'
+            'name' => 'required',
+            'code' => 'required|unique:positions,code',
+            'description' => 'max:255',
         ]);
         $return = $this->positionService->create($request->all());
         if (!empty($return['success'])) {
@@ -82,8 +83,9 @@ class PositionController extends Controller
     public function update(Request $request, $id): RedirectResponse
     {
         $request->validate([
-            'title' => 'required',
-            'name' => 'required|unique:permissions,name,' . $id,
+            'name' => 'required',
+            'code' => 'required|unique:positions,code',
+            'description' => 'max:255',
         ]);
         $return = $this->positionService->update($id, $request->all());
         if (!empty($return['success'])) {
