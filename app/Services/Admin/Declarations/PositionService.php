@@ -5,6 +5,7 @@ namespace App\Services\Admin\Declarations;
 use App\Repositories\Admin\Declarations\PositionRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
+use lib\DataTable;
 
 class PositionService
 {
@@ -28,16 +29,22 @@ class PositionService
     /**
      * Tạo mới chức vụ
      * @param array $data
-     * @return Model
+     * @return array
      */
-    public function create(array $data): Model
+    public function create(array $data): array
     {
-        $data = [
-            'name' => $data['name'] ?? '',
-            'code' => $data['code'] ?? '',
-            'description' => $data['description'] ?? '',
+        $return = [
+            'success' => false,
+            'messages' => 'Thêm mới chức vụ thất bại'
         ];
-        return $this->positionRepository->create($data);
+        $keys = ['name', 'code', 'description'];
+        if (($insertData = DataTable::getAllowData($keys, $data))
+            && $this->positionRepository->create($insertData)
+        ) {
+            $return['success'] = true;
+            $return['messages'] = 'Thêm mới chức vụ thành công';
+        }
+        return $return;
     }
 
     /**
@@ -62,13 +69,11 @@ class PositionService
             'success' => false,
             'messages' => 'Cập nhật chức vụ thất bại'
         ];
-        $data = [
-            'name' => $data['name'] ?? '',
-            'code' => $data['code'] ?? '',
-            'description' => $data['description'] ?? '',
-        ];
-        if (($position = $this->positionRepository->findById($id))
-            && ($this->positionRepository->update($position, $data))
+        $keys = ['name', 'code', 'description'];
+        $updateData = DataTable::getAllowData($keys, $data);
+        if (!empty($updateData)
+            && ($role = $this->positionRepository->findById($id))
+            && $this->positionRepository->update($role, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật chức vụ thành công';
