@@ -26,7 +26,7 @@ class User extends Authenticatable {
         'password',
         'role',
         'google_id',
-        'is_blocked'
+        'status'
     ];
 
     /**

@@ -134,12 +134,12 @@ class UserController extends Controller
     /**
      * Khóa hoặc mở khóa tài khoản
      */
-    public function toggleBlock($id, Request $request): RedirectResponse
+    public function changeStatus($id, Request $request): RedirectResponse
     {
         $request->validate([
             'status' => 'required',
         ]);
-        $return = $this->userService->toggleBlock($id, (int)($request->status ?? 0));
+        $return = $this->userService->changeStatus($id, (int)($request->status ?? 0));
         if (!empty($return['success'])) {
             return redirect()->route('admin.users.index')
                 ->with('success', $return['message'] ?? 'Thay đổi trạng thái tài khoản thành công.');

@@ -116,19 +116,25 @@ class UserService
         $user->syncRoles($roles);
     }
 
-    public function toggleBlock($id, int $is_blocked = 0): array
+    /**
+     * Hàm thay đổi trạng thái tài khoản
+     * @param $id
+     * @param int $status
+     * @return array
+     */
+    public function changeStatus($id, int $status = 0): array
     {
         $return = [
             'success' => false,
             'messages' => 'Thay đổi trạng thái tài khoản thất bại'
         ];
-        $is_blocked = !empty($is_blocked) ? 1 : 0;
+        $status = !empty($status) ? 1 : 0;
         if ($user = $this->userRepository->findById($id)) {
-            if ((!empty($user->is_blocked) && !empty($is_blocked))
-                || (empty($user->is_blocked) && empty($is_blocked))
+            if ((!empty($user->status) && !empty($status))
+                || (empty($user->status) && empty($status))
             ) {
                 $return['messages'] = 'Trạng thái cần không thay đổi không đúng';
-            } elseif ($this->userRepository->update($user, ['is_blocked' => $is_blocked])) {
+            } elseif ($this->userRepository->update($user, ['status' => $status])) {
                 $return['success'] = true;
                 $return['messages'] = 'Thay đổi trạng thái tài khoản thành công';
             }

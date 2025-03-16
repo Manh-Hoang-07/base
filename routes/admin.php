@@ -21,7 +21,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::middleware(['canAny:assign_users'])->get('/assign-roles/{id}', [UserController::class, 'showAssignRolesForm'])->name('showAssignRolesForm');
         // 🚀 Xử lý gán vai trò cho người dùng
         Route::middleware(['canAny:assign_users'])->post('/assign-roles/{id}', [UserController::class, 'assignRoles'])->name('assignRoles');
-        Route::middleware(['canAny:edit_users'])->post('/toggle-block/{id}', [UserController::class, 'toggleBlock'])->name('toggleBlock');
+        Route::middleware(['canAny:edit_users'])->post('/toggle-block/{id}', [UserController::class, 'changeStatus'])->name('toggleBlock');
     });
 
     Route::prefix('roles')->name('roles.')->group(function () { // Chức năng quản lý vai trò

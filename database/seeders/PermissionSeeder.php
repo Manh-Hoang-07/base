@@ -13,6 +13,7 @@ class PermissionSeeder extends Seeder
             'users' => ['view', 'create', 'edit', 'delete', 'assign'],
             'roles' => ['view', 'create', 'edit', 'delete'],
             'permissions' => ['view', 'create', 'edit', 'delete'],
+            'declarations' => ['view', 'create', 'edit', 'delete'],
         ];
         // Tạo từng quyền
         foreach ($permissions as $module => $actions) {

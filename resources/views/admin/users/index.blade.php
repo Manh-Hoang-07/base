@@ -1,7 +1,5 @@
 @extends('admin.index')
 
-@section('title', 'Danh sách tài khoản')
-
 @section('content')
     <h2>Danh sách tài khoản</h2>
     @canany(['create_users'])
