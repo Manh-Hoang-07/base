@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name'); // Tên khu vực
             $table->string('code')->unique(); // Mã khu vực
+            $table->string('type'); // Loại khu vực
             $table->string('location'); // Vị trí
             $table->text('description')->nullable(); // Mô tả khu vực
             $table->integer('capacity')->nullable(); // Sức chứa
