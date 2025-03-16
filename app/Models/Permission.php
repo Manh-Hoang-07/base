@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Spatie\Permission\Models\Permission as SpatiePermission;
 
 class Permission extends SpatiePermission
@@ -10,20 +13,20 @@ class Permission extends SpatiePermission
     protected $fillable = ['name', 'guard_name', 'parent_id', 'is_default'];
 
     // Quan hệ cha
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Permission::class, 'parent_id')
             ->withDefault(['name' => 'N/A']);
     }
 
     // Quan hệ con
-    public function children()
+    public function children(): HasMany
     {
         return $this->hasMany(Permission::class, 'parent_id');
     }
 
     // Lấy tất cả quyền cha (đệ quy)
-    public function getAllParents($limit = 10)
+    public function getAllParents($limit = 10): Collection
     {
         $parents = collect();
         $parent = $this->parent;
@@ -51,7 +54,7 @@ class Permission extends SpatiePermission
     }
 
     // Load quan hệ cha-con để tránh N+1
-    public static function getPermissionsWithParents()
+    public static function getPermissionsWithParents(): \Illuminate\Database\Eloquent\Collection
     {
         return self::with('parent')->get();
     }
