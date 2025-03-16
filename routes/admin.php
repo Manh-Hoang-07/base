@@ -84,7 +84,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [CategoryController::class, 'delete'])->name('delete'); // Xử lý xóa danh mục
         });
 
-        Route::prefix('puslishers')->name('puslishers.')->group(function () { // Chức năng quản lý nhà xuất bản
+        Route::prefix('publishers')->name('publishers.')->group(function () { // Chức năng quản lý nhà xuất bản
             Route::middleware(['canAny:view_declarations'])->get('/index', [PublisherController::class, 'index'])->name('index'); // Hiển thị danh sách nhà xuất bản
             Route::middleware(['canAny:create_declarations'])->get('/create', [PublisherController::class, 'create'])->name('create'); // Hiển thị form tạo mới nhà xuất bản
             Route::middleware(['canAny:create_declarations'])->post('/store', [PublisherController::class, 'store'])->name('store'); // Xử lý thêm mới nhà xuất bản

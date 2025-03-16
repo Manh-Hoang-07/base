@@ -36,7 +36,7 @@
         @endcanany
         @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
             <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.positions.index') }}" class="side-nav-link">
+                <a href="{{ route('admin.declarations.areas.index') }}" class="side-nav-link">
                     <i class="dripicons-chevron-right"></i>
                     <span>Quản lý khu vực</span>
                 </a>
@@ -44,7 +44,7 @@
         @endcanany
         @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
             <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.positions.index') }}" class="side-nav-link">
+                <a href="{{ route('admin.declarations.authors.index') }}" class="side-nav-link">
                     <i class="dripicons-chevron-right"></i>
                     <span>Quản lý tác giả</span>
                 </a>
@@ -52,7 +52,7 @@
         @endcanany
         @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
             <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.positions.index') }}" class="side-nav-link">
+                <a href="{{ route('admin.declarations.publishers.index') }}" class="side-nav-link">
                     <i class="dripicons-chevron-right"></i>
                     <span>Quản lý nhà xuất bản</span>
                 </a>
@@ -60,7 +60,7 @@
         @endcanany
         @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
             <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.positions.index') }}" class="side-nav-link">
+                <a href="{{ route('admin.declarations.categories.index') }}" class="side-nav-link">
                     <i class="dripicons-chevron-right"></i>
                     <span>Quản lý danh mục</span>
                 </a>
@@ -68,7 +68,7 @@
         @endcanany
         @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
             <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.positions.index') }}" class="side-nav-link">
+                <a href="{{ route('admin.declarations.shelves.index') }}" class="side-nav-link">
                     <i class="dripicons-chevron-right"></i>
                     <span>Quản lý kệ sách</span>
                 </a>
