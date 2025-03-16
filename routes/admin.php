@@ -1,6 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\Declarations\AreaController;
+use App\Http\Controllers\Admin\Declarations\AuthorController;
+use App\Http\Controllers\Admin\Declarations\CategoryController;
 use App\Http\Controllers\Admin\Declarations\PositionController;
+use App\Http\Controllers\Admin\Declarations\PublisherController;
+use App\Http\Controllers\Admin\Declarations\ShelfController;
 use App\Http\Controllers\Admin\Permissions\PermissionController;
 use App\Http\Controllers\Admin\Roles\RoleController;
 use App\Http\Controllers\Admin\Users\UserController;
@@ -44,12 +49,57 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::prefix('declarations')->name('declarations.')->group(function () { // Chức năng quản lý khai báo
         Route::prefix('positions')->name('positions.')->group(function () { // Chức năng quản lý chức vụ
-            Route::middleware(['auth'])->get('/index', [PositionController::class, 'index'])->name('index'); // Hiển thị danh sách quyền
-            Route::middleware(['auth'])->get('/create', [PositionController::class, 'create'])->name('create'); // Hiển thị form tạo mới quyền
-            Route::middleware(['auth'])->post('/store', [PositionController::class, 'store'])->name('store'); // Xử lý thêm mới quyền
-            Route::middleware(['auth'])->get('/edit/{id}', [PositionController::class, 'edit'])->name('edit'); // Hiển thị form sửa quyền
-            Route::middleware(['auth'])->post('/update/{id}', [PositionController::class, 'update'])->name('update'); // Xử lý sửa quyền
-            Route::middleware(['auth'])->delete('/delete/{id}', [PositionController::class, 'delete'])->name('delete'); // Xử lý xóa quyền
+            Route::middleware(['canAny:view_declarations'])->get('/index', [PositionController::class, 'index'])->name('index'); // Hiển thị danh sách quyền
+            Route::middleware(['canAny:create_declarations'])->get('/create', [PositionController::class, 'create'])->name('create'); // Hiển thị form tạo mới quyền
+            Route::middleware(['canAny:create_declarations'])->post('/store', [PositionController::class, 'store'])->name('store'); // Xử lý thêm mới quyền
+            Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [PositionController::class, 'edit'])->name('edit'); // Hiển thị form sửa quyền
+            Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [PositionController::class, 'update'])->name('update'); // Xử lý sửa quyền
+            Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [PositionController::class, 'delete'])->name('delete'); // Xử lý xóa quyền
+        });
+
+        Route::prefix('areas')->name('areas.')->group(function () { // Chức năng quản lý khu vực
+            Route::middleware(['canAny:view_declarations'])->get('/index', [AreaController::class, 'index'])->name('index'); // Hiển thị danh sách khu vực
+            Route::middleware(['canAny:create_declarations'])->get('/create', [AreaController::class, 'create'])->name('create'); // Hiển thị form tạo mới khu vực
+            Route::middleware(['canAny:create_declarations'])->post('/store', [AreaController::class, 'store'])->name('store'); // Xử lý thêm mới khu vực
+            Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [AreaController::class, 'edit'])->name('edit'); // Hiển thị form sửa khu vực
+            Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [AreaController::class, 'update'])->name('update'); // Xử lý sửa khu vực
+            Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [AreaController::class, 'delete'])->name('delete'); // Xử lý xóa khu vực
+        });
+
+        Route::prefix('authors')->name('authors.')->group(function () { // Chức năng quản lý tác giả
+            Route::middleware(['canAny:view_declarations'])->get('/index', [AuthorController::class, 'index'])->name('index'); // Hiển thị danh sách tác giả
+            Route::middleware(['canAny:create_declarations'])->get('/create', [AuthorController::class, 'create'])->name('create'); // Hiển thị form tạo mới tác giả
+            Route::middleware(['canAny:create_declarations'])->post('/store', [AuthorController::class, 'store'])->name('store'); // Xử lý thêm mới tác giả
+            Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [AuthorController::class, 'edit'])->name('edit'); // Hiển thị form sửa tác giả
+            Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [AuthorController::class, 'update'])->name('update'); // Xử lý sửa tác giả
+            Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [AuthorController::class, 'delete'])->name('delete'); // Xử lý xóa tác giả
+        });
+
+        Route::prefix('categories')->name('categories.')->group(function () { // Chức năng quản lý danh mục
+            Route::middleware(['canAny:view_declarations'])->get('/index', [CategoryController::class, 'index'])->name('index'); // Hiển thị danh sách danh mục
+            Route::middleware(['canAny:create_declarations'])->get('/create', [CategoryController::class, 'create'])->name('create'); // Hiển thị form tạo mới danh mục
+            Route::middleware(['canAny:create_declarations'])->post('/store', [CategoryController::class, 'store'])->name('store'); // Xử lý thêm mới danh mục
+            Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [CategoryController::class, 'edit'])->name('edit'); // Hiển thị form sửa danh mục
+            Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [CategoryController::class, 'update'])->name('update'); // Xử lý sửa danh mục
+            Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [CategoryController::class, 'delete'])->name('delete'); // Xử lý xóa danh mục
+        });
+
+        Route::prefix('puslishers')->name('puslishers.')->group(function () { // Chức năng quản lý nhà xuất bản
+            Route::middleware(['canAny:view_declarations'])->get('/index', [PublisherController::class, 'index'])->name('index'); // Hiển thị danh sách nhà xuất bản
+            Route::middleware(['canAny:create_declarations'])->get('/create', [PublisherController::class, 'create'])->name('create'); // Hiển thị form tạo mới nhà xuất bản
+            Route::middleware(['canAny:create_declarations'])->post('/store', [PublisherController::class, 'store'])->name('store'); // Xử lý thêm mới nhà xuất bản
+            Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [PublisherController::class, 'edit'])->name('edit'); // Hiển thị form sửa nhà xuất bản
+            Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [PublisherController::class, 'update'])->name('update'); // Xử lý sửa nhà xuất bản
+            Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [PublisherController::class, 'delete'])->name('delete'); // Xử lý xóa nhà xuất bản
+        });
+
+        Route::prefix('shelves')->name('shelves.')->group(function () { // Chức năng quản lý kệ sách
+            Route::middleware(['canAny:view_declarations'])->get('/index', [ShelfController::class, 'index'])->name('index'); // Hiển thị danh sách kệ sách
+            Route::middleware(['canAny:create_declarations'])->get('/create', [ShelfController::class, 'create'])->name('create'); // Hiển thị form tạo mới kệ sách
+            Route::middleware(['canAny:create_declarations'])->post('/store', [ShelfController::class, 'store'])->name('store'); // Xử lý thêm mới kệ sách
+            Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [ShelfController::class, 'edit'])->name('edit'); // Hiển thị form sửa kệ sách
+            Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [ShelfController::class, 'update'])->name('update'); // Xử lý sửa kệ sách
+            Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [ShelfController::class, 'delete'])->name('delete'); // Xử lý xóa kệ sách
         });
 
     });
