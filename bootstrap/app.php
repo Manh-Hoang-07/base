@@ -17,9 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth' => Authenticate::class,
             'admin' => AdminMiddleware::class,
-            'canAny' => CheckAnyPermission::class,
+            'canAny' => CheckAnyPermission::class
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions) {
+    ->withExceptions(function (Exceptions $exceptions) { //NOSONAR
         //
     })->create();

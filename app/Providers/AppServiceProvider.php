@@ -21,10 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        try {
-            DB::connection()->getPdo();
-        } catch (Exception $e) {
-            abort(503, $e->getMessage());
-        }
+//        try {
+//            DB::connection()->getPdo();
+//        } catch (Exception $e) {
+//            abort(503, $e->getMessage());
+//        }
     }
 }

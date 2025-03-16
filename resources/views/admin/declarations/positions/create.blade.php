@@ -3,7 +3,6 @@
 @section('content')
     <div class="container">
         <h2>Thêm chức vụ</h2>
-
         <form action="{{ route('admin.declarations.positions.store') }}" method="POST">
             @csrf
             <div class="mb-3">

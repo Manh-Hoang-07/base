@@ -11,17 +11,19 @@
     <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}">
 
     <!-- third party css -->
-    <link href="{{ asset('css/vendor/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('css/admin/vendor/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
     <!-- third party css end -->
 
     <!-- App css -->
-    <link href="{{ asset('css/icons.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('css/app-modern.min.css') }}" rel="stylesheet" type="text/css" id="light-style" />
-    <link href="{{ asset('css/app-modern-dark.min.css') }}" rel="stylesheet" type="text/css" id="dark-style" />
+    <link href="{{ asset('css/admin/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('css/admin/app-modern.min.css') }}" rel="stylesheet" type="text/css" id="light-style" />
+    <link href="{{ asset('css/admin/app-modern-dark.min.css') }}" rel="stylesheet" type="text/css" id="dark-style" />
 
     <!-- Thêm CSS cho Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
@@ -76,26 +78,39 @@
     <!-- /Right-bar -->
 
 
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <!-- bundle -->
-    <script src="{{ asset('js/vendor.min.js') }}"></script>
-    <script src="{{ asset('js/app.min.js') }}"></script>
+    <script src="{{ asset('js/admin/vendor.min.js') }}"></script>
+    <script src="{{ asset('js/admin/app.min.js') }}"></script>
 
     <!-- third party js -->
-    <script src="{{ asset('js/vendor/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('js/vendor/jquery-jvectormap-1.2.2.min.js') }}"></script>
-    <script src="{{ asset('js/vendor/jquery-jvectormap-world-mill-en.js') }}"></script>
+    <script src="{{ asset('js/admin/vendor/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('js/admin/vendor/jquery-jvectormap-1.2.2.min.js') }}"></script>
+    <script src="{{ asset('js/admin/vendor/jquery-jvectormap-world-mill-en.js') }}"></script>
     <!-- third party js ends -->
 
     <!-- demo app -->
-    <script src="{{ asset('js/pages/demo.dashboard.js') }}"></script>
+    <script src="{{ asset('js/admin/pages/demo.dashboard.js') }}"></script>
     <!-- plugin js -->
-    <script src="{{ asset('js/vendor/dropzone.min.js') }}"></script>
+    <script src="{{ asset('js/admin/vendor/dropzone.min.js') }}"></script>
     <!-- init js -->
-    <script src="{{ asset('js/ui/component.fileupload.js') }}"></script>
-    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/admin/ajax.js') }}"></script>
+    <script src="{{ asset('js/admin/ui/component.fileupload.js') }}"></script>
+    <script src="{{ asset('js/admin/main.js') }}"></script>
     <script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
     <!-- Thêm JS cho Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+    @if(session('success'))
+        toastr.success("{{ session('success') }}");
+    @endif
+
+    @if(session('fail'))
+        toastr.error("{{ session('fail') }}");
+    @endif
     @stack('js')
     <!-- end demo js-->
 </body>

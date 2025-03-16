@@ -57,10 +57,10 @@ class PositionController extends Controller
         $return = $this->positionService->create($request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.positions.index')
-                ->with('success', $return['message'] ?? 'Tạo chức vụ thành công.');
+                ->with('success', $return['message'] ?? 'Thêm mới chức vụ thành công.');
         }
         return redirect()->route('admin.declarations.positions.index')
-            ->with('fail', $return['message'] ?? 'Tạo chức vụ thất bại.');
+            ->with('fail', $return['message'] ?? 'Thêm mới chức vụ thất bại.');
     }
 
     /**
