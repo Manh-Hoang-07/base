@@ -15,6 +15,7 @@ class Area extends Model
     // Các trường có thể gán dữ liệu hàng loạt
     protected $fillable = [
         'name',
+        'code',
         'location',
         'description',
         'capacity',

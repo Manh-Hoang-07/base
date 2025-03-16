@@ -13,7 +13,10 @@ class Category extends Model
     protected $fillable = [
         'name',
         'code',
-        'description'
+        'description',
+        'slug',
+        'parent_id',
+        'status'
     ];
 
     // Định nghĩa mối quan hệ nếu cần

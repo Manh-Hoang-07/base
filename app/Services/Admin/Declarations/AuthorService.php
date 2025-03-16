@@ -2,28 +2,28 @@
 
 namespace App\Services\Admin\Declarations;
 
-use App\Repositories\Admin\Declarations\PositionRepository;
+use App\Repositories\Admin\Declarations\AuthorRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use lib\DataTable;
 
-class PositionService
+class AuthorService
 {
-    protected PositionRepository $positionRepository;
+    protected AuthorRepository $authorRepository;
 
-    public function __construct(PositionRepository $positionRepository) {
-        $this->positionRepository = $positionRepository;
+    public function __construct(AuthorRepository $authorRepository) {
+        $this->authorRepository = $authorRepository;
     }
 
     /**
-     * Lấy danh sách tất cả chức vụ
+     * Lấy danh sách tất cả tác giả
      * @param array $filters
      * @param array $options
      * @return LengthAwarePaginator
      */
     public function getList(array $filters = [], array $options = []): LengthAwarePaginator
     {
-        return $this->positionRepository->getList($filters, $options);
+        return $this->authorRepository->getList($filters, $options);
     }
 
     /**
@@ -35,14 +35,15 @@ class PositionService
     {
         $return = [
             'success' => false,
-            'messages' => 'Thêm mới chức vụ thất bại'
+            'messages' => 'Thêm mới tác giả thất bại'
         ];
-        $keys = ['name', 'code', 'description', 'status'];
+        $keys = ['name', 'pen_name', 'email', 'phone', 'nationality',
+            'biography', 'birth_date', 'death_date'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->positionRepository->create($insertData)
+            && $this->authorRepository->create($insertData)
         ) {
             $return['success'] = true;
-            $return['messages'] = 'Thêm mới chức vụ thành công';
+            $return['messages'] = 'Thêm mới tác giả thành công';
         }
         return $return;
     }
@@ -54,7 +55,7 @@ class PositionService
      */
     public function findById($id): ?Model
     {
-        return $this->positionRepository->findById($id);
+        return $this->authorRepository->findById($id);
     }
 
     /**
@@ -67,16 +68,17 @@ class PositionService
     {
         $return = [
             'success' => false,
-            'messages' => 'Cập nhật chức vụ thất bại'
+            'messages' => 'Cập nhật tác giả thất bại'
         ];
-        $keys = ['name', 'code', 'description', 'status'];
+        $keys = ['name', 'pen_name', 'email', 'phone', 'nationality',
+            'biography', 'birth_date', 'death_date'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($role = $this->positionRepository->findById($id))
-            && $this->positionRepository->update($role, $data)
+            && ($role = $this->authorRepository->findById($id))
+            && $this->authorRepository->update($role, $data)
         ) {
             $return['success'] = true;
-            $return['messages'] = 'Cập nhật chức vụ thành công';
+            $return['messages'] = 'Cập nhật tác giả thành công';
         }
         return $return;
     }
@@ -90,13 +92,13 @@ class PositionService
     {
         $return = [
             'success' => false,
-            'messages' => 'Xóa chức vụ thất bại'
+            'messages' => 'Xóa tác giả thất bại'
         ];
-        if (($position = $this->positionRepository->findById($id))
-            && ($this->positionRepository->delete($position))
+        if (($position = $this->authorRepository->findById($id))
+            && ($this->authorRepository->delete($position))
         ) {
             $return['success'] = true;
-            $return['messages'] = 'Xóa chức vụ thành công';
+            $return['messages'] = 'Xóa tác giả thành công';
         }
         return $return;
     }

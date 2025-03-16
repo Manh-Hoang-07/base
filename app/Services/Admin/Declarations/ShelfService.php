@@ -2,32 +2,32 @@
 
 namespace App\Services\Admin\Declarations;
 
-use App\Repositories\Admin\Declarations\PositionRepository;
+use App\Repositories\Admin\Declarations\ShelfRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use lib\DataTable;
 
-class PositionService
+class ShelfService
 {
-    protected PositionRepository $positionRepository;
+    protected ShelfRepository $shelfRepository;
 
-    public function __construct(PositionRepository $positionRepository) {
-        $this->positionRepository = $positionRepository;
+    public function __construct(ShelfRepository $shelfRepository) {
+        $this->shelfRepository = $shelfRepository;
     }
 
     /**
-     * Lấy danh sách tất cả chức vụ
+     * Lấy danh sách tất cả kệ sách
      * @param array $filters
      * @param array $options
      * @return LengthAwarePaginator
      */
     public function getList(array $filters = [], array $options = []): LengthAwarePaginator
     {
-        return $this->positionRepository->getList($filters, $options);
+        return $this->shelfRepository->getList($filters, $options);
     }
 
     /**
-     * Tạo mới chức vụ
+     * Tạo mới kệ sách
      * @param array $data
      * @return array
      */
@@ -35,30 +35,30 @@ class PositionService
     {
         $return = [
             'success' => false,
-            'messages' => 'Thêm mới chức vụ thất bại'
+            'messages' => 'Thêm mới kệ sách thất bại'
         ];
-        $keys = ['name', 'code', 'description', 'status'];
+        $keys = ['area_id', 'code', 'name', 'capacity', 'description', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->positionRepository->create($insertData)
+            && $this->shelfRepository->create($insertData)
         ) {
             $return['success'] = true;
-            $return['messages'] = 'Thêm mới chức vụ thành công';
+            $return['messages'] = 'Thêm mới kệ sách thành công';
         }
         return $return;
     }
 
     /**
-     * Lấy thông tin chức vụ theo ID
+     * Lấy thông tin kệ sách theo ID
      * @param $id
      * @return Model|null
      */
     public function findById($id): ?Model
     {
-        return $this->positionRepository->findById($id);
+        return $this->shelfRepository->findById($id);
     }
 
     /**
-     * Cập nhật chức vụ
+     * Cập nhật kệ sách
      * @param $id
      * @param array $data
      * @return array
@@ -67,22 +67,22 @@ class PositionService
     {
         $return = [
             'success' => false,
-            'messages' => 'Cập nhật chức vụ thất bại'
+            'messages' => 'Cập nhật kệ sách thất bại'
         ];
-        $keys = ['name', 'code', 'description', 'status'];
+        $keys = ['area_id', 'code', 'name', 'capacity', 'description', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($role = $this->positionRepository->findById($id))
-            && $this->positionRepository->update($role, $data)
+            && ($role = $this->shelfRepository->findById($id))
+            && $this->shelfRepository->update($role, $data)
         ) {
             $return['success'] = true;
-            $return['messages'] = 'Cập nhật chức vụ thành công';
+            $return['messages'] = 'Cập nhật kệ sách thành công';
         }
         return $return;
     }
 
     /**
-     * Xóa chức vụ
+     * Xóa kệ sách
      * @param $id
      * @return array
      */
@@ -90,13 +90,13 @@ class PositionService
     {
         $return = [
             'success' => false,
-            'messages' => 'Xóa chức vụ thất bại'
+            'messages' => 'Xóa kệ sách thất bại'
         ];
-        if (($position = $this->positionRepository->findById($id))
-            && ($this->positionRepository->delete($position))
+        if (($position = $this->shelfRepository->findById($id))
+            && ($this->shelfRepository->delete($position))
         ) {
             $return['success'] = true;
-            $return['messages'] = 'Xóa chức vụ thành công';
+            $return['messages'] = 'Xóa kệ sách thành công';
         }
         return $return;
     }
