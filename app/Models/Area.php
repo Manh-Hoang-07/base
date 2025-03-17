@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Area extends Model
@@ -17,6 +18,7 @@ class Area extends Model
         'name',
         'code',
         'location',
+        'type',
         'description',
         'capacity',
         'status',
@@ -28,9 +30,9 @@ class Area extends Model
     ];
 
     // Kiểu dữ liệu cho các trường
-    protected $casts = [
-        'status' => 'boolean',
-    ];
+//    protected $casts = [
+//        'status' => 'boolean',
+//    ];
 
     // Mối quan hệ ví dụ: Một khu vực có nhiều chỗ ngồi
 //    public function seats()
@@ -38,9 +40,14 @@ class Area extends Model
 //        return $this->hasMany(Seat::class);
 //    }
 
-    // Phạm vi để lọc các khu vực đang hoạt động
-    public function scopeActive($query)
+    public function shelves(): HasMany
     {
-        return $query->where('status', true);
+        return $this->hasMany(Shelf::class, 'area_id');
     }
+
+    // Phạm vi để lọc các khu vực đang hoạt động
+//    public function scopeActive($query)
+//    {
+//        return $query->where('status', true);
+//    }
 }

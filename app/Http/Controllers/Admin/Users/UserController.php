@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Users;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\Users\AssignRequest;
 use App\Http\Requests\Admin\Users\StoreRequest;
 use App\Http\Requests\Admin\Users\UpdateRequest;
@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 use lib\DataTable;
 use Spatie\Permission\Models\Role;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
     protected UserService $userService;
 

@@ -40,3 +40,33 @@ function handleFormSubmit(event) {
 
 // Lắng nghe sự kiện submit cho tất cả các form
 //$(document).on('submit', 'form', handleFormSubmit);
+
+
+$(document).ready(function() {
+    $('.select2').each(function() {
+        const selectElement = $(this);
+        const url = selectElement.data('url'); // Lấy URL từ data-url
+
+        selectElement.select2({
+            ajax: {
+                url: url,
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        term: params.term
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data.map(function(item) {
+                            return { id: item.id, text: item.title };
+                        })
+                    };
+                },
+                cache: true
+            },
+            placeholder: 'Chọn mục'
+        });
+    });
+});

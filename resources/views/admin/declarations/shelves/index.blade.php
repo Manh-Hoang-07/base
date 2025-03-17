@@ -2,23 +2,23 @@
 
 @section('content')
     <div class="container">
-        <h2>Quản lý chức vụ</h2>
-        <a href="{{ route('admin.declarations.positions.create') }}" class="btn btn-primary mb-3">Thêm chức vụ</a>
+        <h2>Quản lý Kệ Sách</h2>
+        <a href="{{ route('admin.declarations.shelves.create') }}" class="btn btn-primary mb-3">Thêm Kệ Sách</a>
 
         <!-- Form lọc -->
-        <form action="{{ route('admin.declarations.positions.index') }}" method="GET" class="mb-3">
+        <form action="{{ route('admin.declarations.shelves.index') }}" method="GET" class="mb-3">
             <div class="row">
                 <div class="col-md-3">
-                    <input type="text" name="name" class="form-control" placeholder="Nhập tên"
+                    <input type="text" name="name" class="form-control" placeholder="Nhập tên kệ sách"
                            value="{{ request('name') }}">
                 </div>
                 <div class="col-md-3">
-                    <input type="text" name="code" class="form-control" placeholder="Nhập mã"
+                    <input type="text" name="code" class="form-control" placeholder="Nhập mã kệ sách"
                            value="{{ request('code') }}">
                 </div>
                 <div class="col-md-3">
                     <button type="submit" class="btn btn-primary">Lọc</button>
-                    <a href="{{ route('admin.declarations.positions.index') }}" class="btn btn-secondary">Reset</a>
+                    <a href="{{ route('admin.declarations.shelves.index') }}" class="btn btn-secondary">Reset</a>
                 </div>
             </div>
         </form>
@@ -31,20 +31,26 @@
             <thead>
             <tr>
                 <th>ID</th>
-                <th>Tên chức vụ</th>
-                <th>Mã chức vụ</th>
+                <th>Tên Kệ</th>
+                <th>Mã Kệ</th>
+                <th>Sức Chứa</th>
+                <th>Khu Vực</th>
+                <th>Trạng Thái</th>
                 <th>Hành động</th>
             </tr>
             </thead>
             <tbody>
-            @foreach($positions ?? [] as $position)
+            @foreach($shelves ?? [] as $shelf)
                 <tr>
-                    <td>{{ $position->id ?? '' }}</td>
-                    <td>{{ $position->name ?? '' }}</td>
-                    <td>{{ $position->code ?? '' }}</td>
+                    <td>{{ $shelf->id ?? '' }}</td>
+                    <td>{{ $shelf->name ?? '' }}</td>
+                    <td>{{ $shelf->code ?? '' }}</td>
+                    <td>{{ $shelf->capacity ?? '' }}</td>
+                    <td>{{ $shelf->area->name ?? '' }}</td>
+                    <td>{{ $shelf->status === 'active' ? 'Hoạt động' : 'Không hoạt động' }}</td>
                     <td>
-                        <a href="{{ route('admin.declarations.positions.edit', $position->id ?? '') }}" class="btn btn-warning">Sửa</a>
-                        <form action="{{ route('admin.declarations.positions.delete', $position->id ?? '') }}" method="POST" style="display:inline-block;">
+                        <a href="{{ route('admin.declarations.shelves.edit', $shelf->id ?? '') }}" class="btn btn-warning">Sửa</a>
+                        <form action="{{ route('admin.declarations.shelves.delete', $shelf->id ?? '') }}" method="POST" style="display:inline-block;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Xóa</button>
@@ -58,6 +64,6 @@
 
     <!-- Hiển thị phân trang -->
     <div class="d-flex justify-content-center">
-        {{ $positions->links('vendor.pagination.bootstrap-5') }}
+        {{ $shelves->links('vendor.pagination.bootstrap-5') }}
     </div>
 @endsection

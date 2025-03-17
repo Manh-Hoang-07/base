@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Mail\ForgotPassword;
+use App\Http\Controllers\BaseController;
 use App\Services\Auth\ForgotPasswordService;
 use App\Services\Otp\OtpService;
-use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 
-class ForgotPasswordController extends Controller
+class ForgotPasswordController extends BaseController
 {
     protected OtpService $otpService;
     protected ForgotPasswordService $forgotPasswordService;

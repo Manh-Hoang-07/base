@@ -4,6 +4,7 @@ namespace App\Services\Admin\Declarations;
 
 use App\Repositories\Admin\Declarations\CategoryRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use lib\DataTable;
 
@@ -13,6 +14,17 @@ class CategoryService
 
     public function __construct(CategoryRepository $categoryRepository) {
         $this->categoryRepository = $categoryRepository;
+    }
+
+    /**
+     * Lấy danh sách tất cả danh mục
+     * @param array $filters
+     * @param array $options
+     * @return Collection
+     */
+    public function getAll(array $filters = [], array $options = []): Collection
+    {
+        return $this->categoryRepository->getAll($filters, $options);
     }
 
     /**

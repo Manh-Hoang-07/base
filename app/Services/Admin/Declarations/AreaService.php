@@ -4,6 +4,7 @@ namespace App\Services\Admin\Declarations;
 
 use App\Repositories\Admin\Declarations\AreaRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use lib\DataTable;
 
@@ -13,6 +14,17 @@ class AreaService
 
     public function __construct(AreaRepository $areaRepository) {
         $this->areaRepository = $areaRepository;
+    }
+
+    /**
+     * Lấy danh sách tất cả khu vực
+     * @param array $filters
+     * @param array $options
+     * @return Collection
+     */
+    public function getAll(array $filters = [], array $options = []): Collection
+    {
+        return $this->areaRepository->getAll($filters, $options);
     }
 
     /**
@@ -37,7 +49,7 @@ class AreaService
             'success' => false,
             'messages' => 'Thêm mới khu vực thất bại'
         ];
-        $keys = ['name', 'code', 'location', 'description', 'capacity', 'status'];
+        $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
             && $this->areaRepository->create($insertData)
         ) {
@@ -69,7 +81,7 @@ class AreaService
             'success' => false,
             'messages' => 'Cập nhật khu vực thất bại'
         ];
-        $keys = ['name', 'code', 'location', 'description', 'capacity', 'status'];
+        $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
             && ($role = $this->areaRepository->findById($id))

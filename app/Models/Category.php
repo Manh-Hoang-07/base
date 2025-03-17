@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Category extends Model
 {
@@ -18,6 +19,12 @@ class Category extends Model
         'parent_id',
         'status'
     ];
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'parent_id')
+            ->withDefault(['name' => 'N/A']);
+    }
 
     // Định nghĩa mối quan hệ nếu cần
 //    public function books()

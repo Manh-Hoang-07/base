@@ -1,7 +1,7 @@
 <div class="left-side-menu left-side-menu-detached">
     <!--- Sidemenu -->
     <ul class="metismenu side-nav">
-        <li class="side-nav-title side-nav-item bg-primary-lighten text-white"><h6>For Products</h6></li>
+        <li class="side-nav-title side-nav-item bg-primary-lighten text-white"><h6>Quản lý chung</h6></li>
         @canany(['view_users', 'create_users', 'edit_users', 'delete_users', 'assign_users'])
             <li class="side-nav-item">
                 <a href="{{ route('admin.users.index') }}" class="side-nav-link">
@@ -26,6 +26,7 @@
                 </a>
             </li>
         @endcanany
+        <li class="side-nav-title side-nav-item bg-primary-lighten text-white"><h6>Quản lý khai báo</h6></li>
         @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
         <li class="side-nav-item">
             <a href="{{ route('admin.declarations.positions.index') }}" class="side-nav-link">

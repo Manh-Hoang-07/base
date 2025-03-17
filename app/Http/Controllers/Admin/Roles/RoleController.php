@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Roles;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Services\Admin\Permissions\PermissionService;
 use App\Services\Admin\Roles\RoleService;
 use Illuminate\Contracts\View\Factory;
@@ -12,7 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use lib\DataTable;
 
-class RoleController extends Controller
+class RoleController extends BaseController
 {
     protected RoleService $roleService;
     protected PermissionService $permissionService;

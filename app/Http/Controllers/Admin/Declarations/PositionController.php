@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Declarations;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Services\Admin\Declarations\PositionService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -11,7 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use lib\DataTable;
 
-class PositionController extends Controller
+class PositionController extends BaseController
 {
     protected PositionService $positionService;
 

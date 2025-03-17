@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Account\UpdateUserRequest;
+use App\Http\Controllers\BaseController;
 use App\Services\User\Users\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
-class ProfileController extends Controller
+class ProfileController extends BaseController
 {
     protected UserService $userService;
 

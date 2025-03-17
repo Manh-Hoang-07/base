@@ -2,23 +2,21 @@
 
 @section('content')
     <div class="container">
-        <h2>Quản lý chức vụ</h2>
-        <a href="{{ route('admin.declarations.positions.create') }}" class="btn btn-primary mb-3">Thêm chức vụ</a>
+        <h2>Quản lý Danh Mục</h2>
+        <a href="{{ route('admin.declarations.categories.create') }}" class="btn btn-primary mb-3">Thêm Danh Mục</a>
 
         <!-- Form lọc -->
-        <form action="{{ route('admin.declarations.positions.index') }}" method="GET" class="mb-3">
+        <form action="{{ route('admin.declarations.categories.index') }}" method="GET" class="mb-3">
             <div class="row">
                 <div class="col-md-3">
-                    <input type="text" name="name" class="form-control" placeholder="Nhập tên"
-                           value="{{ request('name') }}">
+                    <input type="text" name="name" class="form-control" placeholder="Nhập tên" value="{{ request('name') }}">
                 </div>
                 <div class="col-md-3">
-                    <input type="text" name="code" class="form-control" placeholder="Nhập mã"
-                           value="{{ request('code') }}">
+                    <input type="text" name="code" class="form-control" placeholder="Nhập mã" value="{{ request('code') }}">
                 </div>
                 <div class="col-md-3">
                     <button type="submit" class="btn btn-primary">Lọc</button>
-                    <a href="{{ route('admin.declarations.positions.index') }}" class="btn btn-secondary">Reset</a>
+                    <a href="{{ route('admin.declarations.categories.index') }}" class="btn btn-secondary">Reset</a>
                 </div>
             </div>
         </form>
@@ -31,23 +29,29 @@
             <thead>
             <tr>
                 <th>ID</th>
-                <th>Tên chức vụ</th>
-                <th>Mã chức vụ</th>
-                <th>Hành động</th>
+                <th>Tên Danh Mục</th>
+                <th>Mã</th>
+                <th>Slug</th>
+                <th>Danh Mục Cha</th>
+                <th>Trạng Thái</th>
+                <th>Hành Động</th>
             </tr>
             </thead>
             <tbody>
-            @foreach($positions ?? [] as $position)
+            @foreach($categories ?? [] as $category)
                 <tr>
-                    <td>{{ $position->id ?? '' }}</td>
-                    <td>{{ $position->name ?? '' }}</td>
-                    <td>{{ $position->code ?? '' }}</td>
+                    <td>{{ $category->id ?? '' }}</td>
+                    <td>{{ $category->name ?? '' }}</td>
+                    <td>{{ $category->code ?? '' }}</td>
+                    <td>{{ $category->slug ?? '' }}</td>
+                    <td>{{ $category->parent->name ?? 'N/A' }}</td>
+                    <td>{{ $category->status ? 'Hiển thị' : 'Ẩn' }}</td>
                     <td>
-                        <a href="{{ route('admin.declarations.positions.edit', $position->id ?? '') }}" class="btn btn-warning">Sửa</a>
-                        <form action="{{ route('admin.declarations.positions.delete', $position->id ?? '') }}" method="POST" style="display:inline-block;">
+                        <a href="{{ route('admin.declarations.categories.edit', $category->id ?? '') }}" class="btn btn-warning">Sửa</a>
+                        <form action="{{ route('admin.declarations.categories.delete', $category->id ?? '') }}" method="POST" style="display:inline-block;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Xóa</button>
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">Xóa</button>
                         </form>
                     </td>
                 </tr>
@@ -58,6 +62,6 @@
 
     <!-- Hiển thị phân trang -->
     <div class="d-flex justify-content-center">
-        {{ $positions->links('vendor.pagination.bootstrap-5') }}
+        {{ $categories->links('vendor.pagination.bootstrap-5') }}
     </div>
 @endsection

@@ -2,10 +2,111 @@
 
 namespace App\Http\Controllers\Admin\Declarations;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
+use App\Services\Admin\Declarations\CategoryService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use lib\DataTable;
 
-class CategoryController extends Controller
+class CategoryController extends BaseController
 {
-    //
+    protected CategoryService $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
+    /**
+     * Hiển thị danh sách danh mục
+     * @param Request $request
+     * @return Factory|Application|View
+     */
+    public function index(Request $request): View|Application|Factory
+    {
+        $filters = DataTable::getFiltersData($request->all(), ['name', 'code']);
+        $options = DataTable::getOptionsData($request->all());
+        $categories = $this->categoryService->getList($filters, $options);
+        return view('admin.declarations.categories.index', compact('categories'));
+    }
+
+    /**
+     * Hiển thị form tạo danh mục
+     * @return View|Application|Factory
+     */
+    public function create(): View|Application|Factory
+    {
+        $categories = $this->categoryService->getList();
+        return view('admin.declarations.categories.create', compact('categories'));
+    }
+
+    /**
+     * Xử lý tạo danh mục
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name' => 'required',
+        ]);
+        $return = $this->categoryService->create($request->all());
+        if (!empty($return['success'])) {
+            return redirect()->route('admin.declarations.categories.index')
+                ->with('success', $return['message'] ?? 'Thêm mới danh mục thành công.');
+        }
+        return redirect()->route('admin.declarations.categories.index')
+            ->with('fail', $return['message'] ?? 'Thêm mới danh mục thất bại.');
+    }
+
+    /**
+     * Hiển thị form sửa danh mục
+     * @param $id
+     * @return View|Application|Factory
+     */
+    public function edit($id): View|Application|Factory
+    {
+        $category = $this->categoryService->findById($id);
+        $categories = $this->categoryService->getAll();
+        return view('admin.declarations.categories.edit', compact('category', 'categories'));
+    }
+
+    /**
+     * Xử lý cập nhật danh mục
+     * @param Request $request
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function update(Request $request, $id): RedirectResponse
+    {
+        $request->validate([
+            'name' => 'required'
+        ]);
+        $return = $this->categoryService->update($id, $request->all());
+        if (!empty($return['success'])) {
+            return redirect()->route('admin.declarations.categories.index')
+                ->with('success', $return['message'] ?? 'Cập nhật danh mục thành công.');
+        }
+        return redirect()->route('admin.declarations.categories.index')
+            ->with('fail', $return['message'] ?? 'Cập nhật danh mục thất bại.');
+    }
+
+    /**
+     * Xóa danh mục
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function delete($id): RedirectResponse
+    {
+        $return = $this->categoryService->delete($id);
+        if (!empty($return['success'])) {
+            return redirect()->route('admin.declarations.categories.index')
+                ->with('success', $return['message'] ?? 'Xóa danh mục thành công.');
+        }
+        return redirect()->route('admin.declarations.categories.index')
+            ->with('fail', $return['message'] ?? 'Xóa danh mục thất bại.');
+    }
 }

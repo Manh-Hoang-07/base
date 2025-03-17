@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Users;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Controllers\BaseController;
 
-class UserProfileController extends Controller
+class UserProfileController extends BaseController
 {
     //
 }

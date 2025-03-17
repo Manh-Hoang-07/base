@@ -2,16 +2,34 @@
 
 @section('content')
     <div class="container">
-        <h2>Thêm chức vụ</h2>
-        <form action="{{ route('admin.declarations.positions.store') }}" method="POST">
+        <h2>Thêm Kệ Sách</h2>
+        <form action="{{ route('admin.declarations.shelves.store') }}" method="POST">
             @csrf
             <div class="mb-3">
-                <label for="name" class="form-label">Tên chức vụ</label>
-                <input type="text" class="form-control" name="name" required>
-                <label for="code" class="form-label">Mã chức vụ</label>
+                <label for="area_id" class="form-label">Khu Vực</label>
+                <select class="form-control" name="area_id" required>
+                    @foreach($areas as $area)
+                        <option value="{{ $area->id }}">{{ $area->name }}</option>
+                    @endforeach
+                </select>
+
+                <label for="code" class="form-label">Mã Kệ Sách</label>
                 <input type="text" class="form-control" name="code" required>
-                <label for="description" class="form-label">Mô tả</label>
-                <input type="text" class="form-control" name="description">
+
+                <label for="name" class="form-label">Tên Kệ Sách</label>
+                <input type="text" class="form-control" name="name" required>
+
+                <label for="capacity" class="form-label">Sức Chứa</label>
+                <input type="number" class="form-control" name="capacity" required>
+
+                <label for="description" class="form-label">Mô Tả</label>
+                <textarea class="form-control" name="description"></textarea>
+
+                <label for="status" class="form-label">Trạng Thái</label>
+                <select class="form-control" name="status">
+                    <option value="active">Hoạt động</option>
+                    <option value="inactive">Không hoạt động</option>
+                </select>
             </div>
             <button type="submit" class="btn btn-success">Thêm</button>
         </form>

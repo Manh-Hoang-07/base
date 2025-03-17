@@ -2,22 +2,35 @@
 
 namespace App\Http\Controllers\Admin\Permissions;
 
+use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
 use App\Services\Admin\Permissions\PermissionService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use lib\DataTable;
 
-class PermissionController extends Controller
+class PermissionController extends BaseController
 {
     protected PermissionService $permissionService;
 
     public function __construct(PermissionService $permissionService)
     {
         $this->permissionService = $permissionService;
+    }
+
+    /**
+     * Hàm lấy ra danh sách quyền theo từ truyền vào
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function autocomplete(Request $request): JsonResponse
+    {
+        return $this->baseAutocomplete($request, Permission::class);
     }
 
     /**

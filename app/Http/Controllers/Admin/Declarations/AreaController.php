@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Declarations;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Services\Admin\Declarations\AreaService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -11,7 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use lib\DataTable;
 
-class AreaController extends Controller
+class AreaController extends BaseController
 {
     protected AreaService $areaService;
 
@@ -84,7 +84,7 @@ class AreaController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'code' => 'required|unique:areas,code',
+            'code' => 'required|unique:areas,code,' . $id,
             'description' => 'max:255',
         ]);
         $return = $this->areaService->update($id, $request->all());
