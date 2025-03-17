@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Declarations\positions;
+namespace App\Http\Controllers\Admin\Declarations\Positions;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Declarations\Positions\StoreRequest;
+use App\Http\Requests\Admin\Declarations\Positions\UpdateRequest;
 use App\Services\Admin\Declarations\PositionService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -44,17 +46,12 @@ class PositionController extends BaseController
 
     /**
      * Xử lý tạo chức vụ
-     * @param Request $request
+     * @param StoreRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required',
-            'code' => 'required|unique:positions,code',
-            'description' => 'max:255',
-        ]);
-        $return = $this->positionService->create($request->all());
+        $return = $this->positionService->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.positions.index')
                 ->with('success', $return['message'] ?? 'Thêm mới chức vụ thành công.');
@@ -76,18 +73,13 @@ class PositionController extends BaseController
 
     /**
      * Xử lý cập nhật chức vụ
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param $id
      * @return RedirectResponse
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required',
-            'code' => 'required|unique:positions,code',
-            'description' => 'max:255',
-        ]);
-        $return = $this->positionService->update($id, $request->all());
+        $return = $this->positionService->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.positions.index')
                 ->with('success', $return['message'] ?? 'Cập nhật chức vụ thành công.');

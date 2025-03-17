@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Declarations\areas;
+namespace App\Http\Controllers\Admin\Declarations\Areas;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Declarations\Areas\StoreRequest;
+use App\Http\Requests\Admin\Declarations\Areas\UpdateRequest;
 use App\Services\Admin\Declarations\AreaService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -44,17 +46,12 @@ class AreaController extends BaseController
 
     /**
      * Xử lý tạo khu vực
-     * @param Request $request
+     * @param StoreRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required',
-            'code' => 'required|unique:areas,code',
-            'description' => 'max:255',
-        ]);
-        $return = $this->areaService->create($request->all());
+        $return = $this->areaService->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.areas.index')
                 ->with('success', $return['message'] ?? 'Thêm mới khu vực thành công.');
@@ -76,18 +73,13 @@ class AreaController extends BaseController
 
     /**
      * Xử lý cập nhật khu vực
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param $id
      * @return RedirectResponse
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required',
-            'code' => 'required|unique:areas,code,' . $id,
-            'description' => 'max:255',
-        ]);
-        $return = $this->areaService->update($id, $request->all());
+        $return = $this->areaService->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.areas.index')
                 ->with('success', $return['message'] ?? 'Cập nhật khu vực thành công.');

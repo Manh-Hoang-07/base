@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Declarations\authors;
+namespace App\Http\Controllers\Admin\Declarations\Authors;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Declarations\Authors\StoreRequest;
+use App\Http\Requests\Admin\Declarations\Authors\UpdateRequest;
 use App\Services\Admin\Declarations\AuthorService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -44,15 +46,12 @@ class AuthorController extends BaseController
 
     /**
      * Xử lý tạo tác giả
-     * @param Request $request
+     * @param StoreRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required',
-        ]);
-        $return = $this->authorService->create($request->all());
+        $return = $this->authorService->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.authors.index')
                 ->with('success', $return['message'] ?? 'Thêm mới tác giả thành công.');
@@ -74,16 +73,13 @@ class AuthorController extends BaseController
 
     /**
      * Xử lý cập nhật tác giả
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param $id
      * @return RedirectResponse
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required'
-        ]);
-        $return = $this->authorService->update($id, $request->all());
+        $return = $this->authorService->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.authors.index')
                 ->with('success', $return['message'] ?? 'Cập nhật tác giả thành công.');

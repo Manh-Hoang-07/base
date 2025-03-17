@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Declarations\publishers;
+namespace App\Http\Controllers\Admin\Declarations\Publishers;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Declarations\Publishers\StoreRequest;
+use App\Http\Requests\Admin\Declarations\Publishers\UpdateRequest;
 use App\Services\Admin\Declarations\PublisherService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -44,15 +46,12 @@ class PublisherController extends BaseController
 
     /**
      * Xử lý tạo nhà xuất bản
-     * @param Request $request
+     * @param StoreRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required',
-        ]);
-        $return = $this->publisherService->create($request->all());
+        $return = $this->publisherService->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.publishers.index')
                 ->with('success', $return['message'] ?? 'Thêm mới nhà xuất bản thành công.');
@@ -74,16 +73,13 @@ class PublisherController extends BaseController
 
     /**
      * Xử lý cập nhật nhà xuất bản
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param $id
      * @return RedirectResponse
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required'
-        ]);
-        $return = $this->publisherService->update($id, $request->all());
+        $return = $this->publisherService->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.publishers.index')
                 ->with('success', $return['message'] ?? 'Cập nhật nhà xuất bản thành công.');

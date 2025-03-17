@@ -27,8 +27,8 @@
 
                 <label for="status" class="form-label">Trạng Thái</label>
                 <select class="form-control" name="status">
-                    <option value="active">Hoạt động</option>
-                    <option value="inactive">Không hoạt động</option>
+                    <option value="1">Hoạt Động</option>
+                    <option value="0">Ngừng Hoạt Động</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-success">Thêm</button>

@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Declarations\shelves;
+namespace App\Http\Controllers\Admin\Declarations\Shelves;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Declarations\Shelves\StoreRequest;
+use App\Http\Requests\Admin\Declarations\Shelves\UpdateRequest;
 use App\Services\Admin\Declarations\AreaService;
 use App\Services\Admin\Declarations\ShelfService;
 use Illuminate\Contracts\View\Factory;
@@ -48,15 +50,12 @@ class ShelfController extends BaseController
 
     /**
      * Xử lý tạo kệ sách
-     * @param Request $request
+     * @param StoreRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required',
-        ]);
-        $return = $this->shelfService->create($request->all());
+        $return = $this->shelfService->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.shelves.index')
                 ->with('success', $return['message'] ?? 'Thêm mới kệ sách thành công.');
@@ -79,16 +78,13 @@ class ShelfController extends BaseController
 
     /**
      * Xử lý cập nhật kệ sách
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param $id
      * @return RedirectResponse
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required'
-        ]);
-        $return = $this->shelfService->update($id, $request->all());
+        $return = $this->shelfService->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.shelves.index')
                 ->with('success', $return['message'] ?? 'Cập nhật kệ sách thành công.');

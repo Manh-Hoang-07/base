@@ -28,8 +28,8 @@
 
                 <label for="status" class="form-label">Trạng Thái</label>
                 <select class="form-control" name="status">
-                    <option value="active" {{ (isset($shelf) && $shelf->status == 'active') ? 'selected' : '' }}>Hoạt động</option>
-                    <option value="inactive" {{ (isset($shelf) && $shelf->status == 'inactive') ? 'selected' : '' }}>Không hoạt động</option>
+                    <option value="1" {{ !empty($shelf->status) ? 'selected' : '' }}>Hoạt động</option>
+                    <option value="0" {{ empty($shelf->status) ? 'selected' : '' }}>Không hoạt động</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Cập nhật</button>

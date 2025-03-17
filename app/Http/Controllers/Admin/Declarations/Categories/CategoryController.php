@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Declarations\categories;
+namespace App\Http\Controllers\Admin\Declarations\Categories;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Declarations\Categories\StoreRequest;
+use App\Http\Requests\Admin\Declarations\Categories\UpdateRequest;
 use App\Services\Admin\Declarations\CategoryService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -45,15 +47,12 @@ class CategoryController extends BaseController
 
     /**
      * Xử lý tạo danh mục
-     * @param Request $request
+     * @param StoreRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required',
-        ]);
-        $return = $this->categoryService->create($request->all());
+        $return = $this->categoryService->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.categories.index')
                 ->with('success', $return['message'] ?? 'Thêm mới danh mục thành công.');
@@ -76,16 +75,13 @@ class CategoryController extends BaseController
 
     /**
      * Xử lý cập nhật danh mục
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param $id
      * @return RedirectResponse
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required'
-        ]);
-        $return = $this->categoryService->update($id, $request->all());
+        $return = $this->categoryService->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.categories.index')
                 ->with('success', $return['message'] ?? 'Cập nhật danh mục thành công.');
