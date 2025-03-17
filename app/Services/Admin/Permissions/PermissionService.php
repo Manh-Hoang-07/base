@@ -49,7 +49,7 @@ class PermissionService
             'success' => false,
             'messages' => 'Thêm mới quyền thất bại'
         ];
-        $keys = ['title', 'name', 'guard_name', 'parent_id'];
+        $keys = ['title', 'name', 'guard_name', 'parent_id', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
             && $this->permissionRepository->create($insertData)
         ) {
@@ -81,7 +81,7 @@ class PermissionService
             'success' => false,
             'messages' => 'Cập nhật quyền thất bại'
         ];
-        $keys = ['title', 'name', 'guard_name', 'parent_id'];
+        $keys = ['title', 'name', 'guard_name', 'parent_id', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
             && ($permission = $this->permissionRepository->findById($id))

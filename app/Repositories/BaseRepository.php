@@ -127,6 +127,7 @@ abstract class BaseRepository
     {
         try {
             $create = $this->model->create($data);
+            dd($data, $create);
             if ($create && $this->model->where('id', $create->id)->exists()) {
                 return $create;
             } else {

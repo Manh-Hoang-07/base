@@ -6,23 +6,41 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
 {
+    public function authorize(): bool
+    {
+        return auth()->check();
+    }
+
+    /**
+     * Hàm check validate
+     * @return string[]
+     */
     public function rules(): array
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . ($this->user->id ?? ''),
-            'password' => 'nullable|min:6|confirmed',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'google_id' => 'nullable|string|max:255',
+            'status' => 'boolean'
         ];
     }
 
+    /**
+     * Hàm trả ra thông báo validate
+     * @return string[]
+     */
     public function messages(): array
     {
         return [
             'name.required' => 'Tên không được để trống.',
             'email.required' => 'Email không được để trống.',
-            'email.email' => 'Email không hợp lệ.',
-            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
-            'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.unique' => 'Email đã tồn tại.',
+            'password.required' => 'Mật khẩu không được để trống.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
+            'status.boolean' => 'Trạng thái không hợp lệ.'
         ];
     }
 }

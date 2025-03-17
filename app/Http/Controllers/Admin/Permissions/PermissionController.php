@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin\Permissions;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Permissions\StoreRequest;
+use App\Http\Requests\Admin\Permissions\UpdateRequest;
 use App\Models\Permission;
 use App\Services\Admin\Permissions\PermissionService;
 use Illuminate\Contracts\View\Factory;
@@ -58,17 +59,12 @@ class PermissionController extends BaseController
 
     /**
      * Xử lý tạo quyền
-     * @param Request $request
+     * @param StoreRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required',
-            'name' => 'required|unique:permissions,name',
-            'parent_id' => 'exists:permissions,name'
-        ]);
-        $return = $this->permissionService->create($request->all());
+        $return = $this->permissionService->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
                 ->with('success', $return['message'] ?? 'Tạo quyền thành công.');
@@ -91,17 +87,13 @@ class PermissionController extends BaseController
 
     /**
      * Xử lý cập nhật quyền
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param $id
      * @return RedirectResponse
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required',
-            'name' => 'required|unique:permissions,name,' . $id,
-        ]);
-        $return = $this->permissionService->update($id, $request->all());
+        $return = $this->permissionService->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
                 ->with('success', $return['message'] ?? 'Cập nhật quyền thành công.');

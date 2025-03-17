@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin\Roles;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Roles\StoreRequest;
+use App\Http\Requests\Admin\Roles\UpdateRequest;
 use App\Services\Admin\Permissions\PermissionService;
 use App\Services\Admin\Roles\RoleService;
 use Illuminate\Contracts\View\Factory;
@@ -49,18 +51,12 @@ class RoleController extends BaseController
 
     /**
      * Xử lý tạo vai trò
-     * @param Request $request
+     * @param StoreRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required',
-            'name' => 'required|unique:roles,name',
-            'permissions' => 'nullable|array',
-            'permissions.*' => 'exists:permissions,name'
-        ]);
-        $return = $this->roleService->create($request->all());
+        $return = $this->roleService->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.roles.index')
                 ->with('success', $return['message'] ?? 'Tạo vai trò thành công.');
@@ -83,19 +79,13 @@ class RoleController extends BaseController
 
     /**
      * Xử lý cập nhật vai trò
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param $id
      * @return RedirectResponse
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required',
-            'name' => 'required|unique:roles,name,' . $id,
-            'permissions' => 'nullable|array',
-            'permissions.*' => 'exists:permissions,name'
-        ]);
-        $return = $this->roleService->update($id, $request->all());
+        $return = $this->roleService->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.roles.index')
                 ->with('success', $return['message'] ?? 'Cập nhật vai trò thành công.');

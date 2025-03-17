@@ -6,6 +6,15 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class AssignRequest extends FormRequest
 {
+    public function authorize(): bool
+    {
+        return auth()->check();
+    }
+
+    /**
+     * Hàm check validate
+     * @return string[]
+     */
     public function rules(): array
     {
         return [
@@ -13,6 +22,10 @@ class AssignRequest extends FormRequest
         ];
     }
 
+    /**
+     * Hàm trả ra thông báo validate
+     * @return string[]
+     */
     public function messages(): array
     {
         return [
