@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Declarations;
+namespace App\Http\Controllers\Admin\Declarations\publishers;
 
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\Declarations\PublisherService;

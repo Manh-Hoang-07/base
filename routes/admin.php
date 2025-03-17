@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\Admin\Declarations\AreaController;
-use App\Http\Controllers\Admin\Declarations\AuthorController;
-use App\Http\Controllers\Admin\Declarations\CategoryController;
-use App\Http\Controllers\Admin\Declarations\PositionController;
-use App\Http\Controllers\Admin\Declarations\PublisherController;
-use App\Http\Controllers\Admin\Declarations\ShelfController;
+use App\Http\Controllers\Admin\Declarations\areas\AreaController;
+use App\Http\Controllers\Admin\Declarations\authors\AuthorController;
+use App\Http\Controllers\Admin\Declarations\categories\CategoryController;
+use App\Http\Controllers\Admin\Declarations\positions\PositionController;
+use App\Http\Controllers\Admin\Declarations\publishers\PublisherController;
+use App\Http\Controllers\Admin\Declarations\shelves\ShelfController;
 use App\Http\Controllers\Admin\Permissions\PermissionController;
 use App\Http\Controllers\Admin\Roles\RoleController;
 use App\Http\Controllers\Admin\Users\UserController;
