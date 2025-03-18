@@ -22,11 +22,4 @@
             <button type="submit" class="btn btn-primary">Cập nhật</button>
         </form>
     </div>
-
-    <!-- Khởi tạo Select2 -->
-    <script>
-        $(document).ready(function() {
-            $('.select2').select2();  // Chỉ định select2 cho các select có class "select2"
-        });
-    </script>
 @endsection
