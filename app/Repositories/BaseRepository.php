@@ -109,6 +109,18 @@ abstract class BaseRepository
     }
 
     /**
+     * Tìm một bản ghi theo ID
+     * @param int $id
+     * @param array $options
+     * @return Model|null
+     */
+    public function findOne(array $filters, array $options = []): ?Model
+    {
+        $query = $this->applyQueryDefaults($filters, $options);
+        return $query->first();
+    }
+
+    /**
      * Tìm một bản ghi theo ID, nếu không có thì báo lỗi
      * @param int $id
      * @return Model
@@ -147,6 +159,27 @@ abstract class BaseRepository
     {
         try {
             if ($model->update($data)) {
+                return true;
+            }
+            return false;
+        } catch (Throwable $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Cập nhật bản ghi
+     * @param array $filters
+     * @param array $data
+     * @return bool
+     */
+    public function updateOrCreate(array $filters, array $data): bool
+    {
+        try {
+            if (!empty($filters)
+                && !empty($data)
+                && $this->model->updateOrCreate($filters, $data)
+            ) {
                 return true;
             }
             return false;

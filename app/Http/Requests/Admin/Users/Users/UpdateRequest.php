@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Admin\Users;
+namespace App\Http\Requests\Admin\Users\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -19,9 +20,11 @@ class StoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-            'google_id' => 'nullable|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($this->route('id')),
+            ],
             'status' => 'boolean'
         ];
     }
@@ -35,11 +38,8 @@ class StoreRequest extends FormRequest
         return [
             'name.required' => 'Tên không được để trống.',
             'email.required' => 'Email không được để trống.',
-            'email.email' => 'Email không đúng định dạng.',
+            'email.email' => 'Email không hợp lệ.',
             'email.unique' => 'Email đã tồn tại.',
-            'password.required' => 'Mật khẩu không được để trống.',
-            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
-            'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
             'status.boolean' => 'Trạng thái không hợp lệ.'
         ];
     }

@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Http\Controllers\Admin\Users;
+
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Users\Profiles\UpdateRequest;
+use App\Services\Admin\Users\ProfileService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
+
+class ProfileController extends BaseController
+{
+    protected ProfileService $profileService;
+
+    public function __construct(ProfileService $profileService)
+    {
+        $this->profileService = $profileService;
+    }
+
+    /**
+     * Hiển thị form chỉnh sửa hồ sơ
+     * @param $user_id
+     * @return View|Application|Factory
+     */
+    public function edit($user_id): View|Application|Factory
+    {
+        $profile = $this->profileService->findByUserId($user_id);
+        return view('admin.users.profiles.edit', compact('profile'));
+    }
+
+    /**
+     * Xử lý chỉnh sửa hồ sơ
+     * @param UpdateRequest $request
+     * @param $user_id
+     * @return RedirectResponse
+     */
+    public function update(UpdateRequest $request, $user_id): RedirectResponse
+    {
+        $return = $this->profileService->update($user_id, $request->validated());
+        if (!empty($return['success'])) {
+            return redirect()->route('admin.users.index')
+                ->with('success', $return['message'] ?? 'Cập nhật hồ sơ thành công.');
+        }
+        return redirect()->route('admin.users.index')
+            ->with('fail', $return['message'] ?? 'Cập nhật hồ sơ thất bại.');
+    }
+}

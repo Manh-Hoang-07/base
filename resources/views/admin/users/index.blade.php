@@ -55,7 +55,7 @@
                         <a href="{{ route('admin.users.showAssignRolesForm', $user->id ?? '') }}" class="btn btn-sm btn-warning">Gán Vai Trò</a>
                     @endcanany
                     @canany(['edit_users'])
-                        <a href="{{ route('admin.users.edit', $user->id ?? '') }}" class="btn btn-sm btn-warning">Sửa</a>
+                        <a href="{{ route('admin.profiles.edit', $user->id ?? '') }}" class="btn btn-sm btn-warning">Sửa</a>
                             <form action="{{ route('admin.users.toggleBlock', $user->id ?? '') }}" method="POST"
                                   style="display:inline;">
                                 @csrf

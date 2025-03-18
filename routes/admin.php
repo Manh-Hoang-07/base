@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\Declarations\Publishers\PublisherController;
 use App\Http\Controllers\Admin\Declarations\Shelves\ShelfController;
 use App\Http\Controllers\Admin\Permissions\PermissionController;
 use App\Http\Controllers\Admin\Roles\RoleController;
+use App\Http\Controllers\Admin\Users\ProfileController;
 use App\Http\Controllers\Admin\Users\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         // 🚀 Xử lý gán vai trò cho người dùng
         Route::middleware(['canAny:assign_users'])->post('/assign-roles/{id}', [UserController::class, 'assignRoles'])->name('assignRoles');
         Route::middleware(['canAny:edit_users'])->post('/toggle-block/{id}', [UserController::class, 'changeStatus'])->name('toggleBlock');
+    });
+
+    Route::prefix('profiles')->name('profiles.')->group(function () { // Chức năng quản lý hồ sơ
+        Route::middleware(['canAny:edit_users'])->get('/edit/{user_id}', [ProfileController::class, 'edit'])->name('edit'); // Hiển thị form chỉnh sửa
+        Route::middleware(['canAny:edit_users'])->post('/update/{user_id}', [ProfileController::class, 'update'])->name('update'); // Xử lý chỉnh sửa
     });
 
     Route::prefix('roles')->name('roles.')->group(function () { // Chức năng quản lý vai trò

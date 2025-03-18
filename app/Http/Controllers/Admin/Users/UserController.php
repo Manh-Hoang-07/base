@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin\Users;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Admin\Users\AssignRequest;
-use App\Http\Requests\Admin\Users\StoreRequest;
-use App\Http\Requests\Admin\Users\UpdateRequest;
+use App\Http\Requests\Admin\Users\Users\AssignRequest;
+use App\Http\Requests\Admin\Users\Users\StoreRequest;
+use App\Http\Requests\Admin\Users\Users\UpdateRequest;
 use App\Services\Admin\Users\UserService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
