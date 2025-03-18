@@ -58,7 +58,7 @@ class RegisterService
     public function register(array $data): array
     {
         try {
-            if (empty($data['name']) || empty($data['email']) || empty($data['password']) || empty($data['otp'])) {
+            if (empty($data['email']) || empty($data['password']) || empty($data['otp'])) {
                 return ['success' => false, 'message' => 'Vui lòng nhập đầy đủ thông tin.'];
             }
             $return = ['success' => false, 'message' => 'Đăng ký thất bại. Vui lòng thử lại!'];

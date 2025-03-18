@@ -16,8 +16,8 @@ class RegisterRepository
     public function register(array $data): ?User
     {
         $user = User::create([
-            'name' => $data['name'],
             'email' => $data['email'],
+            'status' => 1,
             'password' => Hash::make($data['password']),
         ]);
         if ($user) {
