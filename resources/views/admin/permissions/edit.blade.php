@@ -14,13 +14,9 @@
                 <input type="text" class="form-control" name="name" value="{{ $permission->name ?? '' }}" required>
 
                 <label for="parent_id" class="form-label">Quyền cha</label>
-                <select class="form-control select2" name="parent_id">
+                <select class="form-control select2" name="parent_id" data-selected={{ $permission->parent_id ?? '' }}
+                        data-url="{{ route('admin.permissions.autocomplete') }}">
                     <option value="">Chọn quyền cha</option>
-                    @foreach($permissions as $parentPermission)
-                        <option value="{{ $parentPermission->id }}" {{ (isset($permission) && $permission->parent_id == $parentPermission->id) ? 'selected' : '' }}>
-                            {{ $parentPermission->title }}
-                        </option>
-                    @endforeach
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Cập nhật</button>

@@ -42,6 +42,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::middleware(['canAny:edit_roles'])->get('/edit/{id}', [RoleController::class, 'edit'])->name('edit');
         Route::middleware(['canAny:edit_roles'])->post('/update/{id}', [RoleController::class, 'update'])->name('update');
         Route::middleware(['canAny:delete_roles'])->delete('/delete/{id}', [RoleController::class, 'delete'])->name('delete');
+        Route::middleware(['canAny:view_roles'])->get('/autocomplete', [RoleController::class, 'autocomplete'])->name('autocomplete'); // Lấy vai trò theo từ
     });
 
     Route::prefix('permissions')->name('permissions.')->group(function () { // Chức năng quản lý quyền

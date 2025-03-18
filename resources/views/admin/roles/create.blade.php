@@ -27,12 +27,10 @@
             </div>
 
             <div class="form-group">
-                @foreach ($permissions ?? [] as $permission)
-                    <div class="form-check">
-                        <input type="checkbox" name="permissions[]" value="{{ $permission->name ?? '' }}">
-                        <label>{{ $permission->name ?? ''}}</label>
-                    </div>
-                @endforeach
+                <select class="form-control select2" name="permissions[]" data-field="name" multiple
+                        data-url="{{ route('admin.permissions.autocomplete') }}">
+                    <option value="">Chọn quyền</option>
+                </select>
             </div>
 
             <button type="submit" class="btn btn-primary">Thêm Vai Trò</button>

@@ -28,7 +28,7 @@ class BaseController extends Controller
         }
         $results = $modelClass::query()
             ->where($column, 'like', '%' . $term . '%')
-            ->select('id', $column)
+            ->select('id', $column, 'name')
             ->limit($limit)
             ->get();
         return response()->json($results);

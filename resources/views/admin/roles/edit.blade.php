@@ -7,13 +7,11 @@
         <input type="text" name="title" value="{{ $role->title ?? '' }}">
         <input type="text" name="name" value="{{ $role->name ?? '' }}">
         <div class="form-group">
-            @foreach ($permissions ?? [] as $permission)
-                <div class="form-check">
-                    <input type="checkbox" name="permissions[]" value="{{ $permission->name ?? '' }}"
-                        {{ $role->hasPermissionTo($permission->name ?? '') ? 'checked' : '' }}>
-                    <label>{{ $permission->name ?? ''}}</label>
-                </div>
-            @endforeach
+            <select class="form-control select2" name="permissions[]" data-field="name" multiple
+                    data-selected="{{ json_encode($role->permissions->pluck('name')->toArray()) }}"
+                    data-url="{{ route('admin.permissions.autocomplete') }}">
+                <option value="">Chọn quyền</option>
+            </select>
         </div>
         <button type="submit" class="btn btn-success">Lưu</button>
     </form>

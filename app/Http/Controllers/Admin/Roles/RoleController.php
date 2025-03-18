@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Admin\Roles;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\Roles\StoreRequest;
 use App\Http\Requests\Admin\Roles\UpdateRequest;
+use App\Models\Permission;
+use App\Models\Role;
 use App\Services\Admin\Permissions\PermissionService;
 use App\Services\Admin\Roles\RoleService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use lib\DataTable;
@@ -23,6 +26,16 @@ class RoleController extends BaseController
     {
         $this->roleService = $roleService;
         $this->permissionService = $permissionService;
+    }
+
+    /**
+     * Hàm lấy ra danh sách vai trò theo từ truyền vào
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function autocomplete(Request $request): JsonResponse
+    {
+        return $this->baseAutocomplete($request, Role::class);
     }
 
     /**
