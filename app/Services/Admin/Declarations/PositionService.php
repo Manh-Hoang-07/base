@@ -3,27 +3,15 @@
 namespace App\Services\Admin\Declarations;
 
 use App\Repositories\Admin\Declarations\PositionRepository;
+use App\Services\BaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use lib\DataTable;
 
-class PositionService
+class PositionService extends BaseService
 {
-    protected PositionRepository $positionRepository;
-
     public function __construct(PositionRepository $positionRepository) {
-        $this->positionRepository = $positionRepository;
-    }
-
-    /**
-     * Lấy danh sách tất cả chức vụ
-     * @param array $filters
-     * @param array $options
-     * @return LengthAwarePaginator
-     */
-    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
-    {
-        return $this->positionRepository->getList($filters, $options);
+        $this->repository = $positionRepository;
     }
 
     /**
@@ -39,22 +27,12 @@ class PositionService
         ];
         $keys = ['name', 'code', 'description', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->positionRepository->create($insertData)
+            && $this->repository->create($insertData)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Thêm mới chức vụ thành công';
         }
         return $return;
-    }
-
-    /**
-     * Lấy thông tin chức vụ theo ID
-     * @param $id
-     * @return Model|null
-     */
-    public function findById($id): ?Model
-    {
-        return $this->positionRepository->findById($id);
     }
 
     /**
@@ -72,31 +50,11 @@ class PositionService
         $keys = ['name', 'code', 'description', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($role = $this->positionRepository->findById($id))
-            && $this->positionRepository->update($role, $data)
+            && ($role = $this->repository->findById($id))
+            && $this->repository->update($role, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật chức vụ thành công';
-        }
-        return $return;
-    }
-
-    /**
-     * Xóa chức vụ
-     * @param $id
-     * @return array
-     */
-    public function delete($id): array
-    {
-        $return = [
-            'success' => false,
-            'messages' => 'Xóa chức vụ thất bại'
-        ];
-        if (($position = $this->positionRepository->findById($id))
-            && ($this->positionRepository->delete($position))
-        ) {
-            $return['success'] = true;
-            $return['messages'] = 'Xóa chức vụ thành công';
         }
         return $return;
     }

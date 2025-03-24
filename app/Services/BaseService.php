@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Services;
+
+use App\Repositories\BaseRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+
+class BaseService
+{
+    protected BaseRepository $repository;
+
+    protected function getRepository(): BaseRepository
+    {
+        return $this->repository;
+    }
+
+    /**
+     * Lấy danh sách tất cả
+     * @param array $filters
+     * @param array $options
+     * @return Collection
+     */
+    public function getAll(array $filters = [], array $options = []): Collection
+    {
+        return $this->getRepository()->getAll($filters, $options);
+    }
+
+    /**
+     * Lấy danh sách tất cả
+     * @param array $filters
+     * @param array $options
+     * @return LengthAwarePaginator
+     */
+    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
+    {
+        return $this->getRepository()->getList($filters, $options);
+    }
+
+    /**
+     * Lấy thông tin theo ID
+     * @param $id
+     * @return Model|null
+     */
+    public function findById($id): ?Model
+    {
+        return $this->getRepository()->findById($id);
+    }
+
+    /**
+     * Xóa
+     * @param $id
+     * @return array
+     */
+    public function delete($id): array
+    {
+        $return = [
+            'success' => false,
+            'messages' => 'Xóa thất bại'
+        ];
+        if (($position = $this->getRepository()->findById($id))
+            && ($this->getRepository()->delete($position))
+        ) {
+            $return['success'] = true;
+            $return['messages'] = 'Xóa thành công';
+        }
+        return $return;
+    }
+}

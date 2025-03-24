@@ -3,30 +3,19 @@
 namespace App\Services\Admin\Users;
 
 use App\Repositories\Admin\Users\ProfileRepository;
+use App\Services\BaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use lib\DataTable;
 
-class ProfileService
+class ProfileService extends BaseService
 {
-    protected ProfileRepository $profileRepository;
     protected UserService $userService;
 
     public function __construct(ProfileRepository $profileRepository, UserService $userService)
     {
-        $this->profileRepository = $profileRepository;
+        $this->repository = $profileRepository;
         $this->userService = $userService;
-    }
-
-    /**
-     * Hàm lấy danh sách hồ sơ
-     * @param array $filters
-     * @param array $options
-     * @return LengthAwarePaginator
-     */
-    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
-    {
-        return $this->profileRepository->getList($filters, $options);
     }
 
     /**
@@ -36,7 +25,7 @@ class ProfileService
      */
     public function findByUserId($user_id): ?Model
     {
-        return $this->profileRepository->findOne(['user_id' => $user_id]);
+        return $this->repository->findOne(['user_id' => $user_id]);
     }
 
     /**
@@ -56,7 +45,7 @@ class ProfileService
         if (!empty($user_id)
             && !empty($updateData)
             && $this->userService->findById($user_id)
-            && $this->profileRepository->updateProfile($user_id, $data)
+            && $this->repository->updateProfile($user_id, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật hồ sơ thành công';

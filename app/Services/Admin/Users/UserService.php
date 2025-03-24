@@ -4,39 +4,17 @@ namespace App\Services\Admin\Users;
 
 use App\Repositories\Admin\Users\UserRepository;
 use App\Models\User;
+use App\Services\BaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use lib\DataTable;
 
-class UserService
+class UserService extends BaseService
 {
-    protected UserRepository $userRepository;
-
     public function __construct(UserRepository $userRepository)
     {
-        $this->userRepository = $userRepository;
-    }
-
-    /**
-     * Hàm lấy danh sách người dùng
-     * @param array $filters
-     * @param array $options
-     * @return LengthAwarePaginator
-     */
-    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
-    {
-        return $this->userRepository->getList($filters, $options);
-    }
-
-    /**
-     * Hàm lấy thông tin tài khoản
-     * @param $id
-     * @return Model|null
-     */
-    public function findById($id): ?Model
-    {
-        return $this->userRepository->findById($id);
+        $this->repository = $userRepository;
     }
 
     /**
@@ -52,7 +30,7 @@ class UserService
         ];
         $keys = ['name', 'email', 'password'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->userRepository->create($insertData)
+            && $this->repository->create($insertData)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Thêm mới tài khoản thành công';
@@ -75,31 +53,11 @@ class UserService
         $keys = ['name', 'email'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($user = $this->userRepository->findById($id))
-            && $this->userRepository->update($user, $data)
+            && ($user = $this->repository->findById($id))
+            && $this->repository->update($user, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật tài khoản thành công';
-        }
-        return $return;
-    }
-
-    /**
-     * Hàm xóa tài khoản
-     * @param $id
-     * @return array
-     */
-    public function delete($id): array
-    {
-        $return = [
-            'success' => false,
-            'messages' => 'Xóa tài khoản thất bại'
-        ];
-        if (($user = $this->userRepository->findById($id))
-            && $this->userRepository->delete($user)
-        ) {
-            $return['success'] = true;
-            $return['messages'] = 'Xóa tài khoản thành công';
         }
         return $return;
     }
@@ -112,7 +70,7 @@ class UserService
      */
     public function assignRoles($id, array $roles): void
     {
-        $user = $this->userRepository->findById($id);
+        $user = $this->repository->findById($id);
         $user->syncRoles($roles);
     }
 
@@ -129,12 +87,12 @@ class UserService
             'messages' => 'Thay đổi trạng thái tài khoản thất bại'
         ];
         $status = !empty($status) ? 1 : 0;
-        if ($user = $this->userRepository->findById($id)) {
+        if ($user = $this->repository->findById($id)) {
             if ((!empty($user->status) && !empty($status))
                 || (empty($user->status) && empty($status))
             ) {
                 $return['messages'] = 'Trạng thái cần không thay đổi không đúng';
-            } elseif ($this->userRepository->update($user, ['status' => $status])) {
+            } elseif ($this->repository->update($user, ['status' => $status])) {
                 $return['success'] = true;
                 $return['messages'] = 'Thay đổi trạng thái tài khoản thành công';
             }

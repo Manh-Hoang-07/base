@@ -3,28 +3,16 @@
 namespace App\Services\Admin\Roles;
 
 use App\Repositories\Admin\Roles\RoleRepository;
+use App\Services\BaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use lib\DataTable;
 
-class RoleService
+class RoleService extends BaseService
 {
-    protected RoleRepository $roleRepository;
-
     public function __construct(RoleRepository $roleRepository)
     {
-        $this->roleRepository = $roleRepository;
-    }
-
-    /**
-     * Hàm lấy danh sách vai trò
-     * @param array $filters
-     * @param array $options
-     * @return LengthAwarePaginator
-     */
-    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
-    {
-        return $this->roleRepository->getList($filters, $options);
+        $this->repository = $roleRepository;
     }
 
     /**
@@ -35,7 +23,7 @@ class RoleService
     public function findById($id): ?Model
     {
         $options['relations'] = ['permissions'];
-        return $this->roleRepository->findById($id, $options);
+        return $this->repository->findById($id, $options);
     }
 
     /**
@@ -51,7 +39,7 @@ class RoleService
         ];
         $keys = ['title', 'name', 'permissions'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->roleRepository->create($insertData)
+            && $this->repository->create($insertData)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Thêm mới quyền thành công';
@@ -74,28 +62,8 @@ class RoleService
         $keys = ['title', 'name', 'permissions'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($role = $this->roleRepository->findById($id))
-            && $this->roleRepository->update($role, $data)
-        ) {
-            $return['success'] = true;
-            $return['messages'] = 'Cập nhật vai trò thành công';
-        }
-        return $return;
-    }
-
-    /**
-     * Xử lý xóa vai trò
-     * @param $id
-     * @return array
-     */
-    public function delete($id): array
-    {
-        $return = [
-            'success' => false,
-            'messages' => 'Cập nhật vai trò thất bại'
-        ];
-        if (($role = $this->roleRepository->findById($id))
-            && $this->roleRepository->delete($role)
+            && ($role = $this->repository->findById($id))
+            && $this->repository->update($role, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật vai trò thành công';
