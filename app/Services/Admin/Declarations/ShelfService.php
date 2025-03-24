@@ -32,7 +32,7 @@ class ShelfService extends BaseService
         ];
         $keys = ['area_id', 'code', 'name', 'capacity', 'description', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->repository->create($insertData)
+            && $this->getRepository()->create($insertData)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Thêm mới kệ sách thành công';
@@ -55,8 +55,8 @@ class ShelfService extends BaseService
         $keys = ['area_id', 'code', 'name', 'capacity', 'description', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($role = $this->repository->findById($id))
-            && $this->repository->update($role, $data)
+            && ($role = $this->getRepository()->findById($id))
+            && $this->getRepository()->update($role, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật kệ sách thành công';

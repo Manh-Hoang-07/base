@@ -19,23 +19,17 @@ use lib\DataTable;
 
 class RoleController extends BaseController
 {
-    protected RoleService $roleService;
     protected PermissionService $permissionService;
 
     public function __construct(RoleService $roleService, PermissionService $permissionService)
     {
-        $this->roleService = $roleService;
+        $this->service = $roleService;
         $this->permissionService = $permissionService;
     }
 
-    /**
-     * Hàm lấy ra danh sách vai trò theo từ truyền vào
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function autocomplete(Request $request): JsonResponse
+    public function getService(): RoleService
     {
-        return $this->baseAutocomplete($request, Role::class);
+        return $this->service;
     }
 
     /**
@@ -48,7 +42,7 @@ class RoleController extends BaseController
         $filters = DataTable::getFiltersData($request->all(), ['name', 'title', 'role']);
         $options = DataTable::getOptionsData($request->all());
         $options['relations'] = ['permissions'];
-        $roles = $this->roleService->getList($filters, $options);
+        $roles = $this->getService()->getList($filters, $options);
         return view('admin.roles.index', compact('roles', 'filters', 'options'));
     }
 
@@ -69,7 +63,7 @@ class RoleController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->roleService->create($request->validated());
+        $return = $this->getService()->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.roles.index')
                 ->with('success', $return['message'] ?? 'Tạo vai trò thành công.');
@@ -85,7 +79,7 @@ class RoleController extends BaseController
      */
     public function edit($id): View|Application|Factory
     {
-        $role = $this->roleService->findById($id);
+        $role = $this->getService()->findById($id);
         $permissions = $this->permissionService->getList();
         return view('admin.roles.edit', compact('role', 'permissions'));
     }
@@ -98,7 +92,7 @@ class RoleController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->roleService->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.roles.index')
                 ->with('success', $return['message'] ?? 'Cập nhật vai trò thành công.');
@@ -114,7 +108,7 @@ class RoleController extends BaseController
      */
     public function delete($id): RedirectResponse
     {
-        $return = $this->roleService->delete($id);
+        $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.roles.index')
                 ->with('success', $return['message'] ?? 'Xóa vai trò thành công.');

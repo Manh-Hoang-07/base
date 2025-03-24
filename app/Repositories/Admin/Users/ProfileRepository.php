@@ -15,7 +15,7 @@ class ProfileRepository extends BaseRepository
 
     public function updateProfile($userId, array $data): Model|bool|null
     {
-        return $this->model->updateOrCreate(
+        return $this->getModel()->updateOrCreate(
             ['user_id' => $userId], // Điều kiện tìm kiếm
             $data // Dữ liệu cập nhật hoặc tạo mới
         );

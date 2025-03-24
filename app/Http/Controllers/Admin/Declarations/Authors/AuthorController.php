@@ -15,11 +15,14 @@ use lib\DataTable;
 
 class AuthorController extends BaseController
 {
-    protected AuthorService $authorService;
-
     public function __construct(AuthorService $authorService)
     {
-        $this->authorService = $authorService;
+        $this->service = $authorService;
+    }
+
+    public function getService(): AuthorService
+    {
+        return $this->service;
     }
 
     /**
@@ -31,7 +34,7 @@ class AuthorController extends BaseController
     {
         $filters = DataTable::getFiltersData($request->all(), ['name', 'code']);
         $options = DataTable::getOptionsData($request->all());
-        $authors = $this->authorService->getList($filters, $options);
+        $authors = $this->getService()->getList($filters, $options);
         return view('admin.declarations.authors.index', compact('authors'));
     }
 
@@ -51,7 +54,7 @@ class AuthorController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->authorService->create($request->validated());
+        $return = $this->getService()->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.authors.index')
                 ->with('success', $return['message'] ?? 'Thêm mới tác giả thành công.');
@@ -67,7 +70,7 @@ class AuthorController extends BaseController
      */
     public function edit($id): View|Application|Factory
     {
-        $author = $this->authorService->findById($id);
+        $author = $this->getService()->findById($id);
         return view('admin.declarations.authors.edit', compact('author'));
     }
 
@@ -79,7 +82,7 @@ class AuthorController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->authorService->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.authors.index')
                 ->with('success', $return['message'] ?? 'Cập nhật tác giả thành công.');
@@ -95,7 +98,7 @@ class AuthorController extends BaseController
      */
     public function delete($id): RedirectResponse
     {
-        $return = $this->authorService->delete($id);
+        $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.authors.index')
                 ->with('success', $return['message'] ?? 'Xóa tác giả thành công.');

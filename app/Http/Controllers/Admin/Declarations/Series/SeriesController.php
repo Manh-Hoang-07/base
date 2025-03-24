@@ -15,11 +15,14 @@ use lib\DataTable;
 
 class SeriesController extends BaseController
 {
-    protected SeriesService $seriesService;
-
     public function __construct(SeriesService $seriesService)
     {
-        $this->seriesService = $seriesService;
+        $this->service = $seriesService;
+    }
+
+    public function getService(): SeriesService
+    {
+        return $this->service;
     }
 
     /**
@@ -31,7 +34,7 @@ class SeriesController extends BaseController
     {
         $filters = DataTable::getFiltersData($request->all(), ['name', 'code']);
         $options = DataTable::getOptionsData($request->all());
-        $series = $this->seriesService->getList($filters, $options);
+        $series = $this->getService()->getList($filters, $options);
         return view('admin.declarations.series.index', compact('series'));
     }
 
@@ -51,7 +54,7 @@ class SeriesController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->seriesService->create($request->validated());
+        $return = $this->getService()->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.series.index')
                 ->with('success', $return['message'] ?? 'Thêm mới series thành công.');
@@ -67,7 +70,7 @@ class SeriesController extends BaseController
      */
     public function edit($id): View|Application|Factory
     {
-        $series = $this->seriesService->findById($id);
+        $series = $this->getService()->findById($id);
         return view('admin.declarations.series.edit', compact('series'));
     }
 
@@ -79,7 +82,7 @@ class SeriesController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->seriesService->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.series.index')
                 ->with('success', $return['message'] ?? 'Cập nhật series thành công.');
@@ -95,7 +98,7 @@ class SeriesController extends BaseController
      */
     public function delete($id): RedirectResponse
     {
-        $return = $this->seriesService->delete($id);
+        $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.series.index')
                 ->with('success', $return['message'] ?? 'Xóa series thành công.');

@@ -28,7 +28,7 @@ class RoleService extends BaseService
     public function findById($id): ?Model
     {
         $options['relations'] = ['permissions'];
-        return $this->repository->findById($id, $options);
+        return $this->getRepository()->findById($id, $options);
     }
 
     /**
@@ -44,7 +44,7 @@ class RoleService extends BaseService
         ];
         $keys = ['title', 'name', 'permissions'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->repository->create($insertData)
+            && $this->getRepository()->create($insertData)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Thêm mới quyền thành công';
@@ -67,8 +67,8 @@ class RoleService extends BaseService
         $keys = ['title', 'name', 'permissions'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($role = $this->repository->findById($id))
-            && $this->repository->update($role, $data)
+            && ($role = $this->getRepository()->findById($id))
+            && $this->getRepository()->update($role, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật vai trò thành công';

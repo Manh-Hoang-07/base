@@ -4,7 +4,6 @@ namespace App\Services\Admin\Users;
 
 use App\Repositories\Admin\Users\ProfileRepository;
 use App\Services\BaseService;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use lib\DataTable;
 
@@ -30,7 +29,7 @@ class ProfileService extends BaseService
      */
     public function findByUserId($user_id): ?Model
     {
-        return $this->repository->findOne(['user_id' => $user_id]);
+        return $this->getRepository()->findOne(['user_id' => $user_id]);
     }
 
     /**
@@ -50,7 +49,7 @@ class ProfileService extends BaseService
         if (!empty($user_id)
             && !empty($updateData)
             && $this->userService->findById($user_id)
-            && $this->repository->updateProfile($user_id, $data)
+            && $this->getRepository()->updateProfile($user_id, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật hồ sơ thành công';

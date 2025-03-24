@@ -16,13 +16,17 @@ use lib\DataTable;
 
 class ShelfController extends BaseController
 {
-    protected ShelfService $shelfService;
     protected AreaService $areaService;
 
     public function __construct(ShelfService $shelfService, AreaService $areaService)
     {
-        $this->shelfService = $shelfService;
+        $this->service = $shelfService;
         $this->areaService = $areaService;
+    }
+
+    public function getService(): ShelfService
+    {
+        return $this->service;
     }
 
     /**
@@ -34,7 +38,7 @@ class ShelfController extends BaseController
     {
         $filters = DataTable::getFiltersData($request->all(), ['name', 'code']);
         $options = DataTable::getOptionsData($request->all());
-        $shelves = $this->shelfService->getList($filters, $options);
+        $shelves = $this->getService()->getList($filters, $options);
         return view('admin.declarations.shelves.index', compact('shelves'));
     }
 
@@ -55,7 +59,7 @@ class ShelfController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->shelfService->create($request->validated());
+        $return = $this->getService()->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.shelves.index')
                 ->with('success', $return['message'] ?? 'Thêm mới kệ sách thành công.');
@@ -71,7 +75,7 @@ class ShelfController extends BaseController
      */
     public function edit($id): View|Application|Factory
     {
-        $shelf = $this->shelfService->findById($id);
+        $shelf = $this->getService()->findById($id);
         $areas = $this->areaService->getAll();
         return view('admin.declarations.shelves.edit', compact('shelf', 'areas'));
     }
@@ -84,7 +88,7 @@ class ShelfController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->shelfService->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.shelves.index')
                 ->with('success', $return['message'] ?? 'Cập nhật kệ sách thành công.');
@@ -100,7 +104,7 @@ class ShelfController extends BaseController
      */
     public function delete($id): RedirectResponse
     {
-        $return = $this->shelfService->delete($id);
+        $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.shelves.index')
                 ->with('success', $return['message'] ?? 'Xóa kệ sách thành công.');

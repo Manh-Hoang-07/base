@@ -33,7 +33,7 @@ class PermissionService extends BaseService
         ];
         $keys = ['title', 'name', 'guard_name', 'parent_id', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->repository->create($insertData)
+            && $this->getRepository()->create($insertData)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Thêm mới quyền thành công';
@@ -56,12 +56,12 @@ class PermissionService extends BaseService
         $keys = ['title', 'name', 'guard_name', 'parent_id', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($permission = $this->repository->findById($id))
+            && ($permission = $this->getRepository()->findById($id))
         ) {
             if (!empty($permission->is_default)) {
                 $return['success'] = false;
                 $return['messages'] = 'Không thể cập nhật quyền hệ thống';
-            } elseif ($this->repository->update($permission, $updateData)) {
+            } elseif ($this->getRepository()->update($permission, $updateData)) {
                 $return['success'] = true;
                 $return['messages'] = 'Cập nhật quyền thành công';
             }
@@ -80,11 +80,11 @@ class PermissionService extends BaseService
             'success' => false,
             'messages' => 'Xóa quyền thất bại'
         ];
-        if ($permission = $this->repository->findById($id)) {
+        if ($permission = $this->getRepository()->findById($id)) {
             if (!empty($permission->is_default)) {
                 $return['success'] = false;
                 $return['messages'] = 'Không thể xóa quyền hệ thống';
-            } elseif ($this->repository->delete($permission)) {
+            } elseif ($this->getRepository()->delete($permission)) {
                 $return['success'] = true;
                 $return['messages'] = 'Xóa quyền thành công';
             }

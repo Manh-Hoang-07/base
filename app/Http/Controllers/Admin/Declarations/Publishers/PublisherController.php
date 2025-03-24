@@ -15,11 +15,14 @@ use lib\DataTable;
 
 class PublisherController extends BaseController
 {
-    protected PublisherService $publisherService;
-
     public function __construct(PublisherService $publisherService)
     {
-        $this->publisherService = $publisherService;
+        $this->service = $publisherService;
+    }
+
+    public function getService(): PublisherService
+    {
+        return $this->service;
     }
 
     /**
@@ -31,7 +34,7 @@ class PublisherController extends BaseController
     {
         $filters = DataTable::getFiltersData($request->all(), ['name', 'code']);
         $options = DataTable::getOptionsData($request->all());
-        $publishers = $this->publisherService->getList($filters, $options);
+        $publishers = $this->getService()->getList($filters, $options);
         return view('admin.declarations.publishers.index', compact('publishers'));
     }
 
@@ -51,7 +54,7 @@ class PublisherController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->publisherService->create($request->validated());
+        $return = $this->getService()->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.publishers.index')
                 ->with('success', $return['message'] ?? 'Thêm mới nhà xuất bản thành công.');
@@ -67,7 +70,7 @@ class PublisherController extends BaseController
      */
     public function edit($id): View|Application|Factory
     {
-        $publisher = $this->publisherService->findById($id);
+        $publisher = $this->getService()->findById($id);
         return view('admin.declarations.publishers.edit', compact('publisher'));
     }
 
@@ -79,7 +82,7 @@ class PublisherController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->publisherService->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.publishers.index')
                 ->with('success', $return['message'] ?? 'Cập nhật nhà xuất bản thành công.');
@@ -95,7 +98,7 @@ class PublisherController extends BaseController
      */
     public function delete($id): RedirectResponse
     {
-        $return = $this->publisherService->delete($id);
+        $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.publishers.index')
                 ->with('success', $return['message'] ?? 'Xóa nhà xuất bản thành công.');

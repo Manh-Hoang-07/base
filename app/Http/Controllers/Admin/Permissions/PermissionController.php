@@ -17,21 +17,14 @@ use lib\DataTable;
 
 class PermissionController extends BaseController
 {
-    protected PermissionService $permissionService;
-
     public function __construct(PermissionService $permissionService)
     {
-        $this->permissionService = $permissionService;
+        $this->service = $permissionService;
     }
 
-    /**
-     * Hàm lấy ra danh sách quyền theo từ truyền vào
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function autocomplete(Request $request): JsonResponse
+    public function getService(): PermissionService
     {
-        return $this->baseAutocomplete($request, Permission::class);
+        return $this->service;
     }
 
     /**
@@ -43,7 +36,7 @@ class PermissionController extends BaseController
     {
         $filters = DataTable::getFiltersData($request->all(), ['name', 'title']);
         $options = DataTable::getOptionsData($request->all());
-        $permissions = $this->permissionService->getList($filters, $options);
+        $permissions = $this->getService()->getList($filters, $options);
         return view('admin.permissions.index', compact('permissions'));
     }
 
@@ -53,7 +46,7 @@ class PermissionController extends BaseController
      */
     public function create(): View|Application|Factory
     {
-        $permissions = $this->permissionService->getAll();
+        $permissions = $this->getService()->getAll();
         return view('admin.permissions.create', compact('permissions'));
     }
 
@@ -64,7 +57,7 @@ class PermissionController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->permissionService->create($request->validated());
+        $return = $this->getService()->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
                 ->with('success', $return['message'] ?? 'Tạo quyền thành công.');
@@ -80,8 +73,8 @@ class PermissionController extends BaseController
      */
     public function edit($id): View|Application|Factory
     {
-        $permission = $this->permissionService->findById($id);
-        $permissions = $this->permissionService->getAll();
+        $permission = $this->getService()->findById($id);
+        $permissions = $this->getService()->getAll();
         return view('admin.permissions.edit', compact('permission', 'permissions'));
     }
 
@@ -93,7 +86,7 @@ class PermissionController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->permissionService->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
                 ->with('success', $return['message'] ?? 'Cập nhật quyền thành công.');
@@ -109,7 +102,7 @@ class PermissionController extends BaseController
      */
     public function delete($id): RedirectResponse
     {
-        $return = $this->permissionService->delete($id);
+        $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
                 ->with('success', $return['message'] ?? 'Xóa quyền thành công.');

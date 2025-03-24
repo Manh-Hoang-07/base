@@ -33,7 +33,7 @@ class AuthorService extends BaseService
         $keys = ['name', 'pen_name', 'email', 'phone', 'nationality',
             'biography', 'birth_date', 'death_date'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->repository->create($insertData)
+            && $this->getRepository()->create($insertData)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Thêm mới tác giả thành công';
@@ -57,8 +57,8 @@ class AuthorService extends BaseService
             'biography', 'birth_date', 'death_date'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($role = $this->repository->findById($id))
-            && $this->repository->update($role, $data)
+            && ($role = $this->getRepository()->findById($id))
+            && $this->getRepository()->update($role, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật tác giả thành công';

@@ -35,7 +35,7 @@ class UserService extends BaseService
         ];
         $keys = ['name', 'email', 'password'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->repository->create($insertData)
+            && $this->getRepository()->create($insertData)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Thêm mới tài khoản thành công';
@@ -58,8 +58,8 @@ class UserService extends BaseService
         $keys = ['name', 'email'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($user = $this->repository->findById($id))
-            && $this->repository->update($user, $data)
+            && ($user = $this->getRepository()->findById($id))
+            && $this->getRepository()->update($user, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật tài khoản thành công';
@@ -75,7 +75,7 @@ class UserService extends BaseService
      */
     public function assignRoles($id, array $roles): void
     {
-        $user = $this->repository->findById($id);
+        $user = $this->getRepository()->findById($id);
         $user->syncRoles($roles);
     }
 
@@ -92,12 +92,12 @@ class UserService extends BaseService
             'messages' => 'Thay đổi trạng thái tài khoản thất bại'
         ];
         $status = !empty($status) ? 1 : 0;
-        if ($user = $this->repository->findById($id)) {
+        if ($user = $this->getRepository()->findById($id)) {
             if ((!empty($user->status) && !empty($status))
                 || (empty($user->status) && empty($status))
             ) {
                 $return['messages'] = 'Trạng thái cần không thay đổi không đúng';
-            } elseif ($this->repository->update($user, ['status' => $status])) {
+            } elseif ($this->getRepository()->update($user, ['status' => $status])) {
                 $return['success'] = true;
                 $return['messages'] = 'Thay đổi trạng thái tài khoản thành công';
             }

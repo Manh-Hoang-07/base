@@ -33,7 +33,7 @@ class PublisherService extends BaseService
         ];
         $keys = ['code', 'name', 'email', 'phone', 'address', 'website', 'established_at', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->repository->create($insertData)
+            && $this->getRepository()->create($insertData)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Thêm mới nhà xuất bản thành công';
@@ -56,8 +56,8 @@ class PublisherService extends BaseService
         $keys = ['code', 'name', 'email', 'phone', 'address', 'website', 'established_at', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($role = $this->repository->findById($id))
-            && $this->repository->update($role, $data)
+            && ($role = $this->getRepository()->findById($id))
+            && $this->getRepository()->update($role, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật nhà xuất bản thành công';

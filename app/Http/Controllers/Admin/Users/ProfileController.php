@@ -12,11 +12,14 @@ use Illuminate\Http\RedirectResponse;
 
 class ProfileController extends BaseController
 {
-    protected ProfileService $profileService;
-
     public function __construct(ProfileService $profileService)
     {
-        $this->profileService = $profileService;
+        $this->service = $profileService;
+    }
+
+    public function getService(): ProfileService
+    {
+        return $this->service;
     }
 
     /**
@@ -26,7 +29,7 @@ class ProfileController extends BaseController
      */
     public function edit($user_id): View|Application|Factory
     {
-        $profile = $this->profileService->findByUserId($user_id);
+        $profile = $this->getService()->findByUserId($user_id);
         return view('admin.users.profiles.edit', compact('profile'));
     }
 
@@ -38,7 +41,7 @@ class ProfileController extends BaseController
      */
     public function update(UpdateRequest $request, $user_id): RedirectResponse
     {
-        $return = $this->profileService->update($user_id, $request->validated());
+        $return = $this->getService()->update($user_id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.users.index')
                 ->with('success', $return['message'] ?? 'Cập nhật hồ sơ thành công.');

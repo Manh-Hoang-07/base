@@ -17,11 +17,14 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends BaseController
 {
-    protected UserService $userService;
-
     public function __construct(UserService $userService)
     {
-        $this->userService = $userService;
+        $this->service = $userService;
+    }
+
+    public function getService(): UserService
+    {
+        return $this->service;
     }
 
     /**
@@ -33,7 +36,7 @@ class UserController extends BaseController
     {
         $filters = DataTable::getFiltersData($request->all(), ['name', 'email', 'role']);
         $options = DataTable::getOptionsData($request->all());
-        $users = $this->userService->getList($filters, $options);
+        $users = $this->getService()->getList($filters, $options);
         return view('admin.users.index', compact('users', 'filters', 'options'));
     }
 
@@ -53,7 +56,7 @@ class UserController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->userService->create($request->validated());
+        $return = $this->getService()->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.users.index')
                 ->with('success', $return['message'] ?? 'Tạo tài khoản thành công.');
@@ -69,7 +72,7 @@ class UserController extends BaseController
      */
     public function edit($id): View|Application|Factory
     {
-        $user = $this->userService->findById($id);
+        $user = $this->getService()->findById($id);
         return view('admin.users.edit', compact('user'));
     }
 
@@ -81,7 +84,7 @@ class UserController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->userService->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.users.index')
                 ->with('success', $return['message'] ?? 'Cập nhật tài khoản thành công.');
@@ -97,7 +100,7 @@ class UserController extends BaseController
      */
     public function delete($id): RedirectResponse
     {
-        $return = $this->userService->delete($id);
+        $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.users.index')
                 ->with('success', $return['message'] ?? 'Xóa tài khoản thành công.');
@@ -113,7 +116,7 @@ class UserController extends BaseController
      */
     public function showAssignRolesForm($id): View|Application|Factory
     {
-        $user = $this->userService->findById($id);
+        $user = $this->getService()->findById($id);
         $roles = Role::all();
         $userRoles = $user->roles->pluck('name')->toArray();
         return view('admin.users.assign-roles', compact('user', 'roles', 'userRoles'));
@@ -127,7 +130,7 @@ class UserController extends BaseController
      */
     public function assignRoles(AssignRequest $request, $id): RedirectResponse
     {
-        $this->userService->assignRoles($id, $request->roles ?? []);
+        $this->getService()->assignRoles($id, $request->roles ?? []);
         return redirect()->route('admin.users.index')->with('success', 'Cập nhật vai trò thành công.');
     }
 
@@ -139,7 +142,7 @@ class UserController extends BaseController
         $request->validate([
             'status' => 'required',
         ]);
-        $return = $this->userService->changeStatus($id, (int)($request->status ?? 0));
+        $return = $this->getService()->changeStatus($id, (int)($request->status ?? 0));
         if (!empty($return['success'])) {
             return redirect()->route('admin.users.index')
                 ->with('success', $return['message'] ?? 'Thay đổi trạng thái tài khoản thành công.');

@@ -15,11 +15,14 @@ use lib\DataTable;
 
 class PositionController extends BaseController
 {
-    protected PositionService $positionService;
-
     public function __construct(PositionService $positionService)
     {
-        $this->positionService = $positionService;
+        $this->service = $positionService;
+    }
+
+    public function getService(): PositionService
+    {
+        return $this->service;
     }
 
     /**
@@ -31,7 +34,7 @@ class PositionController extends BaseController
     {
         $filters = DataTable::getFiltersData($request->all(), ['name', 'code']);
         $options = DataTable::getOptionsData($request->all());
-        $positions = $this->positionService->getList($filters, $options);
+        $positions = $this->getService()->getList($filters, $options);
         return view('admin.declarations.positions.index', compact('positions'));
     }
 
@@ -51,7 +54,7 @@ class PositionController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->positionService->create($request->validated());
+        $return = $this->getService()->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.positions.index')
                 ->with('success', $return['message'] ?? 'Thêm mới chức vụ thành công.');
@@ -67,7 +70,7 @@ class PositionController extends BaseController
      */
     public function edit($id): View|Application|Factory
     {
-        $permission = $this->positionService->findById($id);
+        $permission = $this->getService()->findById($id);
         return view('admin.declarations.positions.edit', compact('permission'));
     }
 
@@ -79,7 +82,7 @@ class PositionController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->positionService->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.positions.index')
                 ->with('success', $return['message'] ?? 'Cập nhật chức vụ thành công.');
@@ -95,7 +98,7 @@ class PositionController extends BaseController
      */
     public function delete($id): RedirectResponse
     {
-        $return = $this->positionService->delete($id);
+        $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.positions.index')
                 ->with('success', $return['message'] ?? 'Xóa chức vụ thành công.');

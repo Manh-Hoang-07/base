@@ -32,7 +32,7 @@ class PositionService extends BaseService
         ];
         $keys = ['name', 'code', 'description', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->repository->create($insertData)
+            && $this->getRepository()->create($insertData)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Thêm mới chức vụ thành công';
@@ -55,8 +55,8 @@ class PositionService extends BaseService
         $keys = ['name', 'code', 'description', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($role = $this->repository->findById($id))
-            && $this->repository->update($role, $data)
+            && ($role = $this->getRepository()->findById($id))
+            && $this->getRepository()->update($role, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật chức vụ thành công';

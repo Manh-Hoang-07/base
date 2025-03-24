@@ -30,7 +30,7 @@ class PostService extends BaseService
         ];
         $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->repository->create($insertData)
+            && $this->getRepository()->create($insertData)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Thêm mới khu vực thành công';
@@ -53,8 +53,8 @@ class PostService extends BaseService
         $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($role = $this->repository->findById($id))
-            && $this->repository->update($role, $data)
+            && ($role = $this->getRepository()->findById($id))
+            && $this->getRepository()->update($role, $data)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật khu vực thành công';

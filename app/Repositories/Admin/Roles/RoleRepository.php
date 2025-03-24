@@ -18,7 +18,7 @@ class RoleRepository extends BaseRepository
      */
     public function create(array $data): Model
     {
-        $role = $this->model->create(['name' => $data['name'] ?? '', 'title' => $data['title'] ?? '']);
+        $role = $this->getModel()->create(['name' => $data['name'] ?? '', 'title' => $data['title'] ?? '']);
         if ($role && !empty($data['permissions'])) {
             $role->syncPermissions($data['permissions']);
         }

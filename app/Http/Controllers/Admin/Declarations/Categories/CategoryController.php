@@ -15,11 +15,14 @@ use lib\DataTable;
 
 class CategoryController extends BaseController
 {
-    protected CategoryService $categoryService;
-
     public function __construct(CategoryService $categoryService)
     {
-        $this->categoryService = $categoryService;
+        $this->service = $categoryService;
+    }
+
+    public function getService(): CategoryService
+    {
+        return $this->service;
     }
 
     /**
@@ -31,7 +34,7 @@ class CategoryController extends BaseController
     {
         $filters = DataTable::getFiltersData($request->all(), ['name', 'code']);
         $options = DataTable::getOptionsData($request->all());
-        $categories = $this->categoryService->getList($filters, $options);
+        $categories = $this->getService()->getList($filters, $options);
         return view('admin.declarations.categories.index', compact('categories'));
     }
 
@@ -41,7 +44,7 @@ class CategoryController extends BaseController
      */
     public function create(): View|Application|Factory
     {
-        $categories = $this->categoryService->getList();
+        $categories = $this->getService()->getList();
         return view('admin.declarations.categories.create', compact('categories'));
     }
 
@@ -52,7 +55,7 @@ class CategoryController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->categoryService->create($request->validated());
+        $return = $this->getService()->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.categories.index')
                 ->with('success', $return['message'] ?? 'Thêm mới danh mục thành công.');
@@ -68,8 +71,8 @@ class CategoryController extends BaseController
      */
     public function edit($id): View|Application|Factory
     {
-        $category = $this->categoryService->findById($id);
-        $categories = $this->categoryService->getAll();
+        $category = $this->getService()->findById($id);
+        $categories = $this->getService()->getAll();
         return view('admin.declarations.categories.edit', compact('category', 'categories'));
     }
 
@@ -81,7 +84,7 @@ class CategoryController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->categoryService->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.categories.index')
                 ->with('success', $return['message'] ?? 'Cập nhật danh mục thành công.');
@@ -97,7 +100,7 @@ class CategoryController extends BaseController
      */
     public function delete($id): RedirectResponse
     {
-        $return = $this->categoryService->delete($id);
+        $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.categories.index')
                 ->with('success', $return['message'] ?? 'Xóa danh mục thành công.');
