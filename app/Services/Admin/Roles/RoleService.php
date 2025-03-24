@@ -15,6 +15,11 @@ class RoleService extends BaseService
         $this->repository = $roleRepository;
     }
 
+    protected function getRepository(): RoleRepository
+    {
+        return $this->repository;
+    }
+
     /**
      * Lấy thông tin vai trò theo ID
      * @param $id

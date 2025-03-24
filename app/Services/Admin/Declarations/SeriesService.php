@@ -4,15 +4,17 @@ namespace App\Services\Admin\Declarations;
 
 use App\Repositories\Admin\Declarations\SeriesRepository;
 use App\Services\BaseService;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use lib\DataTable;
 
 class SeriesService extends BaseService
 {
     public function __construct(SeriesRepository $seriesRepository) {
         $this->repository = $seriesRepository;
+    }
+
+    protected function getRepository(): SeriesRepository
+    {
+        return $this->repository;
     }
 
     /**

@@ -12,6 +12,11 @@ class PostService extends BaseService
         $this->repository = $postRepository;
     }
 
+    protected function getRepository(): PostRepository
+    {
+        return $this->repository;
+    }
+
     /**
      * Tạo mới khu vực
      * @param array $data

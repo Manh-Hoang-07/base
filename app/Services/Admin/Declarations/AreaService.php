@@ -15,6 +15,11 @@ class AreaService extends BaseService
         $this->repository = $areaRepository;
     }
 
+    protected function getRepository(): AreaRepository
+    {
+        return $this->repository;
+    }
+
     /**
      * Tạo mới khu vực
      * @param array $data

@@ -7,11 +7,17 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Throwable;
 
 abstract class BaseRepository
 {
     protected Model $model;
+
+    public function getModel(): Model
+    {
+        return $this->model;
+    }
 
     /**
      * Lấy tất cả danh sách
@@ -51,7 +57,7 @@ abstract class BaseRepository
         $columns = $options['columns'] ?? ['*'];
         $sortBy = $options['sortBy'] ?? 'id';
         $sortOrder = $options['sortOrder'] ?? 'asc';
-        $query = $this->model->select($columns);
+        $query = $this->getModel()->select($columns);
         // Áp dụng quan hệ
         $this->applyRelations($query, $relations);
         // Áp dụng bộ lọc
@@ -103,14 +109,14 @@ abstract class BaseRepository
     public function findById(int $id, array $options = []): ?Model
     {
         $relations = $options['relations'] ?? [];
-        $query = $this->model->find($id);
+        $query = $this->getModel()->find($id);
         $this->applyRelations($query, $relations);
         return $query;
     }
 
     /**
      * Tìm một bản ghi theo ID
-     * @param int $id
+     * @param array $filters
      * @param array $options
      * @return Model|null
      */
@@ -127,7 +133,7 @@ abstract class BaseRepository
      */
     public function findOrFail(int $id): Model
     {
-        return $this->model->findOrFail($id);
+        return $this->getModel()->findOrFail($id);
     }
 
     /**
@@ -138,8 +144,8 @@ abstract class BaseRepository
     public function create(array $data): ?Model
     {
         try {
-            $create = $this->model->create($data);
-            if ($create && $this->model->where('id', $create->id)->exists()) {
+            $create = $this->getModel()->create($data);
+            if ($create && $this->getModel()->where('id', $create->id)->exists()) {
                 return $create;
             } else {
                 return null;
@@ -178,7 +184,7 @@ abstract class BaseRepository
         try {
             if (!empty($filters)
                 && !empty($data)
-                && $this->model->updateOrCreate($filters, $data)
+                && $this->getModel()->updateOrCreate($filters, $data)
             ) {
                 return true;
             }
@@ -203,5 +209,22 @@ abstract class BaseRepository
         } catch (Throwable $e) {
             return false;
         }
+    }
+
+    /**
+     * Hàm dùng chung cho autocomplete
+     * @param string $term
+     * @param string $column
+     * @param int $limit
+     * @return JsonResponse
+     */
+    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
+    {
+        $results = $this->getModel()->query()
+            ->where($column, 'like', '%' . $term . '%')
+            ->select('id', $column, 'name')
+            ->limit($limit)
+            ->get();
+        return response()->json($results);
     }
 }

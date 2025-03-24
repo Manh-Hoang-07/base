@@ -28,7 +28,7 @@ class RoleRepository extends BaseRepository
     /**
      * Cập nhật thông tin vai trò
      */
-    public function update(Model $model, array $data): bool
+    public function update(Model|Role $model, array $data): bool
     {
         $update = $model->update(['name' => $data['name'] ?? '', 'title' => $data['title'] ?? '']);
         if ($update) {

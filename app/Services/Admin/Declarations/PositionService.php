@@ -14,6 +14,11 @@ class PositionService extends BaseService
         $this->repository = $positionRepository;
     }
 
+    protected function getRepository(): PositionRepository
+    {
+        return $this->repository;
+    }
+
     /**
      * Tạo mới chức vụ
      * @param array $data

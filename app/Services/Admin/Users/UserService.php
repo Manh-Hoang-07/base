@@ -17,6 +17,11 @@ class UserService extends BaseService
         $this->repository = $userRepository;
     }
 
+    protected function getRepository(): UserRepository
+    {
+        return $this->repository;
+    }
+
     /**
      * Service xử lý tạo tài khoản
      * @param array $data

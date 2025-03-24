@@ -14,6 +14,11 @@ class ShelfService extends BaseService
         $this->repository = $shelfRepository;
     }
 
+    protected function getRepository(): ShelfRepository
+    {
+        return $this->repository;
+    }
+
     /**
      * Tạo mới kệ sách
      * @param array $data

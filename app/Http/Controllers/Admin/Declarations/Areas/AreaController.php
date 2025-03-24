@@ -15,11 +15,14 @@ use lib\DataTable;
 
 class AreaController extends BaseController
 {
-    protected AreaService $areaService;
-
     public function __construct(AreaService $areaService)
     {
-        $this->areaService = $areaService;
+        $this->service = $areaService;
+    }
+
+    public function getService(): AreaService
+    {
+        return $this->service;
     }
 
     /**
@@ -31,7 +34,7 @@ class AreaController extends BaseController
     {
         $filters = DataTable::getFiltersData($request->all(), ['name', 'code']);
         $options = DataTable::getOptionsData($request->all());
-        $areas = $this->areaService->getList($filters, $options);
+        $areas = $this->getService()->getList($filters, $options);
         return view('admin.declarations.areas.index', compact('areas'));
     }
 
@@ -51,7 +54,7 @@ class AreaController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->areaService->create($request->validated());
+        $return = $this->getService()->create($request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.areas.index')
                 ->with('success', $return['message'] ?? 'Thêm mới khu vực thành công.');
@@ -67,7 +70,7 @@ class AreaController extends BaseController
      */
     public function edit($id): View|Application|Factory
     {
-        $area = $this->areaService->findById($id);
+        $area = $this->getService()->findById($id);
         return view('admin.declarations.areas.edit', compact('area'));
     }
 
@@ -79,7 +82,7 @@ class AreaController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->areaService->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->validated());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.areas.index')
                 ->with('success', $return['message'] ?? 'Cập nhật khu vực thành công.');
@@ -95,7 +98,7 @@ class AreaController extends BaseController
      */
     public function delete($id): RedirectResponse
     {
-        $return = $this->areaService->delete($id);
+        $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.areas.index')
                 ->with('success', $return['message'] ?? 'Xóa khu vực thành công.');

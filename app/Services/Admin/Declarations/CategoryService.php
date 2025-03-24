@@ -3,15 +3,21 @@
 namespace App\Services\Admin\Declarations;
 
 use App\Repositories\Admin\Declarations\CategoryRepository;
+use App\Services\BaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use lib\DataTable;
 
-class CategoryService
+class CategoryService extends BaseService
 {
     public function __construct(CategoryRepository $categoryRepository) {
         $this->repository = $categoryRepository;
+    }
+
+    protected function getRepository(): CategoryRepository
+    {
+        return $this->repository;
     }
 
     /**

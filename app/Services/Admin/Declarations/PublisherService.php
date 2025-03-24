@@ -15,6 +15,11 @@ class PublisherService extends BaseService
         $this->repository = $publisherRepository;
     }
 
+    protected function getRepository(): PublisherRepository
+    {
+        return $this->repository;
+    }
+
     /**
      * Tạo mới nhà xuất bản
      * @param array $data

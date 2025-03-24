@@ -6,6 +6,8 @@ use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class BaseService
 {
@@ -66,5 +68,17 @@ class BaseService
             $return['messages'] = 'Xóa thành công';
         }
         return $return;
+    }
+
+    /**
+     * Hàm dùng chung cho autocomplete
+     * @param string $term
+     * @param string $column
+     * @param int $limit
+     * @return JsonResponse
+     */
+    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
+    {
+        return $this->getRepository()->autocomplete($term, $column, $limit);
     }
 }

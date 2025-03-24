@@ -18,6 +18,11 @@ class ProfileService extends BaseService
         $this->userService = $userService;
     }
 
+    protected function getRepository(): ProfileRepository
+    {
+        return $this->repository;
+    }
+
     /**
      * Hàm lấy thông tin hồ sơ
      * @param $user_id

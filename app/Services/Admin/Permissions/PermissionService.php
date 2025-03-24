@@ -15,6 +15,11 @@ class PermissionService extends BaseService
         $this->repository = $permissionRepository;
     }
 
+    protected function getRepository(): PermissionRepository
+    {
+        return $this->repository;
+    }
+
     /**
      * Tạo mới quyền
      * @param array $data
