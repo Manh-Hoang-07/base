@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PositionUser extends Model
 {
-    protected $table = 'position_user';
+    protected $table = 'position_users';
 
     protected $fillable = ['user_id', 'position_id'];
 

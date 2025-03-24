@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('biography')->nullable(); // Tiểu sử (tuỳ chọn)
             $table->date('birth_date')->nullable(); // Ngày sinh (tuỳ chọn)
             $table->date('death_date')->nullable(); // Ngày mất (nếu có)
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps(); // Thời gian tạo và cập nhật
             $table->softDeletes(); // Xóa mềm
         });

@@ -10,7 +10,7 @@ use Spatie\Permission\Models\Permission as SpatiePermission;
 
 class Permission extends SpatiePermission
 {
-    protected $fillable = ['title', 'name', 'guard_name', 'parent_id', 'is_default'];
+    protected $fillable = ['title', 'name', 'guard_name', 'parent_id', 'is_default', 'status'];
 
     // Quan hệ cha
     public function parent(): BelongsTo

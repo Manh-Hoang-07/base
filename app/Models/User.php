@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -21,7 +23,6 @@ class User extends Authenticatable {
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
         'role',
@@ -51,7 +52,7 @@ class User extends Authenticatable {
         ];
     }
 
-    public function can($permission, $arguments = [])
+    public function can($permission, $arguments = []): bool
     {
         // Nếu user có quyền trực tiếp, trả về true
         if (parent::can($permission, $arguments)) {
@@ -70,7 +71,7 @@ class User extends Authenticatable {
         return false;
     }
 
-    public function canAny($permissions, $arguments = [])
+    public function canAny($permissions, $arguments = []): bool
     {
         foreach ($permissions as $permission) {
             if ($this->can($permission, $arguments)) {
@@ -80,14 +81,14 @@ class User extends Authenticatable {
         return false;
     }
 
-    public function profile()
+    public function profile(): HasOne
     {
-        return $this->hasOne(UserProfile::class);
+        return $this->hasOne(Profile::class);
     }
 
-    public function positions()
+    public function positions(): BelongsToMany
     {
-        return $this->belongsToMany(Position::class, 'position_user');
+        return $this->belongsToMany(Position::class, 'position_users');
     }
 
 }

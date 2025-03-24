@@ -20,7 +20,8 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->string('website')->nullable();
             $table->date('established_at')->nullable(); //Ngày thành lập nhà xuất bản
-            $table->boolean('status')->default(1);
+//            $table->boolean('status')->default(1);
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
             $table->softDeletes();
         });

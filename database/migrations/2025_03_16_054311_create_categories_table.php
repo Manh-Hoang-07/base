@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->unsignedBigInteger('parent_id')->nullable(); // Cho phép danh mục con
             $table->text('description')->nullable();
-            $table->boolean('status')->default(1); // Mặc định là hiển thị
+//            $table->boolean('status')->default(1); // Mặc định là hiển thị
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
 
             // Khóa ngoại cho parent_id để xử lý danh mục con

@@ -11,6 +11,6 @@ class Position extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'position_user');
+        return $this->belongsToMany(User::class, 'position_users');
     }
 }

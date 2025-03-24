@@ -2,44 +2,44 @@
 
 namespace App\Services\Admin\Declarations;
 
-use App\Repositories\Admin\Declarations\AreaRepository;
+use App\Repositories\Admin\Declarations\SeriesRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use lib\DataTable;
 
-class AreaService
+class SeriesService
 {
-    protected AreaRepository $areaRepository;
+    protected SeriesRepository $seriesRepository;
 
-    public function __construct(AreaRepository $areaRepository) {
-        $this->areaRepository = $areaRepository;
+    public function __construct(SeriesRepository $seriesRepository) {
+        $this->seriesRepository = $seriesRepository;
     }
 
     /**
-     * Lấy danh sách tất cả khu vực
+     * Lấy danh sách tất cả series
      * @param array $filters
      * @param array $options
      * @return Collection
      */
     public function getAll(array $filters = [], array $options = []): Collection
     {
-        return $this->areaRepository->getAll($filters, $options);
+        return $this->seriesRepository->getAll($filters, $options);
     }
 
     /**
-     * Lấy danh sách tất cả khu vực
+     * Lấy danh sách tất cả series
      * @param array $filters
      * @param array $options
      * @return LengthAwarePaginator
      */
     public function getList(array $filters = [], array $options = []): LengthAwarePaginator
     {
-        return $this->areaRepository->getList($filters, $options);
+        return $this->seriesRepository->getList($filters, $options);
     }
 
     /**
-     * Tạo mới khu vực
+     * Tạo mới series
      * @param array $data
      * @return array
      */
@@ -47,30 +47,30 @@ class AreaService
     {
         $return = [
             'success' => false,
-            'messages' => 'Thêm mới khu vực thất bại'
+            'messages' => 'Thêm mới series thất bại'
         ];
-        $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
+        $keys = ['name', 'code', 'description', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->areaRepository->create($insertData)
+            && $this->seriesRepository->create($insertData)
         ) {
             $return['success'] = true;
-            $return['messages'] = 'Thêm mới khu vực thành công';
+            $return['messages'] = 'Thêm mới series thành công';
         }
         return $return;
     }
 
     /**
-     * Lấy thông tin khu vực theo ID
+     * Lấy thông tin series theo ID
      * @param $id
      * @return Model|null
      */
     public function findById($id): ?Model
     {
-        return $this->areaRepository->findById($id);
+        return $this->seriesRepository->findById($id);
     }
 
     /**
-     * Cập nhật khu vực
+     * Cập nhật series
      * @param $id
      * @param array $data
      * @return array
@@ -79,22 +79,22 @@ class AreaService
     {
         $return = [
             'success' => false,
-            'messages' => 'Cập nhật khu vực thất bại'
+            'messages' => 'Cập nhật series thất bại'
         ];
-        $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
+        $keys = ['name', 'code', 'description', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
-            && ($role = $this->areaRepository->findById($id))
-            && $this->areaRepository->update($role, $data)
+            && ($role = $this->seriesRepository->findById($id))
+            && $this->seriesRepository->update($role, $data)
         ) {
             $return['success'] = true;
-            $return['messages'] = 'Cập nhật khu vực thành công';
+            $return['messages'] = 'Cập nhật series thành công';
         }
         return $return;
     }
 
     /**
-     * Xóa khu vực
+     * Xóa series
      * @param $id
      * @return array
      */
@@ -102,13 +102,13 @@ class AreaService
     {
         $return = [
             'success' => false,
-            'messages' => 'Xóa khu vực thất bại'
+            'messages' => 'Xóa series thất bại'
         ];
-        if (($position = $this->areaRepository->findById($id))
-            && ($this->areaRepository->delete($position))
+        if (($position = $this->seriesRepository->findById($id))
+            && ($this->seriesRepository->delete($position))
         ) {
             $return['success'] = true;
-            $return['messages'] = 'Xóa khu vực thành công';
+            $return['messages'] = 'Xóa series thành công';
         }
         return $return;
     }

@@ -20,6 +20,7 @@ class Author extends Model
         'biography',
         'birth_date',
         'death_date',
+        'status'
     ];
 
     protected $casts = [

@@ -19,11 +19,13 @@ return new class extends Migration
             $table->string('location'); // Vị trí
             $table->text('description')->nullable(); // Mô tả khu vực
             $table->integer('capacity')->nullable(); // Sức chứa
-            $table->boolean('status')->default(true); // Trạng thái hoạt động
+//            $table->boolean('status')->default(true); // Trạng thái hoạt động
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps(); // Thời gian tạo và cập nhật
             $table->softDeletes(); // Thêm cột deleted_at
 
             // Khai báo khóa ngoại
+            $table->unsignedBigInteger('area_id')->nullable(); // Khai báo cột trước
             $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade');
         });
     }

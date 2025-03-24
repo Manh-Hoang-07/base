@@ -75,6 +75,22 @@
                 </a>
             </li>
         @endcanany
+        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+            <li class="side-nav-item">
+                <a href="{{ route('admin.declarations.series.index') }}" class="side-nav-link">
+                    <i class="dripicons-chevron-right"></i>
+                    <span>Quản lý series</span>
+                </a>
+            </li>
+        @endcanany
+        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+            <li class="side-nav-item">
+                <a href="{{ route('admin.declarations.posts.index') }}" class="side-nav-link">
+                    <i class="dripicons-chevron-right"></i>
+                    <span>Quản lý bài đăng</span>
+                </a>
+            </li>
+        @endcanany
     </ul>
     <!-- End Sidebar -->
 

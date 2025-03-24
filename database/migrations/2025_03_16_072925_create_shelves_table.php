@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->integer('capacity');
             $table->text('description')->nullable();
-            $table->boolean('status')->default(true);
+//            $table->boolean('status')->default(true);
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Requests\Admin\Declarations\Areas;
+namespace App\Http\Requests\Admin\Declarations\Series;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
@@ -19,12 +20,9 @@ class StoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:areas,code',
-            'type' => 'required|string|max:100',
-            'location' => 'required|string|max:255',
+            'code' => 'required|string|max:50|unique:series,code',
             'description' => 'nullable|string',
-            'capacity' => 'nullable|integer|min:0',
-            'status' => 'boolean',
+            'status' => 'required|in:active,inactive'
         ];
     }
 
@@ -38,10 +36,12 @@ class StoreRequest extends FormRequest
             'name.required' => 'Tên khu vực không được để trống.',
             'code.required' => 'Mã khu vực không được để trống.',
             'code.unique' => 'Mã khu vực đã tồn tại.',
-            'type.required' => 'Loại khu vực không được để trống.',
-            'location.required' => 'Vị trí không được để trống.',
-            'capacity.integer' => 'Sức chứa phải là số nguyên.',
-            'capacity.min' => 'Sức chứa không được nhỏ hơn 0.',
         ];
     }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $this->dd($validator);
+    }
+
 }

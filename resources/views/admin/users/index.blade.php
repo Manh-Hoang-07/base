@@ -10,10 +10,6 @@
     <form action="{{ route('admin.users.index') }}" method="GET" class="mb-3">
         <div class="row">
             <div class="col-md-4">
-                <input type="text" name="name" class="form-control" placeholder="Nhập tên"
-                       value="{{ request('name') }}">
-            </div>
-            <div class="col-md-4">
                 <input type="email" name="email" class="form-control" placeholder="Nhập email"
                        value="{{ request('email') }}">
             </div>
@@ -29,7 +25,6 @@
         <thead>
         <tr>
             <th>ID</th>
-            <th>Tên</th>
             <th>Email</th>
             <th>Ngày tạo</th>
             <th>Trạng thái</th>
@@ -41,7 +36,6 @@
         @foreach($users as $user)
             <tr>
                 <td>{{ $user->id ?? '' }}</td>
-                <td>{{ $user->name ?? '' }}</td>
                 <td>{{ $user->email ?? '' }}</td>
                 <td>{{ $user->created_at->format('d/m/Y') }}</td>
                 <td>{{ !empty($user->is_blocked) ? 'Khóa' : 'Không khóa' }}</td>

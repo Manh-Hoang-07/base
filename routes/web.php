@@ -27,7 +27,5 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 });
 
-Route::get('/test', function () {
-    return view('dashboard');
-})->name('test');
+Route::get('/test', [\App\Http\Controllers\Admin\Declarations\Series\SeriesController::class, 'store'])->name('test');
 

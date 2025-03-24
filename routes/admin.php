@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\Declarations\Authors\AuthorController;
 use App\Http\Controllers\Admin\Declarations\Categories\CategoryController;
 use App\Http\Controllers\Admin\Declarations\Positions\PositionController;
 use App\Http\Controllers\Admin\Declarations\Publishers\PublisherController;
+use App\Http\Controllers\Admin\Declarations\Series\SeriesController;
 use App\Http\Controllers\Admin\Declarations\Shelves\ShelfController;
 use App\Http\Controllers\Admin\Permissions\PermissionController;
 use App\Http\Controllers\Admin\Roles\RoleController;
@@ -108,6 +109,15 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [ShelfController::class, 'edit'])->name('edit'); // Hiển thị form sửa kệ sách
             Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [ShelfController::class, 'update'])->name('update'); // Xử lý sửa kệ sách
             Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [ShelfController::class, 'delete'])->name('delete'); // Xử lý xóa kệ sách
+        });
+
+        Route::prefix('series')->name('series.')->group(function () { // Chức năng quản lý series
+            Route::middleware(['canAny:view_declarations'])->get('/index', [SeriesController::class, 'index'])->name('index'); // Hiển thị danh sách series
+            Route::middleware(['canAny:create_declarations'])->get('/create', [SeriesController::class, 'create'])->name('create'); // Hiển thị form tạo mới series
+            Route::middleware(['canAny:create_declarations'])->post('/store', [SeriesController::class, 'store'])->name('store'); // Xử lý thêm mới series
+            Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [SeriesController::class, 'edit'])->name('edit'); // Hiển thị form sửa series
+            Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [SeriesController::class, 'update'])->name('update'); // Xử lý sửa series
+            Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [SeriesController::class, 'delete'])->name('delete'); // Xử lý xóa series
         });
 
     });
