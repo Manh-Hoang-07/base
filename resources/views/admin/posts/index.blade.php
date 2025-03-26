@@ -2,13 +2,13 @@
 
 @section('content')
     <div class="container">
-        <h2>Quản lý quyền</h2>
-        @canany(['manage_permissions', 'create_permissions'])
-            <a href="{{ route('admin.permissions.create') }}" class="btn btn-primary mb-3">Thêm quyền</a>
+        <h2>Quản lý bài đăng</h2>
+        @canany(['manage_posts', 'create_posts'])
+            <a href="{{ route('admin.posts.create') }}" class="btn btn-primary mb-3">Thêm quyền</a>
         @endcanany
 
         <!-- Form lọc -->
-        <form action="{{ route('admin.permissions.index') }}" method="GET" class="mb-3">
+        <form action="{{ route('admin.posts.index') }}" method="GET" class="mb-3">
             <div class="row">
                 <div class="col-md-3">
                     <input type="text" name="title" class="form-control" placeholder="Nhập ý nghĩa"
@@ -24,7 +24,7 @@
                 </div>
                 <div class="col-md-3">
                     <button type="submit" class="btn btn-primary">Lọc</button>
-                    <a href="{{ route('admin.permissions.index') }}" class="btn btn-secondary">Reset</a>
+                    <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Reset</a>
                 </div>
             </div>
         </form>
@@ -45,19 +45,19 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($permissions ?? [] as $permission)
+            @foreach($posts ?? [] as $post)
                 <tr>
-                    <td>{{ $permission->id ?? '' }}</td>
-                    <td>{{ $permission->title ?? '' }}</td>
-                    <td>{{ $permission->name ?? '' }}</td>
-                    <td>{{ $permission->parent->name ?? 'N/A' }}</td>
-                    <td>{{ $permission->is_default ? 'Có' : 'Không' }}</td>
+                    <td>{{ $post->id ?? '' }}</td>
+                    <td>{{ $post->title ?? '' }}</td>
+                    <td>{{ $post->name ?? '' }}</td>
+                    <td>{{ $post->parent->name ?? 'N/A' }}</td>
+                    <td>{{ $post->is_default ? 'Có' : 'Không' }}</td>
                     <td>
-                        @canany(['manage_permissions', 'edit_permissions'])
-                            <a href="{{ route('admin.permissions.edit', $permission->id ?? '') }}" class="btn btn-warning">Sửa</a>
+                        @canany(['manage_posts', 'edit_posts'])
+                            <a href="{{ route('admin.posts.edit', $post->id ?? '') }}" class="btn btn-warning">Sửa</a>
                         @endcanany
-                        @canany(['manage_permissions', 'delete_permissions'])
-                            <form action="{{ route('admin.permissions.delete', $permission->id ?? '') }}" method="POST" style="display:inline-block;">
+                        @canany(['manage_posts', 'delete_posts'])
+                            <form action="{{ route('admin.posts.delete', $post->id ?? '') }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Xóa</button>
@@ -71,7 +71,5 @@
     </div>
 
     <!-- Hiển thị phân trang -->
-    <div class="d-flex justify-content-center">
-        {{ $permissions->links('vendor.pagination.bootstrap-5') }}
-    </div>
+    @include('vendor.pagination.pagination', ['paginator' => $posts])
 @endsection
