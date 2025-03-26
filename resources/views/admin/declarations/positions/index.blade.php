@@ -57,7 +57,5 @@
     </div>
 
     <!-- Hiển thị phân trang -->
-    <div class="d-flex justify-content-center">
-        {{ $positions->links('vendor.pagination.bootstrap-5') }}
-    </div>
+    @include('vendor.pagination.pagination', ['paginator' => $positions])
 @endsection

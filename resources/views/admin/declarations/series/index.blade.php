@@ -38,15 +38,15 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($series ?? [] as $series)
+            @foreach($series ?? [] as $each)
                 <tr>
-                    <td>{{ $series->id ?? '' }}</td>
-                    <td>{{ $series->name ?? '' }}</td>
-                    <td>{{ $series->status ?? '' }}</td>
-                    <td>{{ $series->code ?? '' }}</td>
+                    <td>{{ $each->id ?? '' }}</td>
+                    <td>{{ $each->name ?? '' }}</td>
+                    <td>{{ $each->status ?? '' }}</td>
+                    <td>{{ $each->code ?? '' }}</td>
                     <td>
-                        <a href="{{ route('admin.declarations.series.edit', $series->id ?? '') }}" class="btn btn-warning">Sửa</a>
-                        <form action="{{ route('admin.declarations.areas.delete', $series->id ?? '') }}" method="POST" style="display:inline-block;">
+                        <a href="{{ route('admin.declarations.series.edit', $each->id ?? '') }}" class="btn btn-warning">Sửa</a>
+                        <form action="{{ route('admin.declarations.series.delete', $each->id ?? '') }}" method="POST" style="display:inline-block;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Xóa</button>
@@ -59,7 +59,5 @@
     </div>
 
     <!-- Hiển thị phân trang -->
-    <div class="d-flex justify-content-center">
-        {{ $series->links('vendor.pagination.bootstrap-5') }}
-    </div>
+    @include('vendor.pagination.pagination', ['paginator' => $series])
 @endsection

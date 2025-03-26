@@ -20,9 +20,9 @@ class BaseController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    protected function autocomplete(Request $request): JsonResponse
+    public function autocomplete(Request $request): JsonResponse
     {
         $term = $request->input('term');
-        return $this->getService()->autocomplete($term);
+        return $this->getService()->autocomplete($term ?? '');
     }
 }

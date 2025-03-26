@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Declarations\Series;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\Declarations\Series\StoreRequest;
 use App\Http\Requests\Admin\Declarations\Series\UpdateRequest;
+use App\Models\Series;
 use App\Services\Admin\Declarations\SeriesService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
