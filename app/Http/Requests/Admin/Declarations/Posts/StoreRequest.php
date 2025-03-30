@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Declarations\Posts;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
@@ -18,7 +19,6 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -33,8 +33,6 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_id.required' => 'Người dùng không được để trống.',
-            'user_id.exists' => 'Người dùng không tồn tại.',
             'title.required' => 'Tiêu đề không được để trống.',
             'title.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
             'content.required' => 'Nội dung không được để trống.',

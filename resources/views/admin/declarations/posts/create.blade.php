@@ -22,11 +22,6 @@
             </div>
 
             <div class="mb-3">
-                <label for="image">Ảnh bài đăng</label>
-                <input type="file" name="image" id="image" class="form-control">
-            </div>
-
-            <div class="mb-3">
                 <label for="status" class="form-label">Trạng thái</label>
                 <select class="form-control" name="status">
                     <option value="active" selected>Hoạt động</option>

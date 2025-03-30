@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <h2>Thêm Sách</h2>
-        <form action="{{ route('admin.books.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.declarations.books.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label class="form-label">Mã sách</label>

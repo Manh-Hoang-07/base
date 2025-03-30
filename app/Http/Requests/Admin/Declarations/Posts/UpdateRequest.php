@@ -19,7 +19,6 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -34,8 +33,6 @@ class UpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_id.required' => 'Vui lòng chọn người đăng bài.',
-            'user_id.exists' => 'Người đăng không tồn tại.',
             'title.required' => 'Tiêu đề bài viết không được để trống.',
             'title.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
             'content.required' => 'Nội dung bài viết không được để trống.',
