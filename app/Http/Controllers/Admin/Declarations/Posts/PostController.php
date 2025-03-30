@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin\Declarations\Posts;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Admin\Declarations\Publishers\StoreRequest;
-use App\Http\Requests\Admin\Declarations\Publishers\UpdateRequest;
+use App\Http\Requests\Admin\Declarations\Posts\StoreRequest;
+use App\Http\Requests\Admin\Declarations\Posts\UpdateRequest;
 use App\Services\Admin\Declarations\PostService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;

@@ -19,7 +19,7 @@ class BookCopy extends Model
         'status'
     ];
 
-    // Quan hệ với Book (Một sách có nhiều bản sao)
+    // Quan hệ với Books (Một sách có nhiều bản sao)
     public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);

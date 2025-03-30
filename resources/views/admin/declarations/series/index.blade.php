@@ -42,8 +42,8 @@
                 <tr>
                     <td>{{ $each->id ?? '' }}</td>
                     <td>{{ $each->name ?? '' }}</td>
-                    <td>{{ $each->status ?? '' }}</td>
                     <td>{{ $each->code ?? '' }}</td>
+                    <td>{{ $each->status ?? '' }}</td>
                     <td>
                         <a href="{{ route('admin.declarations.series.edit', $each->id ?? '') }}" class="btn btn-warning">Sửa</a>
                         <form action="{{ route('admin.declarations.series.delete', $each->id ?? '') }}" method="POST" style="display:inline-block;">

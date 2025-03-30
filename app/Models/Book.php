@@ -51,7 +51,7 @@ class Book extends Model
         return $this->belongsToMany(Category::class, 'book_categories');
     }
 
-    // Quan hệ 1-n với Book Copies
+    // Quan hệ 1-n với Books Copies
     public function copies(): HasMany
     {
         return $this->hasMany(BookCopy::class);

@@ -47,8 +47,8 @@
                     <td>{{ $post->name }}</td>
                     <td>{{ ucfirst($post->status) }}</td>
                     <td>
-                        <a href="{{ route('admin.declarations.posts.edit', $post->id) }}" class="btn btn-warning btn-sm">Sửa</a>
-                        <form action="{{ route('admin.declarations.posts.delete', $post->id) }}" method="POST" style="display:inline-block;">
+                        <a href="{{ route('admin.posts.edit', $post->id) }}" class="btn btn-warning btn-sm">Sửa</a>
+                        <form action="{{ route('admin.posts.delete', $post->id) }}" method="POST" style="display:inline-block;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>

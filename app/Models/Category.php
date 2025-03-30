@@ -29,6 +29,6 @@ class Category extends Model
     // Định nghĩa mối quan hệ nếu cần
 //    public function books()
 //    {
-//        return $this->hasMany(Book::class);
+//        return $this->hasMany(Books::class);
 //    }
 }

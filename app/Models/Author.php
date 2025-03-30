@@ -31,6 +31,6 @@ class Author extends Model
     // Một tác giả có nhiều sách
 //    public function books()
 //    {
-//        return $this->hasMany(Book::class);
+//        return $this->hasMany(Books::class);
 //    }
 }

@@ -91,6 +91,22 @@
                 </a>
             </li>
         @endcanany
+        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+            <li class="side-nav-item">
+                <a href="{{ route('admin.declarations.books.index') }}" class="side-nav-link">
+                    <i class="dripicons-chevron-right"></i>
+                    <span>Quản lý sách</span>
+                </a>
+            </li>
+        @endcanany
+        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+            <li class="side-nav-item">
+                <a href="{{ route('admin.declarations.book_copies.index') }}" class="side-nav-link">
+                    <i class="dripicons-chevron-right"></i>
+                    <span>Quản lý bản sao sách</span>
+                </a>
+            </li>
+        @endcanany
     </ul>
     <!-- End Sidebar -->
 

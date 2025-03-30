@@ -2,23 +2,23 @@
 
 namespace App\Services\Admin\Declarations;
 
-use App\Repositories\Admin\Declarations\PostRepository;
+use App\Repositories\Admin\Declarations\BookCopyRepository;
 use App\Services\BaseService;
 use lib\DataTable;
 
-class PostService extends BaseService
+class BookCopyService extends BaseService
 {
-    public function __construct(PostRepository $postRepository) {
-        $this->repository = $postRepository;
+    public function __construct(BookCopyRepository $bookCopyRepository) {
+        $this->repository = $bookCopyRepository;
     }
 
-    protected function getRepository(): PostRepository
+    protected function getRepository(): BookCopyRepository
     {
         return $this->repository;
     }
 
     /**
-     * Tạo mới bài đăng
+     * Tạo mới bản sao sách
      * @param array $data
      * @return array
      */
@@ -26,20 +26,20 @@ class PostService extends BaseService
     {
         $return = [
             'success' => false,
-            'messages' => 'Thêm mới bài đăng thất bại'
+            'messages' => 'Thêm mới bản sao sách thất bại'
         ];
         $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
             && $this->getRepository()->create($insertData)
         ) {
             $return['success'] = true;
-            $return['messages'] = 'Thêm mới bài đăng thành công';
+            $return['messages'] = 'Thêm mới bản sao sách thành công';
         }
         return $return;
     }
 
     /**
-     * Cập nhật bài đăng
+     * Cập nhật bản sao sách
      * @param $id
      * @param array $data
      * @return array
@@ -48,7 +48,7 @@ class PostService extends BaseService
     {
         $return = [
             'success' => false,
-            'messages' => 'Cập nhật bài đăng thất bại'
+            'messages' => 'Cập nhật bản sao sách thất bại'
         ];
         $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
@@ -57,7 +57,7 @@ class PostService extends BaseService
             && $this->getRepository()->update($role, $data)
         ) {
             $return['success'] = true;
-            $return['messages'] = 'Cập nhật bài đăng thành công';
+            $return['messages'] = 'Cập nhật bản sao sách thành công';
         }
         return $return;
     }

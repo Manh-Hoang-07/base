@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\Declarations\Areas\AreaController;
 use App\Http\Controllers\Admin\Declarations\Authors\AuthorController;
+use App\Http\Controllers\Admin\Declarations\BookCopies\BookCopyController;
+use App\Http\Controllers\Admin\Declarations\Books\BookController;
 use App\Http\Controllers\Admin\Declarations\Categories\CategoryController;
 use App\Http\Controllers\Admin\Declarations\Positions\PositionController;
 use App\Http\Controllers\Admin\Declarations\Posts\PostController;
@@ -128,6 +130,24 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [PostController::class, 'edit'])->name('edit'); // Hiển thị form sửa bài đăng
             Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [PostController::class, 'update'])->name('update'); // Xử lý sửa bài đăng
             Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [PostController::class, 'delete'])->name('delete'); // Xử lý xóa bài đăng
+        });
+
+        Route::prefix('books')->name('books.')->group(function () { // Chức năng quản lý sách
+            Route::middleware(['canAny:view_declarations'])->get('/index', [BookController::class, 'index'])->name('index'); // Hiển thị danh sách sách
+            Route::middleware(['canAny:create_declarations'])->get('/create', [BookController::class, 'create'])->name('create'); // Hiển thị form tạo mới sách
+            Route::middleware(['canAny:create_declarations'])->post('/store', [BookController::class, 'store'])->name('store'); // Xử lý thêm mới sách
+            Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [BookController::class, 'edit'])->name('edit'); // Hiển thị form sửa sách
+            Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [BookController::class, 'update'])->name('update'); // Xử lý sửa sách
+            Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [BookController::class, 'delete'])->name('delete'); // Xử lý xóa sách
+        });
+
+        Route::prefix('book_copies')->name('book_copies.')->group(function () { // Chức năng quản lý bản sao sách
+            Route::middleware(['canAny:view_declarations'])->get('/index', [BookCopyController::class, 'index'])->name('index'); // Hiển thị danh sách bản sao sách
+            Route::middleware(['canAny:create_declarations'])->get('/create', [BookCopyController::class, 'create'])->name('create'); // Hiển thị form tạo mới bản sao sách
+            Route::middleware(['canAny:create_declarations'])->post('/store', [BookCopyController::class, 'store'])->name('store'); // Xử lý thêm mới bản sao sách
+            Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [BookCopyController::class, 'edit'])->name('edit'); // Hiển thị form sửa bản sao sách
+            Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [BookCopyController::class, 'update'])->name('update'); // Xử lý sửa bản sao sách
+            Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [BookCopyController::class, 'delete'])->name('delete'); // Xử lý xóa bản sao sách
         });
 
     });

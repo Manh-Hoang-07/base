@@ -2,36 +2,26 @@
 
 @section('content')
     <div class="container">
-        <h2>Chỉnh sửa khu vực</h2>
-        <form action="{{ route('admin.declarations.areas.update', $area->id ?? '') }}" method="POST">
+        <h2>Chỉnh sửa series</h2>
+        <form action="{{ route('admin.declarations.series.update', $series->id) }}" method="POST">
             @csrf
             <div class="mb-3">
-                <label for="name" class="form-label">Tên khu vực</label>
-                <input type="text" class="form-control" name="name" value="{{ $area->name ?? '' }}" required>
+                <label for="name" class="form-label">Tên series</label>
+                <input type="text" class="form-control" name="name" value="{{ old('name', $series->name) }}" required>
 
-                <label for="code" class="form-label">Mã khu vực</label>
-                <input type="text" class="form-control" name="code" value="{{ $area->code ?? '' }}" required>
-
-                <label for="type" class="form-label">Loại khu vực</label>
-                <input type="text" class="form-control" name="type" value="{{ $area->type ?? '' }}" required>
-
-                <label for="location" class="form-label">Vị trí</label>
-                <input type="text" class="form-control" name="location" value="{{ $area->location ?? '' }}">
+                <label for="code" class="form-label">Mã series</label>
+                <input type="text" class="form-control" name="code" value="{{ old('code', $series->code) }}" required>
 
                 <label for="description" class="form-label">Mô tả</label>
-                <textarea class="form-control" name="description" rows="3">{{ $area->description ?? '' }}</textarea>
-
-                <label for="capacity" class="form-label">Sức chứa</label>
-                <input type="number" class="form-control" name="capacity" value="{{ $area->capacity ?? 0 }}" min="0">
+                <textarea class="form-control" name="description" rows="3">{{ old('description', $series->description) }}</textarea>
 
                 <label for="status" class="form-label">Trạng thái</label>
                 <select class="form-control" name="status">
-                    <option value="1" {{ $area->status ? 'selected' : '' }}>Hoạt động</option>
-                    <option value="0" {{ !$area->status ? 'selected' : '' }}>Không hoạt động</option>
+                    <option value="active" {{ old('status', $series->status) == 'active' ? 'selected' : '' }}>Hoạt động</option>
+                    <option value="inactive" {{ old('status', $series->status) == 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Cập nhật</button>
-            <a href="{{ route('admin.declarations.areas.index') }}" class="btn btn-secondary">Hủy</a>
         </form>
     </div>
 @endsection
