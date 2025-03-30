@@ -36,8 +36,8 @@ class ShelfController extends BaseController
      */
     public function index(Request $request): View|Application|Factory
     {
-        $filters = DataTable::getFiltersData($request->all(), ['name', 'code']);
-        $options = DataTable::getOptionsData($request->all());
+        $filters = $this->getFilters($request, ['name', 'code']);
+        $options = $this->getOptions($request);
         $shelves = $this->getService()->getList($filters, $options);
         return view('admin.declarations.shelves.index', compact('shelves'));
     }

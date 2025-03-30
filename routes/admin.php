@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Declarations\Areas\AreaController;
 use App\Http\Controllers\Admin\Declarations\Authors\AuthorController;
 use App\Http\Controllers\Admin\Declarations\Categories\CategoryController;
 use App\Http\Controllers\Admin\Declarations\Positions\PositionController;
+use App\Http\Controllers\Admin\Declarations\Posts\PostController;
 use App\Http\Controllers\Admin\Declarations\Publishers\PublisherController;
 use App\Http\Controllers\Admin\Declarations\Series\SeriesController;
 use App\Http\Controllers\Admin\Declarations\Shelves\ShelfController;
@@ -118,6 +119,15 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [SeriesController::class, 'edit'])->name('edit'); // Hiển thị form sửa series
             Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [SeriesController::class, 'update'])->name('update'); // Xử lý sửa series
             Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [SeriesController::class, 'delete'])->name('delete'); // Xử lý xóa series
+        });
+
+        Route::prefix('posts')->name('posts.')->group(function () { // Chức năng quản lý bài đăng
+            Route::middleware(['canAny:view_declarations'])->get('/index', [PostController::class, 'index'])->name('index'); // Hiển thị danh sách bài đăng
+            Route::middleware(['canAny:create_declarations'])->get('/create', [PostController::class, 'create'])->name('create'); // Hiển thị form tạo mới bài đăng
+            Route::middleware(['canAny:create_declarations'])->post('/store', [PostController::class, 'store'])->name('store'); // Xử lý thêm mới bài đăng
+            Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [PostController::class, 'edit'])->name('edit'); // Hiển thị form sửa bài đăng
+            Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [PostController::class, 'update'])->name('update'); // Xử lý sửa bài đăng
+            Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [PostController::class, 'delete'])->name('delete'); // Xử lý xóa bài đăng
         });
 
     });

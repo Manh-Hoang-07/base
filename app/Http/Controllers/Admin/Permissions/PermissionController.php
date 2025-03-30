@@ -34,8 +34,8 @@ class PermissionController extends BaseController
      */
     public function index(Request $request): View|Application|Factory
     {
-        $filters = DataTable::getFiltersData($request->all(), ['name', 'title']);
-        $options = DataTable::getOptionsData($request->all());
+        $filters = $this->getFilters($request, ['name', 'title']);
+        $options = $this->getOptions($request);
         $permissions = $this->getService()->getList($filters, $options);
         return view('admin.permissions.index', compact('permissions'));
     }

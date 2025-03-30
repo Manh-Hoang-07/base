@@ -4,6 +4,7 @@ include_once('admin.php');
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
 
@@ -28,4 +29,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/test', [\App\Http\Controllers\Admin\Declarations\Series\SeriesController::class, 'store'])->name('test');
+
+Route::post('/upload', [UploadController::class, 'upload'])->name('upload');
 

@@ -13,8 +13,11 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
+
+
     <!-- third party css -->
-    <link href="{{ asset('css/admin/vendor/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
+{{--    <link href="{{ asset('css/admin/vendor/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />--}}
     <!-- third party css end -->
 
     <!-- App css -->
@@ -89,30 +92,29 @@
     <script src="{{ asset('js/admin/app.min.js') }}"></script>
 
     <!-- third party js -->
-    <script src="{{ asset('js/admin/vendor/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('js/admin/vendor/jquery-jvectormap-1.2.2.min.js') }}"></script>
-    <script src="{{ asset('js/admin/vendor/jquery-jvectormap-world-mill-en.js') }}"></script>
+{{--    <script src="{{ asset('js/admin/vendor/apexcharts.min.js') }}"></script>--}}
+{{--    <script src="{{ asset('js/admin/vendor/jquery-jvectormap-1.2.2.min.js') }}"></script>--}}
+{{--    <script src="{{ asset('js/admin/vendor/jquery-jvectormap-world-mill-en.js') }}"></script>--}}
     <!-- third party js ends -->
 
     <!-- demo app -->
-    <script src="{{ asset('js/admin/pages/demo.dashboard.js') }}"></script>
+{{--    <script src="{{ asset('js/admin/pages/demo.dashboard.js') }}"></script>--}}
     <!-- plugin js -->
-    <script src="{{ asset('js/admin/vendor/dropzone.min.js') }}"></script>
+{{--    <script src="{{ asset('js/admin/vendor/dropzone.min.js') }}"></script>--}}
     <!-- init js -->
-    <script src="{{ asset('js/admin/ajax.js') }}"></script>
-    <script src="{{ asset('js/admin/ui/component.fileupload.js') }}"></script>
-    <script src="{{ asset('js/admin/main.js') }}"></script>
-    <script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+{{--    <script src="{{ asset('js/admin/ui/component.fileupload.js') }}"></script>--}}
+{{--    <script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>--}}
 
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
-    @if(session('success'))
-        toastr.success("{{ session('success') }}");
+    @if(session('error'))
+        toastr.error("{{ session('error') }}");
     @endif
 
-    @if(session('fail'))
-        toastr.error("{{ session('fail') }}");
+    @if(session('success'))
+        toastr.success("{{ session('success') }}");
     @endif
     @stack('js')
     <!-- end demo js-->
