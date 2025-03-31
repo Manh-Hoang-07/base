@@ -8,7 +8,7 @@
             @csrf
             <div class="mb-3">
                 <label for="title">Tiêu đề</label>
-                <input type="text" name="title" id="title" class="form-control" required>
+                <input type="text" name="name" id="name" class="form-control" required>
             </div>
 
             <div class="mb-3">

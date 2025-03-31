@@ -37,7 +37,7 @@ class UploadController extends Controller
         $folder = 'uploads/' . date('Ymd');
         $path = $file->storeAs($folder, $filename, 'public');
 
-        $url = Storage::url('storage/' . $path);
+        $url = Storage::url($path);
 
         return response()->json([
             "success" => true,

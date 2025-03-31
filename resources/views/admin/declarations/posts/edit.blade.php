@@ -9,7 +9,7 @@
 
             <div class="mb-3">
                 <label for="title">Tiêu đề</label>
-                <input type="text" name="title" id="title" class="form-control" value="{{ old('title', $post->title) }}" required>
+                <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $post->name) }}" required>
             </div>
 
             <div class="mb-3">
@@ -30,9 +30,8 @@
             <div class="mb-3">
                 <label for="status" class="form-label">Trạng thái</label>
                 <select class="form-control" name="status">
-                    <option value="draft" {{ $post->status == 'draft' ? 'selected' : '' }}>Nháp</option>
-                    <option value="published" {{ $post->status == 'published' ? 'selected' : '' }}>Xuất bản</option>
-                    <option value="archived" {{ $post->status == 'archived' ? 'selected' : '' }}>Lưu trữ</option>
+                    <option value="active" {{ $post->status == 'active' ? 'selected' : '' }}>Hoạt động</option>
+                    <option value="inactive" {{ $post->status == 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
                 </select>
             </div>
 

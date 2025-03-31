@@ -39,7 +39,7 @@
                 <tr>
                     <td>
                         @if($post->image)
-                            <img src="{{ asset('storage/' . $post->image) }}" width="80" height="50">
+                            <img src="{{ asset($post->image) }}" width="80" height="50">
                         @else
                             Không có ảnh
                         @endif

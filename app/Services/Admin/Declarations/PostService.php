@@ -28,7 +28,7 @@ class PostService extends BaseService
             'success' => false,
             'messages' => 'Thêm mới bài đăng thất bại'
         ];
-        $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
+        $keys = ['name', 'image', 'content', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
             && $this->getRepository()->create($insertData)
         ) {
@@ -50,7 +50,7 @@ class PostService extends BaseService
             'success' => false,
             'messages' => 'Cập nhật bài đăng thất bại'
         ];
-        $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
+        $keys = ['name', 'image', 'content', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
             && ($role = $this->getRepository()->findById($id))

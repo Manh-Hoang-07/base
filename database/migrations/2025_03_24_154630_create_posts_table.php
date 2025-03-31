@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\BasicStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,10 +15,10 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('title');
+            $table->string('name');
             $table->text('content');
             $table->string('image')->nullable();
-            $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
+            $table->enum('status', BasicStatus::values())->default(BasicStatus::ACTIVE->value);
             $table->timestamps();
         });
     }

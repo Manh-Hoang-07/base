@@ -82,7 +82,7 @@ class PostController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->getService()->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.posts.index')
                 ->with('success', $return['message'] ?? 'Cập nhật nhà xuất bản thành công.');

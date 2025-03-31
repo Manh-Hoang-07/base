@@ -95,7 +95,7 @@
                         toastr.success(response.message || 'Đăng nhập thành công');
                         setTimeout(function() {
                             window.location.href = "{{ url('/dashboard') }}";
-                        }, 3000);
+                        }, 1000);
                     } else {
                         toastr.error(response.message || 'Đăng nhập thất bại');
                     }
