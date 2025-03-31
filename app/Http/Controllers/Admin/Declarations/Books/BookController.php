@@ -81,7 +81,7 @@ class BookController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->getService()->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.books.index')
                 ->with('success', $return['message'] ?? 'Cập nhật sách thành công.');

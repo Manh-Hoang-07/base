@@ -54,7 +54,7 @@ class AuthorController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->getService()->create($request->validated());
+        $return = $this->getService()->create($request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.authors.index')
                 ->with('success', $return['message'] ?? 'Thêm mới tác giả thành công.');
@@ -82,7 +82,7 @@ class AuthorController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->getService()->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.authors.index')
                 ->with('success', $return['message'] ?? 'Cập nhật tác giả thành công.');

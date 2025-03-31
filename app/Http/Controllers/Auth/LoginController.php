@@ -39,7 +39,7 @@ class LoginController extends BaseController
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = $request->validated();
+        $credentials = $request->all();
         $remember = $request->has('remember');
         return response()->json($this->loginService->login($credentials, $remember));
     }

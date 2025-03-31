@@ -54,7 +54,7 @@ class PostController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->getService()->create($request->validated());
+        $return = $this->getService()->create($request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.posts.index')
                 ->with('success', $return['message'] ?? 'Thêm mới nhà xuất bản thành công.');

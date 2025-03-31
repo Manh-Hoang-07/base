@@ -24,7 +24,7 @@ class ProfileController extends BaseController
 
     public function updateProfile(UpdateUserRequest $request): RedirectResponse
     {
-        $result = $this->userService->updateProfile(Auth::user(), $request->validated());
+        $result = $this->userService->updateProfile(Auth::user(), $request->all());
         return redirect()->route('user.profile')->with('success', $result['message']);
     }
 }

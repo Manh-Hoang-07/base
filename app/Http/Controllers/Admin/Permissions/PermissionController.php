@@ -57,7 +57,7 @@ class PermissionController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->getService()->create($request->validated());
+        $return = $this->getService()->create($request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
                 ->with('success', $return['message'] ?? 'Tạo quyền thành công.');
@@ -86,7 +86,7 @@ class PermissionController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        $return = $this->getService()->update($id, $request->validated());
+        $return = $this->getService()->update($id, $request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.permissions.index')
                 ->with('success', $return['message'] ?? 'Cập nhật quyền thành công.');

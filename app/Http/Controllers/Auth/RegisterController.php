@@ -47,7 +47,7 @@ class RegisterController extends BaseController
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $data = $request->validated();
+        $data = $request->all();
         return response()->json($this->registerService->register($data));
     }
 }

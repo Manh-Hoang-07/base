@@ -50,7 +50,7 @@ class BookService extends BaseService
             'success' => false,
             'messages' => 'Cập nhật sách thất bại'
         ];
-        $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
+        $keys = ['series_id', 'name', 'code', 'title', 'volume', 'isbn', 'published_at', 'publisher_id', 'language', 'page_count', 'summary', 'image', 'status'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
             && ($role = $this->getRepository()->findById($id))

@@ -4,11 +4,11 @@
     <div class="container">
         <h2>Quản lý bài đăng</h2>
         @canany(['manage_declarations', 'create_declarations'])
-            <a href="{{ route('admin.declarations.posts.create') }}" class="btn btn-primary mb-3">Thêm bài đăng</a>
+            <a href="{{ route('admin.declarations.book_copies.create') }}" class="btn btn-primary mb-3">Thêm bài đăng</a>
         @endcanany
 
         <!-- Form lọc -->
-        <form action="{{ route('admin.declarations.posts.index') }}" method="GET" class="mb-3">
+        <form action="{{ route('admin.declarations.book_copies.index') }}" method="GET" class="mb-3">
             <div class="row">
                 <div class="col-md-3">
                     <input type="text" name="name" class="form-control" placeholder="Nhập tên"
@@ -16,7 +16,7 @@
                 </div>
                 <div class="col-md-3">
                     <button type="submit" class="btn btn-primary">Lọc</button>
-                    <a href="{{ route('admin.declarations.posts.index') }}" class="btn btn-secondary">Reset</a>
+                    <a href="{{ route('admin.declarations.book_copies.index') }}" class="btn btn-secondary">Reset</a>
                 </div>
             </div>
         </form>

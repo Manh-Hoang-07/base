@@ -41,7 +41,7 @@ class ProfileController extends BaseController
      */
     public function update(UpdateRequest $request, $user_id): RedirectResponse
     {
-        $return = $this->getService()->update($user_id, $request->validated());
+        $return = $this->getService()->update($user_id, $request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.users.index')
                 ->with('success', $return['message'] ?? 'Cập nhật hồ sơ thành công.');
