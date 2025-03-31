@@ -24,9 +24,6 @@ class BaseController extends Controller
      */
     protected function getFilters(Request $request, array $allowKeys = []): array
     {
-        if (empty($allowKeys)) {
-            return $request->all();
-        }
         return DataTable::getFiltersData($request->all(), $allowKeys);
     }
 

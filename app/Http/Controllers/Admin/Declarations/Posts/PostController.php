@@ -32,7 +32,7 @@ class PostController extends BaseController
      */
     public function index(Request $request): View|Application|Factory
     {
-        $filters = $this->getFilters($request, ['name', 'title']);
+        $filters = $this->getFilters($request);
         $options = $this->getOptions($request);
         $posts = $this->getService()->getList($filters, $options);
         return view('admin.declarations.posts.index', compact('posts'));

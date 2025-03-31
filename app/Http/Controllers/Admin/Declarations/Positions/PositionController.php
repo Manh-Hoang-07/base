@@ -32,7 +32,7 @@ class PositionController extends BaseController
      */
     public function index(Request $request): View|Application|Factory
     {
-        $filters = $this->getFilters($request, ['name', 'code']);
+        $filters = $this->getFilters($request);
         $options = $this->getOptions($request);
         $positions = $this->getService()->getList($filters, $options);
         return view('admin.declarations.positions.index', compact('positions'));

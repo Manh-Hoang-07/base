@@ -34,7 +34,7 @@ class UserController extends BaseController
      */
     public function index(Request $request): View|Application|Factory
     {
-        $filters = $this->getFilters($request, ['name', 'email', 'role']);
+        $filters = $this->getFilters($request);
         $options = $this->getOptions($request);
         $users = $this->getService()->getList($filters, $options);
         return view('admin.users.index', compact('users', 'filters', 'options'));

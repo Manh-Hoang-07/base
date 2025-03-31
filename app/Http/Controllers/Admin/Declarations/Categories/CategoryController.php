@@ -32,7 +32,7 @@ class CategoryController extends BaseController
      */
     public function index(Request $request): View|Application|Factory
     {
-        $filters = $this->getFilters($request, ['name', 'code']);
+        $filters = $this->getFilters($request);
         $options = $this->getOptions($request);
         $categories = $this->getService()->getList($filters, $options);
         return view('admin.declarations.categories.index', compact('categories'));

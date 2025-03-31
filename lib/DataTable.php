@@ -21,8 +21,15 @@ class DataTable
      * @param array $data
      * @return array
      */
-    public static function getFiltersData(array $data, array $keys): array
+    public static function getFiltersData(array $data, array $keys = []): array
     {
+        if (empty($keys)) {
+            return array_filter(
+                $data,
+                fn($value, $key) => !is_null($value) && $value !== '' && $value !== false,
+                ARRAY_FILTER_USE_BOTH
+            );
+        }
         return array_filter(
             $data,
             fn($value, $key) => in_array($key, $keys, true) && !is_null($value) && $value !== '' && $value !== false,
