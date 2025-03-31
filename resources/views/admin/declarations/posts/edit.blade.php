@@ -16,7 +16,7 @@
                 <label for="image">Hình ảnh</label>
                 @if ($post->image)
                     <div class="mb-2">
-                        <img src="{{ asset('storage/' . $post->image) }}" alt="Ảnh bài đăng" width="200">
+                        <img src="{{ asset($post->image) }}" alt="Ảnh bài đăng" width="200">
                     </div>
                 @endif
                 <x-uploads.file-upload name="image" />

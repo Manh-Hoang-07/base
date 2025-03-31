@@ -15,7 +15,7 @@ class Book extends Model
     protected $fillable = [
         'series_id',
         'code',
-        'title',
+        'name',
         'volume',
         'isbn',
         'published_at',
@@ -23,7 +23,7 @@ class Book extends Model
         'language',
         'page_count',
         'summary',
-        'cover_image',
+        'image',
         'status'
     ];
 

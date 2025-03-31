@@ -2,10 +2,10 @@
 
 @section('content')
     <div class="container">
-        <h2>Chỉnh sửa Sách</h2>
-        <form action="{{ route('admin.books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
+        <h2>Chỉnh Sửa Sách</h2>
+        <form action="{{ route('admin.declarations.books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
-            @method('PUT')
+
             <div class="mb-3">
                 <label class="form-label">Mã sách</label>
                 <input type="text" class="form-control" name="code" value="{{ $book->code }}" required>
@@ -13,12 +13,19 @@
 
             <div class="mb-3">
                 <label class="form-label">Tiêu đề</label>
-                <input type="text" class="form-control" name="title" value="{{ $book->title }}" required>
+                <input type="text" class="form-control" name="name" value="{{ $book->name }}" required>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Số tập</label>
                 <input type="number" class="form-control" name="volume" value="{{ $book->volume }}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Series truyện</label>
+                <select class="form-control select2" name="series_id" data-url="{{ route('admin.declarations.series.autocomplete') }}" data-display-field="name" data-selected={{ $book->series_id ?? '' }}>
+                    <option value="">Chọn series</option>
+                </select>
             </div>
 
             <div class="mb-3">
@@ -33,10 +40,8 @@
 
             <div class="mb-3">
                 <label class="form-label">Nhà xuất bản</label>
-                <select name="publisher_id" class="form-control" required>
-                    @foreach($publishers as $publisher)
-                        <option value="{{ $publisher->id }}" {{ $book->publisher_id == $publisher->id ? 'selected' : '' }}>{{ $publisher->name }}</option>
-                    @endforeach
+                <select class="form-control select2" name="publisher_id" data-url="{{ route('admin.declarations.publishers.autocomplete') }}" data-display-field="name" data-selected={{ $book->publisher_id ?? '' }}>
+                    <option value="">Chọn nhà xuất bản</option>
                 </select>
             </div>
 
@@ -57,18 +62,19 @@
 
             <div class="mb-3">
                 <label class="form-label">Ảnh bìa</label>
-                <input type="file" class="form-control" name="cover_image">
+                <x-uploads.file-upload name="image" :value="$book->image" />
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Trạng thái</label>
                 <select name="status" class="form-control">
-                    <option value="active" {{ $book->status == 'active' ? 'selected' : '' }}>Hoạt động</option>
-                    <option value="inactive" {{ $book->status == 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
+                    @foreach(\App\Enums\BasicStatus::cases() as $status)
+                        <option value="{{ $status->value }}" {{ $book->status == $status->value ? 'selected' : '' }}>{{ $status->name }}</option>
+                    @endforeach
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <button type="submit" class="btn btn-primary">Cập Nhật</button>
         </form>
     </div>
 @endsection

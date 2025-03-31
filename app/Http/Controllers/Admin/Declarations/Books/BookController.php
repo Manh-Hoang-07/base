@@ -53,7 +53,7 @@ class BookController extends BaseController
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $return = $this->getService()->create($request->validated());
+        $return = $this->getService()->create($request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.declarations.books.index')
                 ->with('success', $return['message'] ?? 'Thêm mới sách thành công.');

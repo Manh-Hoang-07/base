@@ -103,6 +103,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [PublisherController::class, 'edit'])->name('edit'); // Hiển thị form sửa nhà xuất bản
             Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [PublisherController::class, 'update'])->name('update'); // Xử lý sửa nhà xuất bản
             Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [PublisherController::class, 'delete'])->name('delete'); // Xử lý xóa nhà xuất bản
+            Route::middleware(['canAny:edit_declarations'])->get('/autocomplete', [PublisherController::class, 'autocomplete'])->name('autocomplete'); // Lấy nhà xuất bản theo từ
         });
 
         Route::prefix('shelves')->name('shelves.')->group(function () { // Chức năng quản lý kệ sách
@@ -121,6 +122,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [SeriesController::class, 'edit'])->name('edit'); // Hiển thị form sửa series
             Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [SeriesController::class, 'update'])->name('update'); // Xử lý sửa series
             Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [SeriesController::class, 'delete'])->name('delete'); // Xử lý xóa series
+            Route::middleware(['canAny:edit_declarations'])->get('/autocomplete', [SeriesController::class, 'autocomplete'])->name('autocomplete'); // Lấy series theo từ
         });
 
         Route::prefix('posts')->name('posts.')->group(function () { // Chức năng quản lý bài đăng

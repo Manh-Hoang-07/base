@@ -9,6 +9,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Throwable;
 
 abstract class BaseRepository
@@ -231,5 +232,16 @@ abstract class BaseRepository
             ->limit($limit)
             ->get();
         return response()->json($results);
+    }
+
+    /**
+     * Kiểm tra xem bảng có tồn tại cột hay không
+     * @param string $column
+     * @return bool
+     */
+    public function hasColumn(string $column): bool
+    {
+        $table = $this->getModel()->getTable(); // Lấy tên bảng từ model
+        return Schema::hasColumn($table, $column);
     }
 }

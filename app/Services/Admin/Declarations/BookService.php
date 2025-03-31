@@ -28,7 +28,7 @@ class BookService extends BaseService
             'success' => false,
             'messages' => 'Thêm mới sách thất bại'
         ];
-        $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
+        $keys = ['series_id', 'name', 'code', 'title', 'volume', 'isbn', 'published_at', 'publisher_id', 'language', 'page_count', 'summary', 'image', 'status'];
         if (($insertData = DataTable::getChangeData($data, $keys))
             && $this->getRepository()->create($insertData)
         ) {

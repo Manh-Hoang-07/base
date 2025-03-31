@@ -7,6 +7,7 @@ use App\Repositories\Admin\Declarations\PublisherRepository;
 use App\Services\BaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use lib\DataTable;
 
 class PublisherService extends BaseService
@@ -63,5 +64,17 @@ class PublisherService extends BaseService
             $return['messages'] = 'Cập nhật nhà xuất bản thành công';
         }
         return $return;
+    }
+
+    /**
+     * Hàm lấy ra danh sách nhà xuất bản theo từ
+     * @param string $term
+     * @param string $column
+     * @param int $limit
+     * @return JsonResponse
+     */
+    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
+    {
+        return parent::autocomplete($term, 'name', $limit);
     }
 }

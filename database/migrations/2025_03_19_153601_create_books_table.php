@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\BasicStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,8 +24,8 @@ return new class extends Migration
             $table->string('language')->nullable(); // Ngôn ngữ sách
             $table->integer('page_count')->nullable(); // Số trang
             $table->text('summary')->nullable(); // Mô tả ngắn nội dung sách
-            $table->string('cover_image')->nullable(); // Ảnh bìa sách
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->string('image')->nullable(); // Ảnh bìa sách
+            $table->enum('status', BasicStatus::values())->default(BasicStatus::ACTIVE->value);
             $table->timestamps();
         });
     }

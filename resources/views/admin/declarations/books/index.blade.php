@@ -23,7 +23,7 @@
                 <tr>
                     <td>{{ $book->id }}</td>
                     <td>{{ $book->code }}</td>
-                    <td>{{ $book->title }}</td>
+                    <td>{{ $book->name }}</td>
                     <td>{{ $book->publisher->name }}</td>
                     <td>{{ $book->language }}</td>
                     <td>{{ $book->published_at }}</td>

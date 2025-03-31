@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Declarations\Books;
 
+use App\Enums\BasicStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,7 +29,7 @@ class UpdateRequest extends FormRequest
                 'max:50',
                 Rule::unique('books', 'code')->ignore($bookId),
             ],
-            'title' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'volume' => 'nullable|integer|min:1',
             'isbn' => [
                 'required',
@@ -41,8 +42,8 @@ class UpdateRequest extends FormRequest
             'language' => 'nullable|string|max:50',
             'page_count' => 'nullable|integer|min:1',
             'summary' => 'nullable|string',
-            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:active,inactive',
+//            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status' => ['required', Rule::enum(BasicStatus::class)],
         ];
     }
 
@@ -57,8 +58,8 @@ class UpdateRequest extends FormRequest
             'series_id.exists' => 'Series không tồn tại.',
             'code.required' => 'Mã sách không được để trống.',
             'code.unique' => 'Mã sách đã tồn tại.',
-            'title.required' => 'Tiêu đề sách không được để trống.',
-            'title.max' => 'Tiêu đề sách không được vượt quá 255 ký tự.',
+            'name.required' => 'Tiêu đề sách không được để trống.',
+            'name.max' => 'Tiêu đề sách không được vượt quá 255 ký tự.',
             'volume.integer' => 'Số tập phải là số nguyên.',
             'volume.min' => 'Số tập phải lớn hơn 0.',
             'isbn.required' => 'Mã ISBN không được để trống.',
@@ -70,9 +71,9 @@ class UpdateRequest extends FormRequest
             'page_count.integer' => 'Số trang phải là số nguyên.',
             'page_count.min' => 'Số trang phải lớn hơn 0.',
             'summary.string' => 'Mô tả sách phải là chuỗi ký tự.',
-            'cover_image.image' => 'Ảnh bìa phải là hình ảnh hợp lệ.',
-            'cover_image.mimes' => 'Ảnh bìa phải có định dạng jpeg, png, jpg hoặc gif.',
-            'cover_image.max' => 'Ảnh bìa không được vượt quá 2MB.',
+            'image.image' => 'Ảnh bìa phải là hình ảnh hợp lệ.',
+            'image.mimes' => 'Ảnh bìa phải có định dạng jpeg, png, jpg hoặc gif.',
+            'image.max' => 'Ảnh bìa không được vượt quá 2MB.',
             'status.required' => 'Trạng thái không được để trống.',
             'status.in' => 'Trạng thái không hợp lệ.',
         ];
