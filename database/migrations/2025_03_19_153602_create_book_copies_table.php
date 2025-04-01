@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\BasicStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('book_id')->constrained('books')->onDelete('cascade');
             $table->integer('copy_number'); // Số thứ tự bản sao (VD: 1, 2, 3...)
-            $table->enum('status', ['available', 'borrowed', 'lost'])->default('available');
+            $table->enum('status', BasicStatus::values())->default(BasicStatus::ACTIVE->value);
             $table->timestamps();
         });
     }

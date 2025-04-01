@@ -11,7 +11,8 @@
     <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}">
 
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+{{--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>--}}
 
     <script src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
 
@@ -26,9 +27,14 @@
     <link href="{{ asset('css/admin/app-modern-dark.min.css') }}" rel="stylesheet" type="text/css" id="dark-style" />
 
     <!-- Thêm CSS cho Select2 -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+{{--    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />--}}
     <!-- Toastr CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="{{ asset('css/toastr.min.css') }}">
+{{--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">--}}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -42,7 +48,7 @@
     <!-- end Topbar -->
 
     <!-- Start Content-->
-    <div class="container-fluid">
+    <div>
 
         <!-- Begin page -->
         <div class="wrapper">
@@ -85,7 +91,8 @@
 
 
     <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="{{ asset('js/toastr.min.js') }}"></script>
+{{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>--}}
 
     <!-- bundle -->
     <script src="{{ asset('js/admin/vendor.min.js') }}"></script>
@@ -107,7 +114,8 @@
 {{--    <script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>--}}
 
     <!-- Select2 -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+{{--    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>--}}
 
     @if(session('error'))
         toastr.error("{{ session('error') }}");

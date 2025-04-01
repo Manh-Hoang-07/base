@@ -4,6 +4,7 @@ namespace App\Services\Admin\Declarations;
 
 use App\Repositories\Admin\Declarations\BookRepository;
 use App\Services\BaseService;
+use Illuminate\Http\JsonResponse;
 use lib\DataTable;
 
 class BookService extends BaseService
@@ -60,5 +61,17 @@ class BookService extends BaseService
             $return['messages'] = 'Cập nhật sách thành công';
         }
         return $return;
+    }
+
+    /**
+     * Hàm lấy ra danh sách sách theo từ
+     * @param string $term
+     * @param string $column
+     * @param int $limit
+     * @return JsonResponse
+     */
+    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
+    {
+        return parent::autocomplete($term, 'name', $limit);
     }
 }

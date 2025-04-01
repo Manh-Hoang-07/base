@@ -2,40 +2,32 @@
 
 @section('content')
     <div class="container">
-        <h2 class="mb-4">Thêm bài đăng</h2>
-
-        <form action="{{ route('admin.declarations.posts.store') }}" method="POST" enctype="multipart/form-data">
+        <h2>Thêm Bản Sao Sách</h2>
+        <form action="{{ route('admin.declarations.book_copies.store') }}" method="POST">
             @csrf
-            <div class="mb-3">
-                <label for="title">Tiêu đề</label>
-                <input type="text" name="title" id="title" class="form-control" required>
-            </div>
 
             <div class="mb-3">
-                <label for="title">Hình ảnh</label>
-                <x-uploads.file-upload name="image" required />
-            </div>
-
-            <div class="mb-3">
-                <label for="content">Nội dung</label>
-                <textarea name="content" id="content" class="form-control" data-editor="true"></textarea>
-            </div>
-
-            <div class="mb-3">
-                <label for="image">Ảnh bài đăng</label>
-                <input type="file" name="image" id="image" class="form-control">
-            </div>
-
-            <div class="mb-3">
-                <label for="status" class="form-label">Trạng thái</label>
-                <select class="form-control" name="status">
-                    <option value="active" selected>Hoạt động</option>
-                    <option value="inactive">Không hoạt động</option>
+                <label class="form-label">Sách</label>
+                <select class="form-control select2" name="book_id" data-url="{{ route('admin.declarations.books.autocomplete') }}" data-display-field="name">
+                    <option value="">Chọn sách</option>
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-success">Lưu</button>
-            <a href="{{ route('admin.declarations.posts.index') }}" class="btn btn-secondary">Hủy</a>
+            <div class="mb-3">
+                <label class="form-label">Số Thứ Tự</label>
+                <input type="number" class="form-control" name="copy_number" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Trạng Thái</label>
+                <select name="status" class="form-control">
+                    @foreach(\App\Enums\BasicStatus::cases() as $status)
+                        <option value="{{ $status->value }}">{{ $status->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">Thêm</button>
         </form>
     </div>
 @endsection

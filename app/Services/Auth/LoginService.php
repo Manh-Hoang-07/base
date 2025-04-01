@@ -34,7 +34,8 @@ class LoginService
             $return['message'] = 'Tài khoản này đang bị khóa. Vui lòng liên hệ quản trị viên.';
             return $return;
         }
-        if ($this->loginRepository->login($credentials, $remember)) {
+        $data = ['email' => $credentials['email'], 'password' => $credentials['password']];
+        if ($this->loginRepository->login($data, $remember)) {
             $return = ['success' => true, 'message' => 'Đăng nhập thành công!'];
         }
         return $return;

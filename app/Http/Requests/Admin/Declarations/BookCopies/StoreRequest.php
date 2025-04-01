@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Declarations\BookCopies;
 
+use App\Enums\BasicStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -26,7 +27,7 @@ class StoreRequest extends FormRequest
                 'min:1',
                 Rule::unique('book_copies', 'copy_number')->where('book_id', $this->book_id),
             ],
-            'status' => ['required', Rule::in(['available', 'borrowed', 'lost'])],
+            'status' => ['required', Rule::enum(BasicStatus::class)],
         ];
     }
 

@@ -141,6 +141,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             Route::middleware(['canAny:edit_declarations'])->get('/edit/{id}', [BookController::class, 'edit'])->name('edit'); // Hiển thị form sửa sách
             Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [BookController::class, 'update'])->name('update'); // Xử lý sửa sách
             Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [BookController::class, 'delete'])->name('delete'); // Xử lý xóa sách
+            Route::middleware(['canAny:edit_declarations'])->get('/autocomplete', [BookController::class, 'autocomplete'])->name('autocomplete'); // Lấy sách theo từ
         });
 
         Route::prefix('book_copies')->name('book_copies.')->group(function () { // Chức năng quản lý bản sao sách

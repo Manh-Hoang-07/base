@@ -8604,7 +8604,7 @@ body[data-layout="detached"] {
   body[data-layout="detached"] .content-page {
     margin-left: 0;
     overflow: hidden;
-    padding: 0 15px 5px 30px;
+    padding: 0 15px 5px 10px;
     position: relative;
     margin-right: -15px;
     width: 100%;
