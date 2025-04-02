@@ -1,115 +1,137 @@
-<div class="left-side-menu left-side-menu-detached">
-    <!--- Sidemenu -->
-    <ul class="metismenu side-nav">
-        <li class="side-nav-title side-nav-item bg-primary-lighten text-white"><h6>Quản lý chung</h6></li>
-        @canany(['view_users', 'create_users', 'edit_users', 'delete_users', 'assign_users'])
-            <li class="side-nav-item">
-                <a href="{{ route('admin.users.index') }}" class="side-nav-link">
-                    <i class="dripicons-chevron-right"></i>
-                    <span>Quản lý tài khoản</span>
+<!--begin::Sidebar Wrapper-->
+<div class="sidebar-wrapper">
+    <nav class="mt-2">
+        <!--begin::Sidebar Menu-->
+        <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview"
+            role="menu" data-accordion="false">
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon bi bi-box-seam-fill"></i>
+                    <p>
+                        Quản lý chung
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </p>
                 </a>
+                <ul class="nav nav-treeview">
+                    @canany(['view_users', 'create_users', 'edit_users', 'delete_users', 'assign_users'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.users.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý tài khoản</p>
+                            </a>
+                        </li>
+                    @endcanany
+                    @canany(['view_roles', 'create_roles', 'edit_roles', 'delete_roles'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.roles.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý vai trò</p>
+                            </a>
+                        </li>
+                    @endcanany
+                    @canany(['view_permissions', 'create_permissions', 'edit_permissions', 'delete_permissions'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.permissions.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý quyền</p>
+                            </a>
+                        </li>
+                    @endcanany
+                </ul>
             </li>
-        @endcan
-        @canany(['view_roles', 'create_roles', 'edit_roles', 'delete_roles'])
-            <li class="side-nav-item">
-                <a href="{{ route('admin.roles.index') }}" class="side-nav-link">
-                    <i class="dripicons-chevron-right"></i>
-                    <span>Quản lý vai trò</span>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon bi bi-box-seam-fill"></i>
+                    <p>
+                        Quản lý khai báo
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </p>
                 </a>
+                <ul class="nav nav-treeview">
+                    @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.declarations.positions.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý chức vụ</p>
+                            </a>
+                        </li>
+                    @endcanany
+                    @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.declarations.areas.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý khu vực</p>
+                            </a>
+                        </li>
+                    @endcanany
+                    @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.declarations.authors.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý tác giả</p>
+                            </a>
+                        </li>
+                    @endcanany
+                    @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.declarations.publishers.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý nhà xuất bản</p>
+                            </a>
+                        </li>
+                    @endcanany
+                    @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.declarations.categories.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý danh mục</p>
+                            </a>
+                        </li>
+                    @endcanany
+                    @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.declarations.shelves.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý kệ sách</p>
+                            </a>
+                        </li>
+                    @endcanany
+                    @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.declarations.series.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý series</p>
+                            </a>
+                        </li>
+                    @endcanany
+                    @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.declarations.posts.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý bài đăng</p>
+                            </a>
+                        </li>
+                    @endcanany
+                    @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.declarations.books.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý sách</p>
+                            </a>
+                        </li>
+                    @endcanany
+                    @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.declarations.book_copies.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý bản sao sách</p>
+                            </a>
+                        </li>
+                    @endcanany
+                </ul>
             </li>
-        @endcanany
-        @canany(['view_permissions', 'create_permissions', 'edit_permissions', 'delete_permissions'])
-            <li class="side-nav-item">
-                <a href="{{ route('admin.permissions.index') }}" class="side-nav-link">
-                    <i class="dripicons-chevron-right"></i>
-                    <span>Quản lý quyền</span>
-                </a>
-            </li>
-        @endcanany
-        <li class="side-nav-title side-nav-item bg-primary-lighten text-white"><h6>Quản lý khai báo</h6></li>
-        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
-        <li class="side-nav-item">
-            <a href="{{ route('admin.declarations.positions.index') }}" class="side-nav-link">
-                <i class="dripicons-chevron-right"></i>
-                <span>Quản lý chức vụ</span>
-            </a>
-        </li>
-        @endcanany
-        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
-            <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.areas.index') }}" class="side-nav-link">
-                    <i class="dripicons-chevron-right"></i>
-                    <span>Quản lý khu vực</span>
-                </a>
-            </li>
-        @endcanany
-        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
-            <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.authors.index') }}" class="side-nav-link">
-                    <i class="dripicons-chevron-right"></i>
-                    <span>Quản lý tác giả</span>
-                </a>
-            </li>
-        @endcanany
-        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
-            <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.publishers.index') }}" class="side-nav-link">
-                    <i class="dripicons-chevron-right"></i>
-                    <span>Quản lý nhà xuất bản</span>
-                </a>
-            </li>
-        @endcanany
-        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
-            <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.categories.index') }}" class="side-nav-link">
-                    <i class="dripicons-chevron-right"></i>
-                    <span>Quản lý danh mục</span>
-                </a>
-            </li>
-        @endcanany
-        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
-            <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.shelves.index') }}" class="side-nav-link">
-                    <i class="dripicons-chevron-right"></i>
-                    <span>Quản lý kệ sách</span>
-                </a>
-            </li>
-        @endcanany
-        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
-            <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.series.index') }}" class="side-nav-link">
-                    <i class="dripicons-chevron-right"></i>
-                    <span>Quản lý series</span>
-                </a>
-            </li>
-        @endcanany
-        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
-            <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.posts.index') }}" class="side-nav-link">
-                    <i class="dripicons-chevron-right"></i>
-                    <span>Quản lý bài đăng</span>
-                </a>
-            </li>
-        @endcanany
-        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
-            <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.books.index') }}" class="side-nav-link">
-                    <i class="dripicons-chevron-right"></i>
-                    <span>Quản lý sách</span>
-                </a>
-            </li>
-        @endcanany
-        @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
-            <li class="side-nav-item">
-                <a href="{{ route('admin.declarations.book_copies.index') }}" class="side-nav-link">
-                    <i class="dripicons-chevron-right"></i>
-                    <span>Quản lý bản sao sách</span>
-                </a>
-            </li>
-        @endcanany
-    </ul>
-    <!-- End Sidebar -->
-
-    <div class="clearfix"></div>
-    <!-- Sidebar -left -->
+        </ul>
+        <!--end::Sidebar Menu-->
+    </nav>
 </div>
+<!--end::Sidebar Wrapper-->

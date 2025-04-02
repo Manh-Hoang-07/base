@@ -24,7 +24,10 @@ class BaseController extends Controller
      */
     protected function getFilters(Request $request, array $allowKeys = []): array
     {
-        return DataTable::getFiltersData($request->all(), $allowKeys);
+        $validColumns = $this->getService()->getColumns();
+        $filters = DataTable::getFiltersData($request->all(), $allowKeys);
+        // Lọc chỉ giữ lại những cột hợp lệ
+        return collect($filters)->only($validColumns)->toArray();
     }
 
     /**

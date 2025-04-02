@@ -244,4 +244,14 @@ abstract class BaseRepository
         $table = $this->getModel()->getTable(); // Lấy tên bảng từ model
         return Schema::hasColumn($table, $column);
     }
+
+    /**
+     * Lấy danh sách các cột trong bảng của model hiện tại
+     * @return array
+     */
+    public function getColumns(): array
+    {
+        $table = $this->getModel()->getTable(); // Lấy tên bảng từ model
+        return Schema::getColumnListing($table); // Trả về danh sách các cột
+    }
 }

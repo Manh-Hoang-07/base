@@ -2,14 +2,6 @@
 
 @section('content')
     <div class="">
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="">Trang chủ</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Quản lý quyền</li>
-            </ol>
-        </nav>
-
         <div class="card shadow-sm">
             <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
                 <h5 class="mb-0">Danh sách quyền</h5>

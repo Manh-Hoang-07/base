@@ -46,6 +46,7 @@ class DataTable
     {
         $options['sortBy'] = $data['sortBy'] ?? 'id';
         $options['sortOrder'] = $data['sortOrder'] ?? 'asc';
+        $options['page'] = $data['page'] ?? 1;
         return $options;
     }
 }

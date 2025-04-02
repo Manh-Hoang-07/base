@@ -80,4 +80,13 @@ class BaseService
     {
         return $this->getRepository()->autocomplete($term, $column, $limit);
     }
+
+    /**
+     * Hàm dùng chung cho autocomplete
+     * @return array
+     */
+    public function getColumns(): array
+    {
+        return $this->getRepository()->getColumns();
+    }
 }
