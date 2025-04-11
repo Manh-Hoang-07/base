@@ -44,7 +44,7 @@ class ProfileService extends BaseService
             'success' => false,
             'messages' => 'Cập nhật hồ sơ thất bại'
         ];
-        $keys = ['address', 'phone', 'birth_date', 'gender'];
+        $keys = ['name', 'address', 'phone', 'birth_date', 'gender'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($user_id)
             && !empty($updateData)

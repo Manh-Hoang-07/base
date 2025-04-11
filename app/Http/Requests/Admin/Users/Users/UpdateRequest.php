@@ -19,13 +19,31 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => [
+            'name' => [
                 'required',
-                'email',
-                Rule::unique('users', 'email')->ignore($this->route('id')),
+                'string',
+                'max:255',
             ],
-            'status' => 'boolean'
+            'phone' => [
+                'nullable',
+                'string',
+                'max:15',
+                'regex:/^[0-9]+$/',
+            ],
+            'address' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+            'birth_date' => [
+                'nullable',
+                'date',
+                'before:today',
+            ],
+            'gender' => [
+                'nullable',
+                'in:male,female,other',
+            ],
         ];
     }
 
@@ -37,10 +55,16 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên không được để trống.',
-            'email.required' => 'Email không được để trống.',
-            'email.email' => 'Email không hợp lệ.',
-            'email.unique' => 'Email đã tồn tại.',
-            'status.boolean' => 'Trạng thái không hợp lệ.'
+            'name.string' => 'Tên phải là chuỗi văn bản.',
+            'name.max' => 'Tên không được quá 255 ký tự.',
+            'phone.string' => 'Số điện thoại phải là chuỗi.',
+            'phone.max' => 'Số điện thoại không được quá 15 ký tự.',
+            'phone.regex' => 'Số điện thoại chỉ có thể chứa các ký tự số.',
+            'address.string' => 'Địa chỉ phải là chuỗi văn bản.',
+            'address.max' => 'Địa chỉ không được quá 255 ký tự.',
+            'birth_date.date' => 'Ngày sinh không hợp lệ.',
+            'birth_date.before' => 'Ngày sinh phải trước hôm nay.',
+            'gender.in' => 'Giới tính phải là Nam, Nữ hoặc Khác.',
         ];
     }
 }

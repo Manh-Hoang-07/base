@@ -1,4 +1,5 @@
-<!--begin::Header-->
+@php use Illuminate\Support\Facades\Auth; @endphp
+    <!--begin::Header-->
 <nav class="app-header navbar navbar-expand bg-body">
     <!--begin::Container-->
     <div class="container-fluid">
@@ -57,7 +58,7 @@
                         class="user-image rounded-circle shadow"
                         alt="User Image"
                     />
-                    <span class="d-none d-md-inline">Alexander Pierce</span>
+                    <span class="d-none d-md-inline">{{ Auth::user()->email ?? '' }}</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                     <!--begin::User Image-->
@@ -68,8 +69,8 @@
                             alt="User Image"
                         />
                         <p>
-                            Alexander Pierce - Web Developer
-                            <small>Member since Nov. 2023</small>
+                            {{ Auth::user()->email ?? '' }}
+                            <small>Member since {{ Auth::user()->created_at ?? '' }}</small>
                         </p>
                     </li>
                     <!--end::User Image-->
@@ -87,7 +88,7 @@
                     <!--begin::Menu Footer-->
                     <li class="user-footer">
                         <a href="#" class="btn btn-default btn-flat">Profile</a>
-                        <a href="#" class="btn btn-default btn-flat float-end">Sign out</a>
+                        <a href="{{ route('logout') }}" class="btn btn-default btn-flat float-end">Sign out</a>
                     </li>
                     <!--end::Menu Footer-->
                 </ul>

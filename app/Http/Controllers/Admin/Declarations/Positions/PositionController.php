@@ -70,8 +70,8 @@ class PositionController extends BaseController
      */
     public function edit($id): View|Application|Factory
     {
-        $permission = $this->getService()->findById($id);
-        return view('admin.declarations.positions.edit', compact('permission'));
+        $position = $this->getService()->findById($id);
+        return view('admin.declarations.positions.edit', compact('position'));
     }
 
     /**

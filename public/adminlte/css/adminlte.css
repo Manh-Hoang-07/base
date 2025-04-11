@@ -9058,7 +9058,7 @@ textarea.form-control-lg {
 
 .bg-body-secondary {
   --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-secondary-bg-rgb), var(--bs-bg-opacity)) !important;
+    background-color: rgb(253 254 255) !important;
 }
 
 .bg-body-tertiary {

@@ -1,7 +1,12 @@
 @extends('admin.index')
 
-@section('content')
+@section('page_title', 'Danh sách tài khoản')
 
+@section('breadcrumb')
+    <li class="breadcrumb-item active" aria-current="page">Danh sách tài khoản</li>
+@endsection
+
+@section('content')
     <!--begin::App Content-->
     <div class="app-content">
         <!--begin::Container-->
@@ -54,9 +59,20 @@
                                     <td>{{ $user->created_at->format('d/m/Y') }}</td>
                                     <td>{{ !empty($user->is_blocked) ? 'Khóa' : 'Không khóa' }}</td>
                                     <td>
-                                        @foreach($user->roles as $role)
-                                            <span class="badge bg-primary">{{ $role->name ?? '' }}</span>
-                                        @endforeach
+                                        @php
+                                            $roleCount = $user->roles->count();
+                                        @endphp
+
+                                        @if ($roleCount > 0)
+                                            <button type="button"
+                                                    class="btn btn-sm btn-success"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#rolesModal_{{ $user->id }}">
+                                                {{ $roleCount }} vai trò
+                                            </button>
+                                        @else
+                                            <span class="badge bg-secondary">0 vai trò</span>
+                                        @endif
                                     </td>
                                     <td>
                                         @canany(['assign_users'])
@@ -70,14 +86,18 @@
                                                   style="display:inline;">
                                                 @csrf
                                                 <input type="hidden" name="status" value="{{ !empty($user->is_blocked) ? 0 : 1 }}">
-                                                <button type="submit" title="Đổi trạng thái" class="btn btn-sm btn-warning"><i class="bi {{ !empty($user->is_blocked) ? 'bi-unlock-fill' : 'bi-lock-fill' }}"></i> </button>
+                                                <button type="submit" title="Đổi trạng thái" class="btn btn-sm btn-warning">
+                                                    <i class="bi {{ !empty($user->is_blocked) ? 'bi-unlock-fill' : 'bi-lock-fill' }}"></i>
+                                                </button>
                                             </form>
                                         @endcanany
                                         @canany(['delete_users'])
                                             <form action="{{ route('admin.users.delete', $user->id ?? '') }}" method="POST"
                                                   style="display:inline;">
                                                 @csrf
-                                                <button type="submit" title="Xóa" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
+                                                <button type="submit" title="Xóa" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
                                             </form>
                                         @endcanany
                                     </td>
@@ -87,6 +107,7 @@
                         </table>
                     </div>
                     <!-- /.card-body -->
+
                     <!-- Hiển thị phân trang -->
                     @include('vendor.pagination.pagination', ['paginator' => $users])
                 </div>
@@ -97,4 +118,35 @@
         <!--end::Container-->
     </div>
     <!--end::App Content-->
+
+    <!-- Modals hiển thị danh sách vai trò của từng tài khoản -->
+    @foreach($users as $user)
+        <div class="modal fade" id="rolesModal_{{ $user->id }}" tabindex="-1"
+             aria-labelledby="rolesModalLabel_{{ $user->id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="rolesModalLabel_{{ $user->id }}">
+                            Vai trò của: <strong>{{ $user->email }}</strong>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        @if ($user->roles->count())
+                            <ul class="list-group">
+                                @foreach ($user->roles as $role)
+                                    <li class="list-group-item">{{ $role->title ?? $role->name }}</li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p>Người dùng này chưa có vai trò nào.</p>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
 @endsection

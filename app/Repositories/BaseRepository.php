@@ -196,6 +196,7 @@ abstract class BaseRepository
             }
             return false;
         } catch (Throwable $e) {
+            dd($e);
             return false;
         }
     }

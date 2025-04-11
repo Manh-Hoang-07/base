@@ -2,24 +2,57 @@
 
 @section('title', 'Gán Vai Trò')
 
+@section('page_title', 'Gán Vai Trò Cho Người Dùng')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">Tài khoản</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Gán vai trò</li>
+@endsection
+
 @section('content')
-    <h2>Gán Vai Trò Cho Người Dùng</h2>
+    <!--begin::App Content-->
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('admin.users.assignRoles', $user->id) }}">
+                            @csrf
 
-    <form method="POST" action="{{ route('admin.users.assignRoles', $user->id) }}">
-        @csrf
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label"><strong>Email:</strong></label>
+                                    <input type="email" class="form-control" value="{{ $user->email }}" disabled>
+                                </div>
+                            </div>
 
-        <p><strong>Tên:</strong> {{ $user->name }}</p>
-        <p><strong>Email:</strong> {{ $user->email }}</p>
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Vai trò:</strong></label>
+                                <select class="form-control select2" name="roles[]"
+                                        multiple
+                                        data-field="name"
+                                        data-selected='@json($userRoles ?? [])'
+                                        data-url="{{ route('admin.roles.autocomplete') }}">
+                                    <option value="">Chọn vai trò</option>
+                                </select>
+                                @error('roles')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
 
-        <label><strong>Vai trò:</strong></label><br>
-        @foreach($roles as $role)
-            <input type="checkbox" name="roles[]" value="{{ $role->name }}"
-                {{ in_array($role->name, $userRoles) ? 'checked' : '' }}>
-            {{ $role->name }} <br>
-        @endforeach
-
-        <button type="submit">Lưu</button>
-    </form>
-
-    <a href="{{ route('admin.users.index') }}">Quay lại</a>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Lưu</button>
+                                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Quay lại</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content-->
 @endsection

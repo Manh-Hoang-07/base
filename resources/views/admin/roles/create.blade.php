@@ -1,40 +1,67 @@
 @extends('admin.index')
 
+@section('title', 'Thêm vai trò')
+@section('page_title', 'Thêm vai trò')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item active" aria-current="page">Thêm vai trò</li>
+@endsection
+
 @section('content')
-    <div class="container">
-        <h2>Thêm Vai Trò Mới</h2>
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Thông tin vai trò</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ route('admin.roles.store') }}" method="POST">
+                            @csrf
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                            {{-- Tên hiển thị --}}
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Tên hiển thị</label>
+                                <input type="text" id="title" name="title"
+                                       class="form-control @error('title') is-invalid @enderror"
+                                       value="{{ old('title') }}" required>
+                                @error('title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Tên hệ thống --}}
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Tên hệ thống</label>
+                                <input type="text" id="name" name="name"
+                                       class="form-control @error('name') is-invalid @enderror"
+                                       value="{{ old('name') }}" required>
+                                @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Quyền --}}
+                            <div class="mb-3">
+                                <label class="form-label">Danh sách quyền</label>
+                                <select class="form-control select2 @error('permissions') is-invalid @enderror"
+                                        name="permissions[]" multiple
+                                        data-field="name"
+                                        data-url="{{ route('admin.permissions.autocomplete') }}">
+                                    <option value="">Chọn quyền</option>
+                                </select>
+                                @error('permissions')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Nút hành động --}}
+                            <button type="submit" class="btn btn-primary">Thêm vai trò</button>
+                            <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary">Hủy</a>
+                        </form>
+                    </div>
+                </div>
             </div>
-        @endif
-
-        <form action="{{ route('admin.roles.store') }}" method="POST">
-            @csrf
-            <div class="mb-3">
-                <label for="title" class="form-label">Ý nghĩa vai trò</label>
-                <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="name" class="form-label">Tên Vai Trò</label>
-                <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}" required>
-            </div>
-
-            <div class="form-group">
-                <select class="form-control select2" name="permissions[]" data-field="name" multiple
-                        data-url="{{ route('admin.permissions.autocomplete') }}">
-                    <option value="">Chọn quyền</option>
-                </select>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Thêm Vai Trò</button>
-            <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary">Hủy</a>
-        </form>
+        </div>
     </div>
 @endsection
