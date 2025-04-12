@@ -1,36 +1,82 @@
 @extends('admin.index')
 
+@section('page_title', 'Thêm Tác Giả')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.declarations.authors.index') }}">Tác Giả</a></li>
+    <li class="breadcrumb-item active">Thêm mới</li>
+@endsection
+
 @section('content')
-    <div class="container">
-        <h2>Thêm Tác Giả</h2>
-        <form action="{{ route('admin.declarations.authors.store') }}" method="POST">
-            @csrf
-            <div class="mb-3">
-                <label for="name" class="form-label">Tên Tác Giả</label>
-                <input type="text" class="form-control" name="name" required>
-
-                <label for="pen_name" class="form-label">Bút Danh</label>
-                <input type="text" class="form-control" name="pen_name">
-
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" name="email" required>
-
-                <label for="phone" class="form-label">Số Điện Thoại</label>
-                <input type="text" class="form-control" name="phone">
-
-                <label for="nationality" class="form-label">Quốc Tịch</label>
-                <input type="text" class="form-control" name="nationality">
-
-                <label for="biography" class="form-label">Tiểu Sử</label>
-                <textarea class="form-control" name="biography" rows="4"></textarea>
-
-                <label for="birth_date" class="form-label">Ngày Sinh</label>
-                <input type="date" class="form-control" name="birth_date">
-
-                <label for="death_date" class="form-label">Ngày Mất</label>
-                <input type="date" class="form-control" name="death_date">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Thêm Tác Giả</h5>
             </div>
-            <button type="submit" class="btn btn-success">Thêm Tác Giả</button>
-        </form>
+            <div class="card-body">
+                <form action="{{ route('admin.declarations.authors.store') }}" method="POST">
+                    @csrf
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Tên Tác Giả</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Bút Danh</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="pen_name" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Số Điện Thoại</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="phone" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Quốc Tịch</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="nationality" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Tiểu Sử</label>
+                        <div class="col-sm-10">
+                            <textarea name="biography" rows="4" class="form-control"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Ngày Sinh</label>
+                        <div class="col-sm-4">
+                            <input type="date" name="birth_date" class="form-control">
+                        </div>
+
+                        <label class="col-sm-2 col-form-label text-end">Ngày Mất</label>
+                        <div class="col-sm-4">
+                            <input type="date" name="death_date" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-success">Thêm Tác Giả</button>
+                        <a href="{{ route('admin.declarations.authors.index') }}" class="btn btn-secondary">Hủy</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 @endsection

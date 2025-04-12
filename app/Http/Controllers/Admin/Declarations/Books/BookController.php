@@ -31,8 +31,8 @@ class BookController extends BaseController
      */
     public function index(Request $request): View|Application|Factory
     {
-        $filters = $this->getFilters($request);
-        $options = $this->getOptions($request);
+        $filters = $this->getFilters($request->all());
+        $options = $this->getOptions($request->all());
         $books = $this->getService()->getList($filters, $options);
         return view('admin.declarations.books.index', compact('books'));
     }

@@ -6,12 +6,12 @@
 
             {{-- Quản lý chung --}}
             @php
-                $activeMenuGroup1 = isActive(['admin.users.*', 'admin.roles.*', 'admin.permissions.*'], 'menu-open');
-                $activeLinkGroup1 = isActive(['admin.users.*', 'admin.roles.*', 'admin.permissions.*']);
+                $activeGroupGeneral = isActive(['admin.users.*', 'admin.roles.*', 'admin.permissions.*'], 'menu-open');
+                $activeLinkGeneral = isActive(['admin.users.*', 'admin.roles.*', 'admin.permissions.*']);
             @endphp
 
-            <li class="nav-item {{ $activeMenuGroup1 }}">
-                <a href="#" class="nav-link {{ $activeLinkGroup1 }}">
+            <li class="nav-item {{ $activeGroupGeneral }}">
+                <a href="#" class="nav-link {{ $activeLinkGeneral }}">
                     <i class="nav-icon bi bi-box-seam-fill"></i>
                     <p>
                         Quản lý chung
@@ -48,10 +48,50 @@
                 </ul>
             </li>
 
+            {{-- Quản lý mượn trả --}}
+            @php
+                $activeGroupTicket = isActive(['admin.users.*', 'admin.roles.*', 'admin.permissions.*'], 'menu-open');
+                $activeLinkTicket = isActive(['admin.users.*', 'admin.roles.*', 'admin.permissions.*']);
+            @endphp
+
+            <li class="nav-item {{ $activeGroupTicket }}">
+                <a href="#" class="nav-link {{ $activeLinkTicket }}">
+                    <i class="nav-icon bi bi-box-seam-fill"></i>
+                    <p>
+                        Quản lý mượn trả
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    @canany(['view_users', 'create_users', 'edit_users', 'delete_users', 'assign_users'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.users.index') }}" class="nav-link {{ isActive('admin.users.*') }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý mượn sách</p>
+                            </a>
+                        </li>
+                    @endcanany
+
+                    @canany(['view_roles', 'create_roles', 'edit_roles', 'delete_roles'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.roles.index') }}" class="nav-link {{ isActive('admin.roles.*') }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quản lý trả sách</p>
+                            </a>
+                        </li>
+                    @endcanany
+                </ul>
+            </li>
+
 
             {{-- Quản lý khai báo --}}
-            <li class="nav-item {{ isActive('admin.declarations.*', 'menu-open') }}">
-                <a href="#" class="nav-link {{ isActive('admin.declarations.*') }}">
+            @php
+                $activeGroupDeclaration = isActive(['admin.declarations.*'], 'menu-open');
+                $activeLinkDeclaration = isActive(['admin.declarations.*']);
+            @endphp
+
+            <li class="nav-item {{ $activeGroupDeclaration }}">
+                <a href="#" class="nav-link {{ $activeLinkDeclaration }}">
                     <i class="nav-icon bi bi-box-seam-fill"></i>
                     <p>
                         Quản lý khai báo
@@ -127,6 +167,41 @@
                             <a href="{{ route('admin.declarations.book_copies.index') }}" class="nav-link {{ isActive('admin.declarations.book_copies.*') }}">
                                 <i class="nav-icon bi bi-circle"></i>
                                 <p>Quản lý bản sao sách</p>
+                            </a>
+                        </li>
+                    @endcanany
+                </ul>
+            </li>
+
+            {{-- Báo cáo thống kê --}}
+            @php
+                $activeMenuGroup1 = isActive(['admin.reports.*'], 'menu-open');
+                $activeLinkGroup1 = isActive(['admin.reports.*']);
+            @endphp
+
+            <li class="nav-item {{ $activeMenuGroup1 }}">
+                <a href="#" class="nav-link {{ $activeLinkGroup1 }}">
+                    <i class="nav-icon bi bi-box-seam-fill"></i>
+                    <p>
+                        Báo cáo thống kê
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    @canany(['view_users', 'create_users', 'edit_users', 'delete_users', 'assign_users'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.users.index') }}" class="nav-link {{ isActive('admin.users.*') }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Báo cáo mượn sách</p>
+                            </a>
+                        </li>
+                    @endcanany
+
+                    @canany(['view_roles', 'create_roles', 'edit_roles', 'delete_roles'])
+                        <li class="nav-item">
+                            <a href="{{ route('admin.roles.index') }}" class="nav-link {{ isActive('admin.roles.*') }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Báo cáo trả sách</p>
                             </a>
                         </li>
                     @endcanany

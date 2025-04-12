@@ -18,26 +18,26 @@ class BaseController extends Controller
 
     /**
      * Hàm lấy ra điều kiện lọc
-     * @param Request $request
+     * @param array $filters
      * @param array $allowKeys
      * @return array
      */
-    protected function getFilters(Request $request, array $allowKeys = []): array
+    protected function getFilters(array $filters, array $allowKeys = []): array
     {
         $validColumns = $this->getService()->getColumns();
-        $filters = DataTable::getFiltersData($request->all(), $allowKeys);
+        $filters = DataTable::getFiltersData($filters, $allowKeys);
         // Lọc chỉ giữ lại những cột hợp lệ
         return collect($filters)->only($validColumns)->toArray();
     }
 
     /**
      * Hàm lấy ra các options lấy dữ liệu
-     * @param Request $request
+     * @param array $options
      * @return array
      */
-    protected function getOptions(Request $request): array
+    protected function getOptions(array $options): array
     {
-        return DataTable::getOptionsData($request->all());
+        return DataTable::getOptionsData($options);
     }
 
     /**

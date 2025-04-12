@@ -47,6 +47,9 @@ class DataTable
         $options['sortBy'] = $data['sortBy'] ?? 'id';
         $options['sortOrder'] = $data['sortOrder'] ?? 'asc';
         $options['page'] = $data['page'] ?? 1;
+        if (!empty($data['relations'])) {
+            $options['relations'] = $data['relations'];
+        }
         return $options;
     }
 }

@@ -32,8 +32,8 @@ class AuthorController extends BaseController
      */
     public function index(Request $request): View|Application|Factory
     {
-        $filters = $this->getFilters($request);
-        $options = $this->getOptions($request);
+        $filters = $this->getFilters($request->all());
+        $options = $this->getOptions($request->all());
         $authors = $this->getService()->getList($filters, $options);
         return view('admin.declarations.authors.index', compact('authors'));
     }

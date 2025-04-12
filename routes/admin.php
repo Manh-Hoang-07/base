@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\Books\BookBorrowController;
+use App\Http\Controllers\Admin\Books\BookReturnController;
 use App\Http\Controllers\Admin\Declarations\Areas\AreaController;
 use App\Http\Controllers\Admin\Declarations\Authors\AuthorController;
 use App\Http\Controllers\Admin\Declarations\BookCopies\BookCopyController;
@@ -49,7 +51,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::middleware(['canAny:view_roles'])->get('/autocomplete', [RoleController::class, 'autocomplete'])->name('autocomplete'); // Lấy vai trò theo từ
     });
 
-    Route::prefix('permissions')->name('permissions.')->group(function () { // Chức năng quản lý quyền
+    // Chức năng quản lý quyền
+    Route::prefix('permissions')->name('permissions.')->group(function () {
         Route::middleware(['canAny:view_permissions'])->get('/index', [PermissionController::class, 'index'])->name('index'); // Hiển thị danh sách quyền
         Route::middleware(['canAny:create_permissions'])->get('/create', [PermissionController::class, 'create'])->name('create'); // Hiển thị form tạo mới quyền
         Route::middleware(['canAny:create_permissions'])->post('/store', [PermissionController::class, 'store'])->name('store'); // Xử lý thêm mới quyền
@@ -59,7 +62,28 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::middleware(['canAny:view_permissions'])->get('/autocomplete', [PermissionController::class, 'autocomplete'])->name('autocomplete'); // Lấy quyền theo từ
     });
 
-    Route::prefix('declarations')->name('declarations.')->group(function () { // Chức năng quản lý khai báo
+    // Quản lý mượn sách
+    Route::prefix('book-borrows')->name('ticket-borrows.')->group(function () {
+        Route::middleware(['canAny:view_book_borrows'])->get('/', [BookBorrowController::class, 'index'])->name('index'); // Hiển thị danh sách mượn sách
+        Route::middleware(['canAny:create_book_borrows'])->get('/create', [BookBorrowController::class, 'create'])->name('create'); // Hiển thị form tạo mượn sách
+        Route::middleware(['canAny:create_book_borrows'])->post('/store', [BookBorrowController::class, 'store'])->name('store'); // Xử lý tạo mới mượn sách
+        Route::middleware(['canAny:edit_book_borrows'])->get('/edit/{id}', [BookBorrowController::class, 'edit'])->name('edit'); // Hiển thị form sửa mượn sách
+        Route::middleware(['canAny:edit_book_borrows'])->post('/update/{id}', [BookBorrowController::class, 'update'])->name('update'); // Xử lý sửa mượn sách
+        Route::middleware(['canAny:delete_book_borrows'])->delete('/delete/{id}', [BookBorrowController::class, 'delete'])->name('delete'); // Xử lý xóa mượn sách
+    });
+
+    // Quản lý trả sách
+    Route::prefix('book-returns')->name('ticket-returns.')->group(function () {
+        Route::middleware(['canAny:view_book_returns'])->get('/', [BookReturnController::class, 'index'])->name('index'); // Hiển thị danh sách trả sách
+        Route::middleware(['canAny:create_book_returns'])->get('/create', [BookReturnController::class, 'create'])->name('create'); // Hiển thị form tạo trả sách
+        Route::middleware(['canAny:create_book_returns'])->post('/store', [BookReturnController::class, 'store'])->name('store'); // Xử lý tạo mới trả sách
+        Route::middleware(['canAny:edit_book_returns'])->get('/edit/{id}', [BookReturnController::class, 'edit'])->name('edit'); // Hiển thị form sửa trả sách
+        Route::middleware(['canAny:edit_book_returns'])->post('/update/{id}', [BookReturnController::class, 'update'])->name('update'); // Xử lý sửa trả sách
+        Route::middleware(['canAny:delete_book_returns'])->delete('/delete/{id}', [BookReturnController::class, 'delete'])->name('delete'); // Xử lý xóa trả sách
+    });
+
+    // Chức năng quản lý khai báo
+    Route::prefix('declarations')->name('declarations.')->group(function () {
         Route::prefix('positions')->name('positions.')->group(function () { // Chức năng quản lý chức vụ
             Route::middleware(['canAny:view_declarations'])->get('/index', [PositionController::class, 'index'])->name('index'); // Hiển thị danh sách quyền
             Route::middleware(['canAny:create_declarations'])->get('/create', [PositionController::class, 'create'])->name('create'); // Hiển thị form tạo mới quyền
