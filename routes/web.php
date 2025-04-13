@@ -28,7 +28,9 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 });
 
-Route::get('/test', [\App\Http\Controllers\Admin\Declarations\Series\SeriesController::class, 'store'])->name('test');
+Route::get('/test', [\App\Http\Controllers\Admin\Books\BookBorrowTicketController::class, 'index'])->name('test');
+Route::get('/test1', [\App\Http\Controllers\Admin\Books\BookBorrowTicketController::class, 'create'])->name('test1');
+Route::post('/test2', [\App\Http\Controllers\Admin\Books\BookBorrowTicketController::class, 'store'])->name('test2');
 
 Route::post('/upload', [UploadController::class, 'upload'])->name('upload');
 

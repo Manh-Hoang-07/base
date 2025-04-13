@@ -1,57 +1,77 @@
 $(document).ready(function () {
-    $('.select2').each(function () {
-        const selectElement = $(this);
-        const url = selectElement.data('url'); // Lấy URL từ data-url
-        const field = selectElement.data('field') || 'id'; // Trường lấy giá trị
-        const displayField = selectElement.data('display-field') || 'title'; // Trường hiển thị
-        const selectedData = selectElement.attr('data-selected'); // Dữ liệu đã chọn
-        const isMultiple = selectElement.prop('multiple'); // Kiểm tra select multiple hay không
-        let selectedValues = selectedData ? JSON.parse(selectedData) : (isMultiple ? [] : null);
+    function initializeSelect2() {
+        $('.select2').each(function () {
+            const selectElement = $(this);
+            const url = selectElement.data('url'); // Lấy URL từ data-url
+            const field = selectElement.data('field') || 'id'; // Trường lấy giá trị
+            const displayField = selectElement.data('display-field') || 'name'; // Trường hiển thị
+            const selectedData = selectElement.attr('data-selected'); // Dữ liệu đã chọn
+            const isMultiple = selectElement.prop('multiple'); // Kiểm tra select multiple hay không
+            let selectedValues = selectedData ? JSON.parse(selectedData) : (isMultiple ? [] : null);
 
-        // Khởi tạo Select2
-        selectElement.select2({
-            ajax: {
-                url: url,
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {term: params.term};
+            // Khởi tạo Select2
+            selectElement.select2({
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {term: params.term};
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.map(function (item) {
+                                return {id: item[field], text: item[displayField]};
+                            })
+                        };
+                    },
+                    cache: true
                 },
-                processResults: function (data) {
-                    return {
-                        results: data.map(function (item) {
-                            return {id: item[field], text: item[displayField]};
-                        })
-                    };
-                },
-                cache: true
-            },
-            placeholder: 'Chọn mục',
-            allowClear: true
-        });
-
-        // Nếu có dữ liệu đã chọn, thêm vào Select2
-        if (selectedValues) {
-            $.ajax({
-                url: url,
-                dataType: 'json',
-                success: function (data) {
-                    if (isMultiple) {
-                        let selectedOptions = selectedValues.map(value => {
-                            let item = data.find(item => item[field] == value);
-                            let text = item ? item[displayField] : value; // Nếu không tìm thấy thì dùng chính giá trị
-                            return new Option(text, value, true, true);
-                        });
-                        selectElement.append(selectedOptions).trigger('change');
-                    } else {
-                        let item = data.find(item => item[field] == selectedValues);
-                        let text = item ? item[displayField] : selectedValues;
-                        let option = new Option(text, selectedValues, true, true);
-                        selectElement.append(option).trigger('change');
-                    }
-                }
+                placeholder: 'Chọn mục',
+                allowClear: true
             });
-        }
+
+            // Nếu có dữ liệu đã chọn, thêm vào Select2
+            if (selectedValues) {
+                $.ajax({
+                    url: url,
+                    dataType: 'json',
+                    success: function (data) {
+                        if (isMultiple) {
+                            let selectedOptions = selectedValues.map(value => {
+                                let item = data.find(item => item[field] == value);
+                                let text = item ? item[displayField] : value; // Nếu không tìm thấy thì dùng chính giá trị
+                                return new Option(text, value, true, true);
+                            });
+                            selectElement.append(selectedOptions).trigger('change');
+                        } else {
+                            let item = data.find(item => item[field] == selectedValues);
+                            let text = item ? item[displayField] : selectedValues;
+                            let option = new Option(text, selectedValues, true, true);
+                            selectElement.append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+    }
+    // Khởi tạo Select2 ban đầu
+    initializeSelect2();
+
+    // Sử dụng MutationObserver để theo dõi sự thay đổi trong DOM
+    const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+            // Kiểm tra xem có phần tử mới với class select2 được thêm vào không
+            if ($(mutation.addedNodes).find('.select2').length > 0) {
+                initializeSelect2(); // Khởi tạo lại select2 cho các thẻ mới thêm vào
+            }
+        });
+    });
+
+    // Cấu hình MutationObserver
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
     });
 });
 

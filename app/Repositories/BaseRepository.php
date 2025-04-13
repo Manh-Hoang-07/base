@@ -229,7 +229,7 @@ abstract class BaseRepository
     {
         $results = $this->getModel()->query()
             ->where($column, 'like', '%' . $term . '%')
-            ->select('id', $column, 'name')
+            ->select('id', $column)
             ->limit($limit)
             ->get();
         return response()->json($results);

@@ -2,12 +2,14 @@
 
 namespace App\Services\Admin\Books;
 
+use App\Models\BookBorrowTicket;
 use App\Repositories\Admin\Books\BookBorrowTicketRepository;
 use App\Repositories\Admin\Declarations\AreaRepository;
 use App\Services\BaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use lib\DataTable;
 
 class BookBorrowTicketService extends BaseService
@@ -30,14 +32,36 @@ class BookBorrowTicketService extends BaseService
     {
         $return = [
             'success' => false,
-            'messages' => 'Thêm mới khu vực thất bại'
+            'messages' => 'Thêm mới phiếu mượn thất bại'
         ];
-        $keys = ['name', 'code', 'location', 'type', 'description', 'capacity', 'status'];
-        if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->getRepository()->create($insertData)
-        ) {
-            $return['success'] = true;
-            $return['messages'] = 'Thêm mới khu vực thành công';
+
+        $keys = ['user_id', 'borrowed_at', 'due_at', 'note', 'books'];
+        if ($insertData = DataTable::getChangeData($data, $keys)) {
+            DB::beginTransaction();
+            try {
+                // Tạo phiếu mượn
+                $ticket = BookBorrowTicket::create([
+                    'user_id'     => $insertData['user_id'],
+                    'borrowed_at' => $insertData['borrowed_at'],
+                    'due_at'      => $insertData['due_at'],
+                    'note'        => $insertData['note'] ?? null,
+                ]);
+
+                // Duyệt qua danh sách sách được mượn
+                foreach ($insertData['books'] as $book) {
+                    $ticket->details()->create([
+                        'book_id'  => $book['book_id'],
+                        'quantity' => $book['quantity'],
+                        'note'     => $book['note'] ?? null,
+                    ]);
+                }
+
+                DB::commit();
+                $return['success'] = true;
+                $return['messages'] = 'Thêm mới phiếu mượn thành công.';
+            } catch (\Exception $e) {
+                DB::rollBack();
+            }
         }
         return $return;
     }

@@ -3,18 +3,15 @@
 namespace App\Http\Controllers\Admin\Books;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Admin\Users\Users\AssignRequest;
-use App\Http\Requests\Admin\Users\Users\StoreRequest;
-use App\Http\Requests\Admin\Users\Users\UpdateRequest;
+use App\Http\Requests\Admin\Books\BookBorrowTickets\StoreRequest;
+use App\Models\BookBorrowTicket;
 use App\Services\Admin\Books\BookBorrowTicketService;
-use App\Services\Admin\Users\UserService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use lib\DataTable;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 
 class BookBorrowTicketController extends BaseController
 {
@@ -47,43 +44,31 @@ class BookBorrowTicketController extends BaseController
         return view('admin.books.book_borrow_tickets.index', compact('tickets', 'filters', 'options'));
     }
 
-//    public function create()
-//    {
-//        $users = User::all();
-//        $books = Book::all();
-//        return view('admin.book_borrow_tickets.create', compact('users', 'books'));
-//    }
-//
-//    public function store(Request $request)
-//    {
-//        $data = $request->validate([
-//            'user_id' => 'required|exists:users,id',
-//            'borrowed_at' => 'required|date',
-//            'due_at' => 'required|date|after_or_equal:borrowed_at',
-//            'books' => 'required|array',
-//            'books.*.book_id' => 'required|exists:books,id',
-//            'books.*.quantity' => 'required|integer|min:1'
-//        ]);
-//
-//        DB::transaction(function () use ($data) {
-//            $ticket = BookBorrowTicket::create([
-//                'user_id' => $data['user_id'],
-//                'borrowed_at' => $data['borrowed_at'],
-//                'due_at' => $data['due_at'],
-//                'note' => $data['note'] ?? null
-//            ]);
-//
-//            foreach ($data['books'] as $book) {
-//                $ticket->details()->create([
-//                    'book_id' => $book['book_id'],
-//                    'quantity' => $book['quantity'],
-//                    'note' => $book['note'] ?? null
-//                ]);
-//            }
-//        });
-//
-//        return redirect()->route('admin.book-borrow-tickets.index')->with('success', 'Tạo phiếu mượn thành công.');
-//    }
+    /**
+     * Hiển thị form tạo tài khoản
+     * @return View|Application|Factory
+     */
+    public function create(): View|Application|Factory
+    {
+        return view('admin.books.book_borrow_tickets.create');
+    }
+
+    /**
+     * Xử lý tạo phiếu mượn
+     * @param StoreRequest $request
+     * @return RedirectResponse
+     */
+    public function store(StoreRequest $request): RedirectResponse
+    {
+        $return = $this->getService()->create($request->all());
+        if (!empty($return['success'])) {
+            return redirect()->route('admin.books.book_borrow_tickets.index')
+                ->with('success', $return['message'] ?? 'Tạo phiếu mượn thành công.');
+        }
+        return redirect()->route('admin.books.book_borrow_tickets.index')
+            ->with('fail', $return['message'] ?? 'Tạo phiếu mượn thất bại.');
+    }
+
 //
 //    public function edit($id)
 //    {
@@ -144,33 +129,6 @@ class BookBorrowTicketController extends BaseController
 //        return redirect()->route('admin.book-borrow-tickets.index')->with('success', 'Xóa phiếu mượn thành công.');
 //    }
 
-
-
-//
-//    /**
-//     * Hiển thị form tạo tài khoản
-//     * @return View|Application|Factory
-//     */
-//    public function create(): View|Application|Factory
-//    {
-//        return view('admin.users.create');
-//    }
-//
-//    /**
-//     * Xử lý tạo tài khoản
-//     * @param StoreRequest $request
-//     * @return RedirectResponse
-//     */
-//    public function store(StoreRequest $request): RedirectResponse
-//    {
-//        $return = $this->getService()->create($request->all());
-//        if (!empty($return['success'])) {
-//            return redirect()->route('admin.users.index')
-//                ->with('success', $return['message'] ?? 'Tạo tài khoản thành công.');
-//        }
-//        return redirect()->route('admin.users.index')
-//            ->with('fail', $return['message'] ?? 'Tạo tài khoản thất bại.');
-//    }
 //
 //    /**
 //     * Hiển thị form chỉnh sửa tài khoản

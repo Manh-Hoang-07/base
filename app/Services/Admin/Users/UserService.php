@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\BaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use lib\DataTable;
 
@@ -105,5 +106,17 @@ class UserService extends BaseService
             $return['messages'] = 'Tài khoản không hợp lệ';
         }
         return $return;
+    }
+
+    /**
+     * Hàm lấy ra danh sách người dùng theo từ
+     * @param string $term
+     * @param string $column
+     * @param int $limit
+     * @return JsonResponse
+     */
+    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
+    {
+        return parent::autocomplete($term, 'email', $limit);
     }
 }

@@ -34,6 +34,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         // 🚀 Xử lý gán vai trò cho người dùng
         Route::middleware(['canAny:assign_users'])->post('/assign-roles/{id}', [UserController::class, 'assignRoles'])->name('assignRoles');
         Route::middleware(['canAny:edit_users'])->post('/toggle-block/{id}', [UserController::class, 'changeStatus'])->name('toggleBlock');
+        Route::middleware(['canAny:view_users'])->get('/autocomplete', [UserController::class, 'autocomplete'])->name('autocomplete'); // Lấy vai trò theo từ
     });
 
     Route::prefix('profiles')->name('profiles.')->group(function () { // Chức năng quản lý hồ sơ
@@ -60,26 +61,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::middleware(['canAny:edit_permissions'])->post('/update/{id}', [PermissionController::class, 'update'])->name('update'); // Xử lý sửa quyền
         Route::middleware(['canAny:delete_permissions'])->delete('/delete/{id}', [PermissionController::class, 'delete'])->name('delete'); // Xử lý xóa quyền
         Route::middleware(['canAny:view_permissions'])->get('/autocomplete', [PermissionController::class, 'autocomplete'])->name('autocomplete'); // Lấy quyền theo từ
-    });
-
-    // Quản lý mượn sách
-    Route::prefix('book-borrows')->name('ticket-borrows.')->group(function () {
-        Route::middleware(['canAny:view_book_borrows'])->get('/', [BookBorrowController::class, 'index'])->name('index'); // Hiển thị danh sách mượn sách
-        Route::middleware(['canAny:create_book_borrows'])->get('/create', [BookBorrowController::class, 'create'])->name('create'); // Hiển thị form tạo mượn sách
-        Route::middleware(['canAny:create_book_borrows'])->post('/store', [BookBorrowController::class, 'store'])->name('store'); // Xử lý tạo mới mượn sách
-        Route::middleware(['canAny:edit_book_borrows'])->get('/edit/{id}', [BookBorrowController::class, 'edit'])->name('edit'); // Hiển thị form sửa mượn sách
-        Route::middleware(['canAny:edit_book_borrows'])->post('/update/{id}', [BookBorrowController::class, 'update'])->name('update'); // Xử lý sửa mượn sách
-        Route::middleware(['canAny:delete_book_borrows'])->delete('/delete/{id}', [BookBorrowController::class, 'delete'])->name('delete'); // Xử lý xóa mượn sách
-    });
-
-    // Quản lý trả sách
-    Route::prefix('book-returns')->name('ticket-returns.')->group(function () {
-        Route::middleware(['canAny:view_book_returns'])->get('/', [BookReturnController::class, 'index'])->name('index'); // Hiển thị danh sách trả sách
-        Route::middleware(['canAny:create_book_returns'])->get('/create', [BookReturnController::class, 'create'])->name('create'); // Hiển thị form tạo trả sách
-        Route::middleware(['canAny:create_book_returns'])->post('/store', [BookReturnController::class, 'store'])->name('store'); // Xử lý tạo mới trả sách
-        Route::middleware(['canAny:edit_book_returns'])->get('/edit/{id}', [BookReturnController::class, 'edit'])->name('edit'); // Hiển thị form sửa trả sách
-        Route::middleware(['canAny:edit_book_returns'])->post('/update/{id}', [BookReturnController::class, 'update'])->name('update'); // Xử lý sửa trả sách
-        Route::middleware(['canAny:delete_book_returns'])->delete('/delete/{id}', [BookReturnController::class, 'delete'])->name('delete'); // Xử lý xóa trả sách
     });
 
     // Chức năng quản lý khai báo
