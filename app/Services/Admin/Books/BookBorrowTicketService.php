@@ -14,7 +14,8 @@ use lib\DataTable;
 
 class BookBorrowTicketService extends BaseService
 {
-    public function __construct(BookBorrowTicketRepository $bookBorrowTicketRepository) {
+    public function __construct(BookBorrowTicketRepository $bookBorrowTicketRepository)
+    {
         $this->repository = $bookBorrowTicketRepository;
     }
 
@@ -34,34 +35,35 @@ class BookBorrowTicketService extends BaseService
             'success' => false,
             'messages' => 'Thêm mới phiếu mượn thất bại'
         ];
-
-        $keys = ['user_id', 'borrowed_at', 'due_at', 'note', 'books'];
-        if ($insertData = DataTable::getChangeData($data, $keys)) {
+        try {
+            $keys = ['user_id', 'borrowed_at', 'due_at', 'note', 'books'];
             DB::beginTransaction();
-            try {
-                // Tạo phiếu mượn
-                $ticket = BookBorrowTicket::create([
-                    'user_id'     => $insertData['user_id'],
-                    'borrowed_at' => $insertData['borrowed_at'],
-                    'due_at'      => $insertData['due_at'],
-                    'note'        => $insertData['note'] ?? null,
-                ]);
-
+            if (($insertData = DataTable::getChangeData($data, $keys))
+                && ($ticket = $this->getRepository()->create([
+                    'user_id' => $insertData['user_id'] ?? '',
+                    'borrowed_at' => $insertData['borrowed_at'] ?? '',
+                    'due_at' => $insertData['due_at'] ?? '',
+                    'note' => $insertData['note'] ?? null,
+                ]))
+            ) {
                 // Duyệt qua danh sách sách được mượn
+                $details = [];
+
                 foreach ($insertData['books'] as $book) {
-                    $ticket->details()->create([
-                        'book_id'  => $book['book_id'],
+                    $details[] = [
+                        'book_id' => $book['book_id'],
                         'quantity' => $book['quantity'],
-                        'note'     => $book['note'] ?? null,
-                    ]);
+                        'note' => $book['note'] ?? null,
+                    ];
                 }
 
+                $ticket->details()->createMany($details);
                 DB::commit();
                 $return['success'] = true;
                 $return['messages'] = 'Thêm mới phiếu mượn thành công.';
-            } catch (\Exception $e) {
-                DB::rollBack();
             }
+        } catch (\Exception $e) {
+            DB::rollBack();
         }
         return $return;
     }
