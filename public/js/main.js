@@ -37,9 +37,11 @@ $(document).ready(function () {
                     url: url,
                     dataType: 'json',
                     success: function (data) {
+                        console.log(data);
                         if (isMultiple) {
                             let selectedOptions = selectedValues.map(value => {
                                 let item = data.find(item => item[field] == value);
+                                console.log(value, item);
                                 let text = item ? item[displayField] : value; // Nếu không tìm thấy thì dùng chính giá trị
                                 return new Option(text, value, true, true);
                             });

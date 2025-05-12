@@ -227,9 +227,17 @@ abstract class BaseRepository
      */
     public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
     {
+        $columns = $this->getColumns();
+        $selectColumns[] = 'id';
+        if (in_array('name', $columns)) {
+            $selectColumns[] = 'name';
+        }
+        if (in_array('title', $columns)) {
+            $selectColumns[] = 'title';
+        }
         $results = $this->getModel()->query()
             ->where($column, 'like', '%' . $term . '%')
-            ->select('id', $column)
+            ->select($selectColumns)
             ->limit($limit)
             ->get();
         return response()->json($results);
@@ -253,6 +261,6 @@ abstract class BaseRepository
     public function getColumns(): array
     {
         $table = $this->getModel()->getTable(); // Lấy tên bảng từ model
-        return Schema::getColumnListing($table); // Trả về danh sách các cột
+        return array_values(Schema::getColumnListing($table)); // Trả về danh sách các cột
     }
 }

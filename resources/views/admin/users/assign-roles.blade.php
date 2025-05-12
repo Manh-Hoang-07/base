@@ -33,6 +33,7 @@
                                 <select class="form-control select2" name="roles[]"
                                         multiple
                                         data-field="name"
+                                        data-display-field="title"
                                         data-selected='@json($userRoles ?? [])'
                                         data-url="{{ route('admin.roles.autocomplete') }}">
                                     <option value="">Chọn vai trò</option>
