@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Declarations\Categories;
+namespace App\Http\Controllers\Admin\Categories;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Admin\Declarations\Categories\StoreRequest;
-use App\Http\Requests\Admin\Declarations\Categories\UpdateRequest;
+use App\Http\Requests\Admin\Categories\StoreRequest;
+use App\Http\Requests\Admin\Categories\UpdateRequest;
 use App\Services\Admin\Declarations\CategoryService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use lib\DataTable;
 
 class CategoryController extends BaseController
 {
@@ -35,7 +34,7 @@ class CategoryController extends BaseController
         $filters = $this->getFilters($request->all());
         $options = $this->getOptions($request->all());
         $categories = $this->getService()->getList($filters, $options);
-        return view('admin.declarations.categories.index', compact('categories'));
+        return view('admin.categories.index', compact('categories'));
     }
 
     /**
@@ -45,7 +44,7 @@ class CategoryController extends BaseController
     public function create(): View|Application|Factory
     {
         $categories = $this->getService()->getList();
-        return view('admin.declarations.categories.create', compact('categories'));
+        return view('admin.categories.create', compact('categories'));
     }
 
     /**
@@ -57,10 +56,10 @@ class CategoryController extends BaseController
     {
         $return = $this->getService()->create($request->all());
         if (!empty($return['success'])) {
-            return redirect()->route('admin.declarations.categories.index')
+            return redirect()->route('admin.categories.index')
                 ->with('success', $return['message'] ?? 'Thêm mới danh mục thành công.');
         }
-        return redirect()->route('admin.declarations.categories.index')
+        return redirect()->route('admin.categories.index')
             ->with('fail', $return['message'] ?? 'Thêm mới danh mục thất bại.');
     }
 
@@ -73,7 +72,7 @@ class CategoryController extends BaseController
     {
         $category = $this->getService()->findById($id);
         $categories = $this->getService()->getAll();
-        return view('admin.declarations.categories.edit', compact('category', 'categories'));
+        return view('admin.categories.edit', compact('category', 'categories'));
     }
 
     /**
@@ -86,10 +85,10 @@ class CategoryController extends BaseController
     {
         $return = $this->getService()->update($id, $request->all());
         if (!empty($return['success'])) {
-            return redirect()->route('admin.declarations.categories.index')
+            return redirect()->route('admin.categories.index')
                 ->with('success', $return['message'] ?? 'Cập nhật danh mục thành công.');
         }
-        return redirect()->route('admin.declarations.categories.index')
+        return redirect()->route('admin.categories.index')
             ->with('fail', $return['message'] ?? 'Cập nhật danh mục thất bại.');
     }
 
@@ -102,10 +101,10 @@ class CategoryController extends BaseController
     {
         $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
-            return redirect()->route('admin.declarations.categories.index')
+            return redirect()->route('admin.categories.index')
                 ->with('success', $return['message'] ?? 'Xóa danh mục thành công.');
         }
-        return redirect()->route('admin.declarations.categories.index')
+        return redirect()->route('admin.categories.index')
             ->with('fail', $return['message'] ?? 'Xóa danh mục thất bại.');
     }
 }

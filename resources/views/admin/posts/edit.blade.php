@@ -3,7 +3,7 @@
 @section('page_title', 'Chỉnh sửa bài đăng')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.declarations.posts.index') }}">Bài đăng</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.posts.index') }}">Bài đăng</a></li>
     <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa</li>
 @endsection
 
@@ -14,7 +14,7 @@
                 <h5 class="card-title mb-0">Chỉnh sửa bài đăng</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.declarations.posts.update', $post->id) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.posts.update', $post->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row mb-3">
@@ -60,7 +60,7 @@
 
                     <div class="text-end">
                         <button type="submit" class="btn btn-primary">Cập nhật</button>
-                        <a href="{{ route('admin.declarations.posts.index') }}" class="btn btn-secondary">Hủy</a>
+                        <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Hủy</a>
                     </div>
                 </form>
             </div>

@@ -3,7 +3,7 @@
 @section('page_title', 'Thêm Bài Đăng')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.declarations.posts.index') }}">Bài Đăng</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.posts.index') }}">Bài Đăng</a></li>
     <li class="breadcrumb-item active">Thêm</li>
 @endsection
 
@@ -14,7 +14,7 @@
                 <h5 class="card-title mb-0">Thêm Bài Đăng</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.declarations.posts.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row mb-3">
@@ -50,7 +50,7 @@
 
                     <div class="text-end">
                         <button type="submit" class="btn btn-success">Lưu</button>
-                        <a href="{{ route('admin.declarations.posts.index') }}" class="btn btn-secondary">Hủy</a>
+                        <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Hủy</a>
                     </div>
                 </form>
             </div>

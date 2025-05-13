@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Admin\Declarations\Posts;
+namespace App\Http\Requests\Admin\Posts;
 
 use App\Enums\BasicStatus;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -35,14 +34,14 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Tiêu đề không được để trống.',
+            'name.required' => 'Tiêu đề bài viết không được để trống.',
             'name.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
-            'content.required' => 'Nội dung không được để trống.',
-            'image.image' => 'Ảnh phải là một tập tin hình ảnh.',
+            'content.required' => 'Nội dung bài viết không được để trống.',
+            'image.image' => 'Ảnh phải là hình ảnh hợp lệ.',
             'image.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif.',
             'image.max' => 'Ảnh không được vượt quá 2MB.',
-            'status.required' => 'Trạng thái không được để trống.',
-            'status.in' => 'Trạng thái không hợp lệ.',
+            'status.required' => 'Trạng thái bài viết không được để trống.',
+            'status.in' => 'Trạng thái bài viết không hợp lệ.',
         ];
     }
 }

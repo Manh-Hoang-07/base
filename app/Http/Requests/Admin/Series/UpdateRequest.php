@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Admin\Declarations\Series;
+namespace App\Http\Requests\Admin\Series;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -18,9 +18,16 @@ class StoreRequest extends FormRequest
      */
     public function rules(): array
     {
+        $areaId = $this->route('id'); // Lấy ID từ route khi cập nhật
+
         return [
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:series,code',
+            'code' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('series', 'code')->ignore($areaId),
+            ],
             'description' => 'nullable|string',
             'status' => 'required|in:active,inactive'
         ];
@@ -38,10 +45,4 @@ class StoreRequest extends FormRequest
             'code.unique' => 'Mã khu vực đã tồn tại.',
         ];
     }
-
-    protected function failedValidation(Validator $validator)
-    {
-        $this->dd($validator);
-    }
-
 }

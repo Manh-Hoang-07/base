@@ -14,7 +14,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-sm-9">
-                                <form action="{{ route('admin.declarations.series.index') }}" method="GET">
+                                <form action="{{ route('admin.series.index') }}" method="GET">
                                     <div class="row">
                                         <div class="col-md-4">
                                             <input type="text" name="name" class="form-control" placeholder="Nhập tên series"
@@ -26,13 +26,13 @@
                                         </div>
                                         <div class="col-md-4">
                                             <button type="submit" class="btn btn-primary">Lọc</button>
-                                            <a href="{{ route('admin.declarations.series.index') }}" class="btn btn-secondary">Reset</a>
+                                            <a href="{{ route('admin.series.index') }}" class="btn btn-secondary">Reset</a>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <div class="col-sm-3 d-flex">
-                                <a href="{{ route('admin.declarations.series.create') }}" class="btn btn-primary ms-auto">Thêm Series</a>
+                                <a href="{{ route('admin.series.create') }}" class="btn btn-primary ms-auto">Thêm Series</a>
                             </div>
                         </div>
                     </div>
@@ -70,9 +70,9 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ route('admin.declarations.series.edit', $each->id) }}"
+                                            <a href="{{ route('admin.series.edit', $each->id) }}"
                                                class="btn btn-sm btn-warning" title="Sửa"><i class="fas fa-edit"></i></a>
-                                            <form action="{{ route('admin.declarations.series.delete', $each->id) }}"
+                                            <form action="{{ route('admin.series.delete', $each->id) }}"
                                                   method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')

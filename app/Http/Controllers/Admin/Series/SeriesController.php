@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Declarations\Series;
+namespace App\Http\Controllers\Admin\Series;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Admin\Declarations\Series\StoreRequest;
-use App\Http\Requests\Admin\Declarations\Series\UpdateRequest;
-use App\Models\Series;
+use App\Http\Requests\Admin\Series\StoreRequest;
+use App\Http\Requests\Admin\Series\UpdateRequest;
 use App\Services\Admin\Declarations\SeriesService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use lib\DataTable;
 
 class SeriesController extends BaseController
 {
@@ -36,7 +34,7 @@ class SeriesController extends BaseController
         $filters = $this->getFilters($request->all());
         $options = $this->getOptions($request->all());
         $series = $this->getService()->getList($filters, $options);
-        return view('admin.declarations.series.index', compact('series'));
+        return view('admin.series.index', compact('series'));
     }
 
     /**
@@ -45,7 +43,7 @@ class SeriesController extends BaseController
      */
     public function create(): View|Application|Factory
     {
-        return view('admin.declarations.series.create');
+        return view('admin.series.create');
     }
 
     /**
@@ -57,10 +55,10 @@ class SeriesController extends BaseController
     {
         $return = $this->getService()->create($request->all());
         if (!empty($return['success'])) {
-            return redirect()->route('admin.declarations.series.index')
+            return redirect()->route('admin.series.index')
                 ->with('success', $return['message'] ?? 'Thêm mới series thành công.');
         }
-        return redirect()->route('admin.declarations.series.index')
+        return redirect()->route('admin.series.index')
             ->with('fail', $return['message'] ?? 'Thêm mới series thất bại.');
     }
 
@@ -72,7 +70,7 @@ class SeriesController extends BaseController
     public function edit($id): View|Application|Factory
     {
         $series = $this->getService()->findById($id);
-        return view('admin.declarations.series.edit', compact('series'));
+        return view('admin.series.edit', compact('series'));
     }
 
     /**
@@ -85,10 +83,10 @@ class SeriesController extends BaseController
     {
         $return = $this->getService()->update($id, $request->all());
         if (!empty($return['success'])) {
-            return redirect()->route('admin.declarations.series.index')
+            return redirect()->route('admin.series.index')
                 ->with('success', $return['message'] ?? 'Cập nhật series thành công.');
         }
-        return redirect()->route('admin.declarations.series.index')
+        return redirect()->route('admin.series.index')
             ->with('fail', $return['message'] ?? 'Cập nhật series thất bại.');
     }
 
@@ -101,10 +99,10 @@ class SeriesController extends BaseController
     {
         $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
-            return redirect()->route('admin.declarations.series.index')
+            return redirect()->route('admin.series.index')
                 ->with('success', $return['message'] ?? 'Xóa series thành công.');
         }
-        return redirect()->route('admin.declarations.series.index')
+        return redirect()->route('admin.series.index')
             ->with('fail', $return['message'] ?? 'Xóa series thất bại.');
     }
 }

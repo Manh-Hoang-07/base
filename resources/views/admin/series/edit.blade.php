@@ -3,7 +3,7 @@
 @section('page_title', 'Chỉnh sửa Series')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.declarations.series.index') }}">Series</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.series.index') }}">Series</a></li>
     <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa</li>
 @endsection
 
@@ -14,7 +14,7 @@
                 <h5 class="card-title mb-0">Chỉnh sửa Series</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.declarations.series.update', $series->id) }}" method="POST">
+                <form action="{{ route('admin.series.update', $series->id) }}" method="POST">
                     @csrf
 
                     <div class="row mb-3">
@@ -55,7 +55,7 @@
 
                     <div class="text-end">
                         <button type="submit" class="btn btn-primary">Cập nhật</button>
-                        <a href="{{ route('admin.declarations.series.index') }}" class="btn btn-secondary">Hủy</a>
+                        <a href="{{ route('admin.series.index') }}" class="btn btn-secondary">Hủy</a>
                     </div>
                 </form>
             </div>

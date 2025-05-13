@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Declarations\Posts;
+namespace App\Http\Controllers\Admin\Posts;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Admin\Declarations\Posts\StoreRequest;
-use App\Http\Requests\Admin\Declarations\Posts\UpdateRequest;
+use App\Http\Requests\Admin\Posts\StoreRequest;
+use App\Http\Requests\Admin\Posts\UpdateRequest;
 use App\Services\Admin\Declarations\PostService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use lib\DataTable;
 
 class PostController extends BaseController
 {
@@ -35,7 +34,7 @@ class PostController extends BaseController
         $filters = $this->getFilters($request->all());
         $options = $this->getOptions($request->all());
         $posts = $this->getService()->getList($filters, $options);
-        return view('admin.declarations.posts.index', compact('posts'));
+        return view('admin.posts.index', compact('posts'));
     }
 
     /**
@@ -44,7 +43,7 @@ class PostController extends BaseController
      */
     public function create(): View|Application|Factory
     {
-        return view('admin.declarations.posts.create');
+        return view('admin.posts.create');
     }
 
     /**
@@ -56,10 +55,10 @@ class PostController extends BaseController
     {
         $return = $this->getService()->create($request->all());
         if (!empty($return['success'])) {
-            return redirect()->route('admin.declarations.posts.index')
+            return redirect()->route('admin.posts.index')
                 ->with('success', $return['message'] ?? 'Thêm mới nhà xuất bản thành công.');
         }
-        return redirect()->route('admin.declarations.posts.index')
+        return redirect()->route('admin.posts.index')
             ->with('fail', $return['message'] ?? 'Thêm mới nhà xuất bản thất bại.');
     }
 
@@ -71,7 +70,7 @@ class PostController extends BaseController
     public function edit($id): View|Application|Factory
     {
         $post = $this->getService()->findById($id);
-        return view('admin.declarations.posts.edit', compact('post'));
+        return view('admin.posts.edit', compact('post'));
     }
 
     /**
@@ -84,10 +83,10 @@ class PostController extends BaseController
     {
         $return = $this->getService()->update($id, $request->all());
         if (!empty($return['success'])) {
-            return redirect()->route('admin.declarations.posts.index')
+            return redirect()->route('admin.posts.index')
                 ->with('success', $return['message'] ?? 'Cập nhật nhà xuất bản thành công.');
         }
-        return redirect()->route('admin.declarations.posts.index')
+        return redirect()->route('admin.posts.index')
             ->with('fail', $return['message'] ?? 'Cập nhật nhà xuất bản thất bại.');
     }
 
@@ -100,10 +99,10 @@ class PostController extends BaseController
     {
         $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
-            return redirect()->route('admin.declarations.posts.index')
+            return redirect()->route('admin.posts.index')
                 ->with('success', $return['message'] ?? 'Xóa nhà xuất bản thành công.');
         }
-        return redirect()->route('admin.declarations.posts.index')
+        return redirect()->route('admin.posts.index')
             ->with('fail', $return['message'] ?? 'Xóa nhà xuất bản thất bại.');
     }
 }

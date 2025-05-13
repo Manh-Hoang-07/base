@@ -3,7 +3,7 @@
 @section('page_title', 'Thêm Series')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.declarations.series.index') }}">Series</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.series.index') }}">Series</a></li>
     <li class="breadcrumb-item active">Thêm</li>
 @endsection
 
@@ -14,7 +14,7 @@
                 <h5 class="card-title mb-0">Thêm Series</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.declarations.series.store') }}" method="POST">
+                <form action="{{ route('admin.series.store') }}" method="POST">
                     @csrf
 
                     <div class="row mb-3">
@@ -50,7 +50,7 @@
 
                     <div class="text-end">
                         <button type="submit" class="btn btn-success">Thêm Series</button>
-                        <a href="{{ route('admin.declarations.series.index') }}" class="btn btn-secondary">Hủy</a>
+                        <a href="{{ route('admin.series.index') }}" class="btn btn-secondary">Hủy</a>
                     </div>
                 </form>
             </div>

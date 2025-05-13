@@ -1,13 +1,12 @@
 @extends('admin.index')
 
-@section('page_title', 'Danh sách Danh Mục')
+@section('page_title', 'Danh sách Bài Đăng')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active" aria-current="page">Danh sách Danh Mục</li>
+    <li class="breadcrumb-item active" aria-current="page">Danh sách Bài Đăng</li>
 @endsection
 
 @section('content')
-    <!--begin::App Content-->
     <div class="app-content">
         <div class="container-fluid">
             <div class="row">
@@ -15,25 +14,23 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-sm-9">
-                                <form action="{{ route('admin.declarations.categories.index') }}" method="GET">
+                                <form action="{{ route('admin.posts.index') }}" method="GET">
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <input type="text" name="name" class="form-control" placeholder="Nhập tên"
+                                        <div class="col-md-6">
+                                            <input type="text" name="name" class="form-control" placeholder="Nhập tiêu đề"
                                                    value="{{ request('name') }}">
                                         </div>
-                                        <div class="col-md-4">
-                                            <input type="text" name="code" class="form-control" placeholder="Nhập mã"
-                                                   value="{{ request('code') }}">
-                                        </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <button type="submit" class="btn btn-primary">Lọc</button>
-                                            <a href="{{ route('admin.declarations.categories.index') }}" class="btn btn-secondary">Reset</a>
+                                            <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Reset</a>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <div class="col-sm-3 d-flex">
-                                <a href="{{ route('admin.declarations.categories.create') }}" class="btn btn-primary ms-auto">Thêm Danh Mục</a>
+                                @canany(['manage_declarations', 'create_declarations'])
+                                    <a href="{{ route('admin.posts.create') }}" class="btn btn-primary ms-auto">Thêm Bài Đăng</a>
+                                @endcanany
                             </div>
                         </div>
                     </div>
@@ -51,33 +48,35 @@
                                 <thead class="table-light">
                                 <tr>
                                     <th>STT</th>
-                                    <th>Tên Danh Mục</th>
-                                    <th>Mã</th>
-                                    <th>Slug</th>
-                                    <th>Danh Mục Cha</th>
+                                    <th>Hình Ảnh</th>
+                                    <th>Tiêu Đề</th>
                                     <th>Trạng Thái</th>
                                     <th>Hành Động</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($categories as $index => $category)
+                                @foreach($posts as $index => $post)
                                     <tr>
-                                        <td>{{ $categories->firstItem() + $index }}</td>
-                                        <td>{{ $category->name ?? '' }}</td>
-                                        <td>{{ $category->code ?? '' }}</td>
-                                        <td>{{ $category->slug ?? '' }}</td>
-                                        <td>{{ $category->parent->name ?? 'N/A' }}</td>
+                                        <td>{{ $posts->firstItem() + $index }}</td>
                                         <td>
-                                            @if($category->status)
+                                            @if($post->image)
+                                                <img src="{{ asset($post->image) }}" width="80" height="50" style="object-fit: cover">
+                                            @else
+                                                <span class="text-muted">Không có ảnh</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $post->name }}</td>
+                                        <td>
+                                            @if($post->status === 'active')
                                                 <span class="badge bg-success">Hiển thị</span>
                                             @else
                                                 <span class="badge bg-secondary">Ẩn</span>
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ route('admin.declarations.categories.edit', $category->id) }}"
+                                            <a href="{{ route('admin.posts.edit', $post->id) }}"
                                                class="btn btn-sm btn-warning" title="Sửa"><i class="fas fa-edit"></i></a>
-                                            <form action="{{ route('admin.declarations.categories.delete', $category->id) }}"
+                                            <form action="{{ route('admin.posts.delete', $post->id) }}"
                                                   method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
@@ -94,7 +93,7 @@
                         </div>
 
                         <!-- Hiển thị phân trang -->
-                        @include('vendor.pagination.pagination', ['paginator' => $categories])
+                        @include('vendor.pagination.pagination', ['paginator' => $posts])
                     </div>
                 </div>
             </div>

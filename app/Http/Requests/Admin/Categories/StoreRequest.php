@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Declarations\Categories;
+namespace App\Http\Requests\Admin\Categories;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UpdateRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -18,22 +17,10 @@ class UpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        $categoryId = $this->route('id');
-
         return [
             'name' => 'required|string|max:255',
-            'code' => [
-                'required',
-                'string',
-                Rule::unique('categories', 'code')->ignore($categoryId),
-                'max:100',
-            ],
-            'slug' => [
-                'required',
-                'string',
-                Rule::unique('categories', 'slug')->ignore($categoryId),
-                'max:255',
-            ],
+            'code' => 'required|string|unique:categories,code|max:100',
+            'slug' => 'required|string|unique:categories,slug|max:255',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
             'status' => 'boolean',
