@@ -30,5 +30,8 @@ class DatabaseSeeder extends Seeder
         if ($adminRole) {
             $admin->assignRole($adminRole);
         }
+        
+        // Seed dữ liệu bài đăng
+        $this->call(PostSeeder::class);
     }
 }

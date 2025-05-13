@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Admin\Declarations;
+namespace App\Repositories\Admin\Series;
 
 use App\Models\Series;
 use App\Repositories\BaseRepository;

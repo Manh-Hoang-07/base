@@ -10,7 +10,19 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'name', 'content', 'image', 'status'];
+    protected $fillable = [
+        'user_id', 
+        'name', 
+        'content', 
+        'image', 
+        'description', 
+        'require_login',
+        'status'
+    ];
+    
+    protected $casts = [
+        'require_login' => 'boolean',
+    ];
 
     public function user(): BelongsTo
     {

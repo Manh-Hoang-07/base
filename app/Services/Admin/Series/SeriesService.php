@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Admin\Declarations;
+namespace App\Services\Admin\Series;
 
-use App\Repositories\Admin\Declarations\SeriesRepository;
+use App\Repositories\Admin\Series\SeriesRepository;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use lib\DataTable;

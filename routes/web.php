@@ -4,6 +4,7 @@ include_once('admin.php');
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Home\Posts\PostController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
@@ -22,15 +23,20 @@ Route::get('/forgot-password', [App\Http\Controllers\Auth\LoginController::class
 Route::post('/send-otp-forgot-password', [ForgotPasswordController::class, 'sendOtp'])->name('send.forgot.password'); // Gửi OTP quên mật khẩu
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('reset.password'); // Xử lý tạo lại mật khẩu
 
+// Routes cho phần trang chủ (không yêu cầu đăng nhập)
+Route::name('home.')->group(function () {
+    Route::get('/', [PostController::class, 'index'])->name('home');
+    Route::prefix('posts')->name('posts.')->group(function () {
+        Route::get('/', [PostController::class, 'index'])->name('index');
+        Route::get('/{id}', [PostController::class, 'show'])->name('show');
+    });
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
 });
-
-Route::get('/test', [\App\Http\Controllers\Admin\Books\BookBorrowTicketController::class, 'index'])->name('test');
-Route::get('/test1', [\App\Http\Controllers\Admin\Books\BookBorrowTicketController::class, 'create'])->name('test1');
-Route::post('/test2', [\App\Http\Controllers\Admin\Books\BookBorrowTicketController::class, 'store'])->name('test2');
 
 Route::post('/upload', [UploadController::class, 'upload'])->name('upload');
 

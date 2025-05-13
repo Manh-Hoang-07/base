@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Admin\Declarations;
+namespace App\Repositories\Admin\Categories;
 
 use App\Models\Category;
 use App\Repositories\BaseRepository;

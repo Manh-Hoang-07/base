@@ -16,11 +16,25 @@
                             <div class="col-sm-9">
                                 <form action="{{ route('admin.posts.index') }}" method="GET">
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <input type="text" name="name" class="form-control" placeholder="Nhập tiêu đề"
+                                        <div class="col-md-4">
+                                            <input type="text" name="name" class="form-control" placeholder="Tìm theo tiêu đề"
                                                    value="{{ request('name') }}">
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-3">
+                                            <select name="status" class="form-select">
+                                                <option value="">-- Trạng thái --</option>
+                                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Hoạt động</option>
+                                                <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select name="require_login" class="form-select">
+                                                <option value="">-- Yêu cầu đăng nhập --</option>
+                                                <option value="1" {{ request('require_login') == '1' ? 'selected' : '' }}>Yêu cầu</option>
+                                                <option value="0" {{ request('require_login') == '0' ? 'selected' : '' }}>Không yêu cầu</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
                                             <button type="submit" class="btn btn-primary">Lọc</button>
                                             <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Reset</a>
                                         </div>
@@ -47,25 +61,36 @@
                             <table class="table table-bordered align-middle">
                                 <thead class="table-light">
                                 <tr>
-                                    <th>STT</th>
-                                    <th>Hình Ảnh</th>
-                                    <th>Tiêu Đề</th>
-                                    <th>Trạng Thái</th>
-                                    <th>Hành Động</th>
+                                    <th width="5%">ID</th>
+                                    <th width="10%">Hình Ảnh</th>
+                                    <th width="25%">Tiêu Đề</th>
+                                    <th width="30%">Mô Tả</th>
+                                    <th width="10%">Trạng Thái</th>
+                                    <th width="10%">Đăng Nhập</th>
+                                    <th width="10%">Hành Động</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($posts as $index => $post)
                                     <tr>
-                                        <td>{{ $posts->firstItem() + $index }}</td>
+                                        <td>{{ $post->id }}</td>
                                         <td>
                                             @if($post->image)
-                                                <img src="{{ asset($post->image) }}" width="80" height="50" style="object-fit: cover">
+                                                <img src="{{ asset($post->image) }}" width="80" height="50" class="img-thumbnail" style="object-fit: cover">
                                             @else
                                                 <span class="text-muted">Không có ảnh</span>
                                             @endif
                                         </td>
-                                        <td>{{ $post->name }}</td>
+                                        <td>
+                                            <strong>{{ $post->name }}</strong>
+                                            <div class="text-muted small">
+                                                <i class="far fa-user me-1"></i> {{ $post->user->name ?? 'N/A' }}
+                                            </div>
+                                            <div class="text-muted small">
+                                                <i class="far fa-calendar-alt me-1"></i> {{ $post->created_at->format('d/m/Y H:i') }}
+                                            </div>
+                                        </td>
+                                        <td>{{ Str::limit($post->description ?? strip_tags($post->content), 100) }}</td>
                                         <td>
                                             @if($post->status === 'active')
                                                 <span class="badge bg-success">Hiển thị</span>
@@ -74,26 +99,43 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ route('admin.posts.edit', $post->id) }}"
-                                               class="btn btn-sm btn-warning" title="Sửa"><i class="fas fa-edit"></i></a>
-                                            <form action="{{ route('admin.posts.delete', $post->id) }}"
-                                                  method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Xóa"
-                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
+                                            @if($post->require_login)
+                                                <span class="badge bg-warning text-dark">Yêu cầu</span>
+                                            @else
+                                                <span class="badge bg-info">Không yêu cầu</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{{ route('admin.posts.edit', $post->id) }}"
+                                                   class="btn btn-sm btn-warning" title="Sửa"><i class="fas fa-edit"></i></a>
+                                                <form action="{{ route('admin.posts.delete', $post->id) }}"
+                                                      method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Xóa"
+                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
+                                
+                                @if($posts->isEmpty())
+                                    <tr>
+                                        <td colspan="7" class="text-center">Không có bài đăng nào</td>
+                                    </tr>
+                                @endif
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- Hiển thị phân trang -->
-                        @include('vendor.pagination.pagination', ['paginator' => $posts])
+                        <div class="mt-4">
+                            {{ $posts->withQueryString()->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

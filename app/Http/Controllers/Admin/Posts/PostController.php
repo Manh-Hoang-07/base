@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Posts;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\Posts\StoreRequest;
 use App\Http\Requests\Admin\Posts\UpdateRequest;
-use App\Services\Admin\Declarations\PostService;
+use App\Services\Admin\Posts\PostService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -38,7 +38,7 @@ class PostController extends BaseController
     }
 
     /**
-     * Hiển thị form tạo nhà xuất bản
+     * Hiển thị form tạo bài đăng
      * @return View|Application|Factory
      */
     public function create(): View|Application|Factory
@@ -47,7 +47,7 @@ class PostController extends BaseController
     }
 
     /**
-     * Xử lý tạo nhà xuất bản
+     * Xử lý tạo bài đăng
      * @param StoreRequest $request
      * @return RedirectResponse
      */
@@ -56,14 +56,14 @@ class PostController extends BaseController
         $return = $this->getService()->create($request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.posts.index')
-                ->with('success', $return['message'] ?? 'Thêm mới nhà xuất bản thành công.');
+                ->with('success', $return['message'] ?? 'Thêm mới bài đăng thành công.');
         }
         return redirect()->route('admin.posts.index')
-            ->with('fail', $return['message'] ?? 'Thêm mới nhà xuất bản thất bại.');
+            ->with('fail', $return['message'] ?? 'Thêm mới bài đăng thất bại.');
     }
 
     /**
-     * Hiển thị form sửa nhà xuất bản
+     * Hiển thị form sửa bài đăng
      * @param $id
      * @return View|Application|Factory
      */
@@ -74,7 +74,7 @@ class PostController extends BaseController
     }
 
     /**
-     * Xử lý cập nhật nhà xuất bản
+     * Xử lý cập nhật bài đăng
      * @param UpdateRequest $request
      * @param $id
      * @return RedirectResponse
@@ -84,14 +84,14 @@ class PostController extends BaseController
         $return = $this->getService()->update($id, $request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.posts.index')
-                ->with('success', $return['message'] ?? 'Cập nhật nhà xuất bản thành công.');
+                ->with('success', $return['message'] ?? 'Cập nhật bài đăng thành công.');
         }
         return redirect()->route('admin.posts.index')
-            ->with('fail', $return['message'] ?? 'Cập nhật nhà xuất bản thất bại.');
+            ->with('fail', $return['message'] ?? 'Cập nhật bài đăng thất bại.');
     }
 
     /**
-     * Xóa nhà xuất bản
+     * Xóa bài đăng
      * @param $id
      * @return RedirectResponse
      */
@@ -100,9 +100,9 @@ class PostController extends BaseController
         $return = $this->getService()->delete($id);
         if (!empty($return['success'])) {
             return redirect()->route('admin.posts.index')
-                ->with('success', $return['message'] ?? 'Xóa nhà xuất bản thành công.');
+                ->with('success', $return['message'] ?? 'Xóa bài đăng thành công.');
         }
         return redirect()->route('admin.posts.index')
-            ->with('fail', $return['message'] ?? 'Xóa nhà xuất bản thất bại.');
+            ->with('fail', $return['message'] ?? 'Xóa bài đăng thất bại.');
     }
 }

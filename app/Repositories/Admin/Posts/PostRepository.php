@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Repositories\Admin\Declarations;
+namespace App\Repositories\Admin\Posts;
 
-use App\Models\Area;
 use App\Models\Post;
 use App\Repositories\BaseRepository;
 

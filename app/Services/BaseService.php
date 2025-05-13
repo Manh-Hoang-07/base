@@ -44,9 +44,9 @@ class BaseService
      * @param $id
      * @return Model|null
      */
-    public function findById($id): ?Model
+    public function findById($id, array $options = []): ?Model
     {
-        return $this->getRepository()->findById($id);
+        return $this->getRepository()->findById($id, $options);
     }
 
     /**
