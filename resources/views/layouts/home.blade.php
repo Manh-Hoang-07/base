@@ -10,13 +10,13 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Custom CSS -->
     <style>
         :root {
@@ -26,7 +26,7 @@
             --dark-text: #2c3e50;
             --light-text: #7b8898;
         }
-        
+
         body {
             font-family: 'Figtree', sans-serif;
             padding-top: 80px;
@@ -34,23 +34,23 @@
             color: var(--dark-text);
             line-height: 1.6;
         }
-        
+
         .navbar {
             box-shadow: 0 4px 12px rgba(0,0,0,.1);
             background-color: white;
         }
-        
+
         .navbar-brand {
             font-weight: 700;
             color: var(--primary-color) !important;
             letter-spacing: 0.5px;
         }
-        
+
         .nav-link {
             font-weight: 500;
             position: relative;
         }
-        
+
         .nav-link.active:after {
             content: '';
             position: absolute;
@@ -60,31 +60,31 @@
             bottom: 0;
             left: 10%;
         }
-        
+
         .nav-link:hover {
             color: var(--primary-color) !important;
         }
-        
+
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
-        
+
         .btn-primary:hover {
             background-color: #303f9f;
             border-color: #303f9f;
         }
-        
+
         .btn-outline-primary {
             color: var(--primary-color);
             border-color: var(--primary-color);
         }
-        
+
         .btn-outline-primary:hover {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
-        
+
         .post-card {
             height: 100%;
             border: none;
@@ -94,32 +94,32 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             background-color: white;
         }
-        
+
         .post-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
-        
+
         .post-image {
             height: 220px;
             object-fit: cover;
         }
-        
+
         .post-card .card-title {
             font-weight: 600;
             margin-bottom: 10px;
             color: var(--dark-text);
         }
-        
+
         .post-card .card-text {
             color: var(--light-text);
         }
-        
+
         .post-card .card-footer {
             background-color: white;
             border-top: 1px solid rgba(0,0,0,0.05);
         }
-        
+
         .login-required-badge {
             position: absolute;
             top: 15px;
@@ -132,54 +132,54 @@
             font-weight: 500;
             font-size: 0.8rem;
         }
-        
+
         .footer {
             background-color: white;
             border-top: 1px solid rgba(0,0,0,0.05);
             padding: 3rem 0;
             margin-top: 5rem;
         }
-        
+
         .footer h5 {
             font-weight: 600;
             margin-bottom: 1.2rem;
             color: var(--primary-color);
         }
-        
+
         .breadcrumb-item a {
             color: var(--primary-color);
             text-decoration: none;
         }
-        
+
         .page-item.active .page-link {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
-        
+
         .page-link {
             color: var(--primary-color);
         }
-        
+
         /* Post content styles */
         .post-content {
             font-size: 1.1rem;
             line-height: 1.8;
         }
-        
+
         .post-content img {
             max-width: 100%;
             height: auto;
             margin: 1.5rem 0;
             border-radius: 8px;
         }
-        
+
         .post-header-image {
             height: 400px;
             object-fit: cover;
             border-radius: 12px;
             width: 100%;
         }
-        
+
         .related-post-card {
             border: none;
             border-radius: 8px;
@@ -187,24 +187,24 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
         }
-        
+
         .related-post-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
-        
+
         .related-post-image {
             height: 160px;
             object-fit: cover;
         }
-        
+
         @media (max-width: 768px) {
             .post-header-image {
                 height: 250px;
             }
         }
     </style>
-    
+
     @yield('styles')
 </head>
 <body>
@@ -221,10 +221,10 @@
                         <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">Trang Chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('posts*') ? 'active' : '' }}" href="{{ route('home.posts.index') }}">Bài Đăng</a>
+                        <a class="nav-link {{ request()->is('home/posts*') ? 'active' : '' }}" href="{{ route('home.posts.index') }}">Bài Đăng</a>
                     </li>
                 </ul>
-                
+
                 <!-- Tìm kiếm -->
                 <form class="d-flex me-3" action="{{ route('home.posts.index') }}" method="GET">
                     <div class="input-group">
@@ -234,7 +234,7 @@
                         </button>
                     </div>
                 </form>
-                
+
                 <!-- User menu -->
                 <ul class="navbar-nav">
                     @guest
@@ -317,7 +317,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     @yield('scripts')
 </body>
-</html> 
+</html>

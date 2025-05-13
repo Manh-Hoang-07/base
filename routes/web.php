@@ -23,8 +23,9 @@ Route::get('/forgot-password', [App\Http\Controllers\Auth\LoginController::class
 Route::post('/send-otp-forgot-password', [ForgotPasswordController::class, 'sendOtp'])->name('send.forgot.password'); // Gửi OTP quên mật khẩu
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('reset.password'); // Xử lý tạo lại mật khẩu
 
+Route::get('/', [PostController::class, 'index'])->name('home');
 // Routes cho phần trang chủ (không yêu cầu đăng nhập)
-Route::name('home.')->group(function () {
+Route::prefix('home')->name('home.')->group(function () {
     Route::get('/', [PostController::class, 'index'])->name('home');
     Route::prefix('posts')->name('posts.')->group(function () {
         Route::get('/', [PostController::class, 'index'])->name('index');
