@@ -11,11 +11,6 @@ class BaseController extends Controller
 {
     protected BaseService $service;
 
-    public function getService(): BaseService
-    {
-        return $this->service;
-    }
-
     /**
      * Hàm lấy ra điều kiện lọc
      * @param array $filters
@@ -24,7 +19,7 @@ class BaseController extends Controller
      */
     protected function getFilters(array $filters, array $allowKeys = []): array
     {
-        $validColumns = $this->getService()->getColumns();
+        $validColumns = $this->service->getColumns();
         $filters = DataTable::getFiltersData($filters, $allowKeys);
         // Lọc chỉ giữ lại những cột hợp lệ
         return collect($filters)->only($validColumns)->toArray();
@@ -48,6 +43,6 @@ class BaseController extends Controller
     public function autocomplete(Request $request): JsonResponse
     {
         $term = $request->input('term');
-        return $this->getService()->autocomplete($term ?? '');
+        return $this->service->autocomplete($term ?? '');
     }
 }
