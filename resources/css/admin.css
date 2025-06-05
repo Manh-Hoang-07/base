@@ -1,0 +1,481 @@
+/* Admin Panel Optimized CSS */
+/* AdminLTE styles will be loaded separately */
+
+/* Custom Admin Styles */
+:root {
+    --admin-primary: #007bff;
+    --admin-secondary: #6c757d;
+    --admin-success: #28a745;
+    --admin-danger: #dc3545;
+    --admin-warning: #ffc107;
+    --admin-info: #17a2b8;
+    --admin-light: #f8f9fa;
+    --admin-dark: #343a40;
+    --admin-sidebar-bg: #343a46;
+    --admin-sidebar-text: #c2c7d0;
+    --admin-sidebar-hover: #2c3e50;
+}
+
+/* Performance optimizations */
+* {
+    box-sizing: border-box;
+}
+
+/* Smooth transitions */
+.app-sidebar,
+.app-main,
+.nav-link,
+.btn,
+.card {
+    transition: all 0.3s ease;
+}
+
+/* Sidebar optimizations */
+.app-sidebar {
+    background: var(--admin-sidebar-bg);
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar-brand {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.brand-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 600;
+}
+
+.brand-image {
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+}
+
+.brand-text {
+    font-size: 1.1rem;
+}
+
+/* Sidebar menu */
+.sidebar-menu {
+    padding: 1rem 0;
+}
+
+.sidebar-menu .nav-item {
+    margin-bottom: 2px;
+}
+
+.sidebar-menu .nav-link {
+    color: var(--admin-sidebar-text);
+    padding: 0.75rem 1rem;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-menu .nav-link:hover {
+    background: var(--admin-sidebar-hover);
+    color: #fff;
+}
+
+.sidebar-menu .nav-link.active {
+    background: var(--admin-primary);
+    color: #fff;
+}
+
+.sidebar-menu .nav-link i {
+    width: 20px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+/* Header optimizations */
+.app-header {
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.app-header .navbar-nav .nav-link {
+    color: var(--admin-dark);
+    padding: 0.5rem 1rem;
+}
+
+.app-header .navbar-nav .nav-link:hover {
+    color: var(--admin-primary);
+}
+
+/* Content area */
+.app-content {
+    padding: 1.5rem;
+}
+
+.app-content-header {
+    background: #fff;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 1.5rem;
+}
+
+/* Cards */
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+    border-radius: 0.375rem;
+}
+
+.card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Tables */
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    background: #f8f9fa;
+    color: var(--admin-dark);
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 0.375rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+}
+
+.btn-primary {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Forms */
+.form-control {
+    border-radius: 0.375rem;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus {
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+/* Pagination */
+.pagination {
+    margin-bottom: 0;
+}
+
+.page-link {
+    color: var(--admin-primary);
+    border-radius: 0.375rem;
+    margin: 0 2px;
+}
+
+.page-link:hover {
+    background: var(--admin-primary);
+    color: #fff;
+}
+
+.page-item.active .page-link {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+}
+
+/* Alerts */
+.alert {
+    border-radius: 0.375rem;
+    border: none;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.breadcrumb-item a {
+    color: var(--admin-primary);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive optimizations */
+@media (max-width: 768px) {
+    .app-content {
+        padding: 1rem;
+    }
+
+    .app-content-header {
+        padding: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .table-responsive {
+        border: none;
+    }
+}
+
+/* Loading states */
+.loading .app-wrapper {
+    opacity: 0;
+}
+
+/* Utility classes */
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075) !important;
+}
+
+.shadow {
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important;
+}
+
+/* Select2 Fixes - Default Theme */
+.select2-container {
+    width: 100% !important;
+    z-index: 9999 !important;
+}
+
+/* Override default Select2 styles to match Bootstrap 5 */
+.select2-container--default .select2-selection--single {
+    border: 1px solid #ced4da !important;
+    border-radius: 0.375rem !important;
+    height: calc(1.5em + 0.75rem + 2px) !important;
+    background-color: #fff !important;
+    font-size: 1rem !important;
+    padding: 0 !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #495057 !important;
+    line-height: calc(1.5em + 0.75rem) !important;
+    padding-left: 0.75rem !important;
+    padding-right: 2.25rem !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: calc(1.5em + 0.75rem) !important;
+    right: 0.75rem !important;
+    width: 20px !important;
+    top: 1px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #6c757d transparent transparent transparent !important;
+    border-style: solid !important;
+    border-width: 5px 4px 0 4px !important;
+    height: 0 !important;
+    left: 50% !important;
+    margin-left: -4px !important;
+    margin-top: -2px !important;
+    position: absolute !important;
+    top: 50% !important;
+    width: 0 !important;
+}
+
+/* Multiple selection */
+.select2-container--default .select2-selection--multiple {
+    border: 1px solid #ced4da !important;
+    border-radius: 0.375rem !important;
+    min-height: calc(1.5em + 0.75rem + 2px) !important;
+    background-color: #fff !important;
+    font-size: 1rem !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    padding: 0.25rem 0.5rem !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: var(--admin-primary) !important;
+    border: 1px solid var(--admin-primary) !important;
+    color: #fff !important;
+    border-radius: 0.25rem !important;
+    padding: 0.25rem 0.5rem !important;
+    margin: 0.125rem !important;
+    font-size: 0.875rem !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #fff !important;
+    margin-right: 0.25rem !important;
+    font-weight: bold !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #ffcccc !important;
+}
+
+/* Dropdown styles */
+.select2-dropdown {
+    border: 1px solid #ced4da !important;
+    border-radius: 0.375rem !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    z-index: 9999 !important;
+    font-size: 1rem !important;
+}
+
+.select2-results__option {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+}
+
+.select2-results__option--highlighted[aria-selected] {
+    background-color: var(--admin-primary) !important;
+    color: #fff !important;
+}
+
+.select2-results__option[aria-selected=true] {
+    background-color: #e9ecef !important;
+    color: var(--admin-dark) !important;
+}
+
+/* Search input */
+.select2-search--inline .select2-search__field {
+    border: none !important;
+    outline: none !important;
+    font-size: 1rem !important;
+    padding: 0.25rem !important;
+    background: transparent !important;
+}
+
+.select2-search--dropdown .select2-search__field {
+    border: 1px solid #ced4da !important;
+    border-radius: 0.375rem !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 1rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Focus states */
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #86b7fe !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* Disabled state */
+.select2-container--default.select2-container--disabled .select2-selection--single,
+.select2-container--default.select2-container--disabled .select2-selection--multiple {
+    background-color: #e9ecef !important;
+    color: #6c757d !important;
+}
+
+/* Loading state */
+.select2-results__option[aria-live="polite"] {
+    color: #6c757d !important;
+    font-style: italic !important;
+}
+
+/* Placeholder */
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #6c757d !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__placeholder {
+    color: #6c757d !important;
+}
+
+/* Button Fixes */
+.btn {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.2rem;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+    color: #212529;
+}
+
+/* Table Action Buttons */
+td .btn {
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Modal Buttons */
+button[data-bs-toggle="modal"] {
+    display: inline-block !important;
+    visibility: visible !important;
+}
+
+/* Permission and Role Buttons */
+.btn-success {
+    background-color: #198754;
+    border-color: #198754;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background-color: #157347;
+    border-color: #146c43;
+    color: #fff;
+}
+
+/* Print styles */
+@media print {
+    .app-sidebar,
+    .app-header,
+    .breadcrumb,
+    .btn,
+    .pagination {
+        display: none !important;
+    }
+
+    .app-main {
+        margin-left: 0 !important;
+        margin-top: 0 !important;
+    }
+
+    .app-content {
+        padding: 0 !important;
+    }
+}

@@ -47,6 +47,8 @@
                                 <label for="parent_id" class="form-label">Quyền cha</label>
                                 <select class="form-control select2 @error('parent_id') is-invalid @enderror"
                                         name="parent_id"
+                                        data-field="id"
+                                        data-display-field="name"
                                         data-selected="{{ old('parent_id') }}"
                                         data-url="{{ route('admin.permissions.autocomplete') }}">
                                     <option value="">Chọn quyền cha</option>

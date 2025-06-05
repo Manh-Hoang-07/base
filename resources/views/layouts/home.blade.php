@@ -7,203 +7,43 @@
 
     <title>@yield('title', 'Trang Chủ') - {{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="{{ asset('fonts/figtree-400.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('fonts/figtree-500.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('fonts/figtree-600.woff2') }}" as="font" type="font/woff2" crossorigin>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Custom CSS -->
+    <!-- Self-hosted Fonts -->
     <style>
-        :root {
-            --primary-color: #3f51b5;
-            --secondary-color: #f50057;
-            --light-bg: #f8f9ff;
-            --dark-text: #2c3e50;
-            --light-text: #7b8898;
+        @font-face {
+            font-family: 'Figtree';
+            src: url('{{ asset('fonts/figtree-400.woff2') }}') format('woff2'),
+                 url('{{ asset('fonts/figtree-400.woff') }}') format('woff');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
         }
-
-        body {
-            font-family: 'Figtree', sans-serif;
-            padding-top: 80px;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-            line-height: 1.6;
-        }
-
-        .navbar {
-            box-shadow: 0 4px 12px rgba(0,0,0,.1);
-            background-color: white;
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--primary-color) !important;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-link {
+        @font-face {
+            font-family: 'Figtree';
+            src: url('{{ asset('fonts/figtree-500.woff2') }}') format('woff2'),
+                 url('{{ asset('fonts/figtree-500.woff') }}') format('woff');
             font-weight: 500;
-            position: relative;
+            font-style: normal;
+            font-display: swap;
         }
-
-        .nav-link.active:after {
-            content: '';
-            position: absolute;
-            width: 80%;
-            height: 2px;
-            background: var(--primary-color);
-            bottom: 0;
-            left: 10%;
-        }
-
-        .nav-link:hover {
-            color: var(--primary-color) !important;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background-color: #303f9f;
-            border-color: #303f9f;
-        }
-
-        .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .post-card {
-            height: 100%;
-            border: none;
-            border-radius: 10px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            background-color: white;
-        }
-
-        .post-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-
-        .post-image {
-            height: 220px;
-            object-fit: cover;
-        }
-
-        .post-card .card-title {
+        @font-face {
+            font-family: 'Figtree';
+            src: url('{{ asset('fonts/figtree-600.woff2') }}') format('woff2'),
+                 url('{{ asset('fonts/figtree-600.woff') }}') format('woff');
             font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--dark-text);
-        }
-
-        .post-card .card-text {
-            color: var(--light-text);
-        }
-
-        .post-card .card-footer {
-            background-color: white;
-            border-top: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .login-required-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 10;
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-weight: 500;
-            font-size: 0.8rem;
-        }
-
-        .footer {
-            background-color: white;
-            border-top: 1px solid rgba(0,0,0,0.05);
-            padding: 3rem 0;
-            margin-top: 5rem;
-        }
-
-        .footer h5 {
-            font-weight: 600;
-            margin-bottom: 1.2rem;
-            color: var(--primary-color);
-        }
-
-        .breadcrumb-item a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        .page-item.active .page-link {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .page-link {
-            color: var(--primary-color);
-        }
-
-        /* Post content styles */
-        .post-content {
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-
-        .post-content img {
-            max-width: 100%;
-            height: auto;
-            margin: 1.5rem 0;
-            border-radius: 8px;
-        }
-
-        .post-header-image {
-            height: 400px;
-            object-fit: cover;
-            border-radius: 12px;
-            width: 100%;
-        }
-
-        .related-post-card {
-            border: none;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-        }
-
-        .related-post-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-        }
-
-        .related-post-image {
-            height: 160px;
-            object-fit: cover;
-        }
-
-        @media (max-width: 768px) {
-            .post-header-image {
-                height: 250px;
-            }
+            font-style: normal;
+            font-display: swap;
         }
     </style>
+
+    <!-- Optimized CSS Bundle -->
+    @vite(['resources/css/app.css'])
+
+    <!-- All CSS moved to app.css for better performance -->
 
     @yield('styles')
 </head>
@@ -315,9 +155,40 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Optimized JS Bundle -->
+    @vite(['resources/js/app.js'])
 
     @yield('scripts')
+
+    <!-- Performance optimizations -->
+    <script>
+        // Lazy load images
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+
+        // Preload next page on hover
+        document.addEventListener('mouseover', function(e) {
+            if (e.target.tagName === 'A' && e.target.hostname === window.location.hostname) {
+                const link = document.createElement('link');
+                link.rel = 'prefetch';
+                link.href = e.target.href;
+                document.head.appendChild(link);
+            }
+        }, { once: true });
+    </script>
 </body>
 </html>

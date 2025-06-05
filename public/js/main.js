@@ -1,7 +1,24 @@
 $(document).ready(function () {
+    // Đảm bảo jQuery và Select2 đã load
+    if (typeof $ === 'undefined') {
+        console.error('jQuery is not loaded!');
+        return;
+    }
+
+    if (typeof $.fn.select2 === 'undefined') {
+        console.error('Select2 is not loaded!');
+        return;
+    }
+
     function initializeSelect2() {
         $('.select2').each(function () {
             const selectElement = $(this);
+
+            // Kiểm tra xem đã khởi tạo Select2 chưa
+            if (selectElement.hasClass('select2-hidden-accessible')) {
+                return; // Đã khởi tạo rồi, bỏ qua
+            }
+
             const url = selectElement.data('url'); // Lấy URL từ data-url
             const field = selectElement.data('field') || 'id'; // Trường lấy giá trị
             const displayField = selectElement.data('display-field') || 'name'; // Trường hiển thị
@@ -9,14 +26,22 @@ $(document).ready(function () {
             const isMultiple = selectElement.prop('multiple'); // Kiểm tra select multiple hay không
             let selectedValues = selectedData ? JSON.parse(selectedData) : (isMultiple ? [] : null);
 
-            // Khởi tạo Select2
-            selectElement.select2({
-                ajax: {
+            // Cấu hình Select2
+            let select2Config = {
+                placeholder: 'Chọn mục',
+                allowClear: true,
+                width: '100%',
+                theme: 'default' // Sử dụng theme default thay vì bootstrap-5
+            };
+
+            // Nếu có URL thì sử dụng AJAX
+            if (url) {
+                select2Config.ajax = {
                     url: url,
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
-                        return {term: params.term};
+                        return {term: params.term || ''};
                     },
                     processResults: function (data) {
                         return {
@@ -26,46 +51,70 @@ $(document).ready(function () {
                         };
                     },
                     cache: true
-                },
-                placeholder: 'Chọn mục',
-                allowClear: true
-            });
+                };
+            }
 
-            // Nếu có dữ liệu đã chọn, thêm vào Select2
+            // Khởi tạo Select2
+            try {
+                selectElement.select2(select2Config);
+            } catch (error) {
+                return;
+            }
+
+            // Nếu có dữ liệu đã chọn, tạo options cho selected values trước
             if (selectedValues) {
-                $.ajax({
-                    url: url,
-                    dataType: 'json',
-                    success: function (data) {
-                        console.log(data);
-                        if (isMultiple) {
-                            let selectedOptions = selectedValues.map(value => {
-                                let item = data.find(item => item[field] == value);
-                                console.log(value, item);
-                                let text = item ? item[displayField] : value; // Nếu không tìm thấy thì dùng chính giá trị
-                                return new Option(text, value, true, true);
+                if (isMultiple && Array.isArray(selectedValues)) {
+                    selectedValues.forEach(value => {
+                        // Tạo option với value, sẽ được update text sau khi load data
+                        let option = new Option(value, value, true, true);
+                        selectElement.append(option);
+                    });
+                } else if (!isMultiple && selectedValues) {
+                    let option = new Option(selectedValues, selectedValues, true, true);
+                    selectElement.append(option);
+                }
+                selectElement.trigger('change');
+
+                // Sau đó load data để update text cho selected options
+                if (url) {
+                    $.ajax({
+                        url: url,
+                        dataType: 'json',
+                        data: { term: '' },
+                        success: function (data) {
+                            // Update text cho selected options
+                            selectElement.find('option:selected').each(function() {
+                                let optionValue = $(this).val();
+                                let item = data.find(item => item[field] == optionValue);
+                                if (item) {
+                                    $(this).text(item[displayField]);
+                                }
                             });
-                            selectElement.append(selectedOptions).trigger('change');
-                        } else {
-                            let item = data.find(item => item[field] == selectedValues);
-                            let text = item ? item[displayField] : selectedValues;
-                            let option = new Option(text, selectedValues, true, true);
-                            selectElement.append(option).trigger('change');
+
+                            selectElement.trigger('change');
+                        },
+                        error: function() {
+                            // Không làm gì, giữ nguyên value làm text
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }
+
     // Khởi tạo Select2 ban đầu
-    initializeSelect2();
+    setTimeout(function() {
+        initializeSelect2();
+    }, 100);
 
     // Sử dụng MutationObserver để theo dõi sự thay đổi trong DOM
     const observer = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
             // Kiểm tra xem có phần tử mới với class select2 được thêm vào không
             if ($(mutation.addedNodes).find('.select2').length > 0) {
-                initializeSelect2(); // Khởi tạo lại select2 cho các thẻ mới thêm vào
+                setTimeout(function() {
+                    initializeSelect2();
+                }, 100);
             }
         });
     });
@@ -75,6 +124,9 @@ $(document).ready(function () {
         childList: true,
         subtree: true
     });
+
+    // Expose function globally for manual initialization
+    window.initializeSelect2 = initializeSelect2;
 });
 
 function sendAjaxRequest(url, method, data, successCallback) {

@@ -47,6 +47,7 @@
                                 <select class="form-control select2 @error('permissions') is-invalid @enderror"
                                         name="permissions[]" multiple
                                         data-field="name"
+                                        data-display-field="name"
                                         data-url="{{ route('admin.permissions.autocomplete') }}">
                                     <option value="">Chọn quyền</option>
                                 </select>

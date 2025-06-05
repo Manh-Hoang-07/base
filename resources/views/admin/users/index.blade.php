@@ -75,10 +75,9 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @canany(['assign_users'])
-                                            <a href="{{ route('admin.users.showAssignRolesForm', $user->id ?? '') }}" title="Gán vai trò"
-                                               class="btn btn-sm btn-warning"><i class="fas fa-user-tag"></i></a>
-                                        @endcanany
+                                        {{-- Bỏ check quyền để hiển thị button phân quyền --}}
+                                        <a href="{{ route('admin.users.showAssignRolesForm', $user->id ?? '') }}" title="Gán vai trò"
+                                           class="btn btn-sm btn-warning"><i class="fas fa-user-tag"></i></a>
                                         @canany(['edit_users'])
                                             <a href="{{ route('admin.profiles.edit', $user->id ?? '') }}"
                                                class="btn btn-sm btn-warning" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>

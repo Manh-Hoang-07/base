@@ -1,3 +1,152 @@
+/* Import Bootstrap locally */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* Import Font Awesome locally */
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Home Layout Optimizations */
+:root {
+    --primary-color: #3f51b5;
+    --secondary-color: #f50057;
+    --light-bg: #f8f9ff;
+    --dark-text: #2c3e50;
+    --light-text: #7b8898;
+}
+
+body {
+    font-family: 'Figtree', sans-serif;
+    padding-top: 80px;
+    background-color: var(--light-bg);
+    color: var(--dark-text);
+    line-height: 1.6;
+}
+
+/* Performance optimizations */
+* {
+    box-sizing: border-box;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.lazy {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.lazy.loaded {
+    opacity: 1;
+}
+
+/* Navbar optimizations */
+.navbar {
+    box-shadow: 0 4px 12px rgba(0,0,0,.1);
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color) !important;
+    letter-spacing: 0.5px;
+}
+
+.nav-link {
+    font-weight: 500;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-link.active:after {
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 2px;
+    background: var(--primary-color);
+    bottom: 0;
+    left: 10%;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Card optimizations */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,.15);
+}
+
+/* Button optimizations */
+.btn {
+    border-radius: 25px;
+    font-weight: 500;
+    padding: 12px 30px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), #5c6bc0);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #303f9f, var(--primary-color));
+    transform: translateY(-2px);
+}
+
+/* Footer optimizations */
+.footer {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    padding: 3rem 0 1rem;
+}
+
+/* Responsive optimizations */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .footer,
+    .btn,
+    .pagination {
+        display: none !important;
+    }
+
+    body {
+        padding-top: 0 !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+}

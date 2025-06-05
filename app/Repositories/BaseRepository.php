@@ -235,11 +235,18 @@ abstract class BaseRepository
         if (in_array('title', $columns)) {
             $selectColumns[] = 'title';
         }
-        $results = $this->getModel()->query()
-            ->where($column, 'like', '%' . $term . '%')
-            ->select($selectColumns)
+
+        $query = $this->getModel()->query();
+
+        // Nếu có term thì search
+        if (!empty($term)) {
+            $query->where($column, 'like', '%' . $term . '%');
+        }
+
+        $results = $query->select($selectColumns)
             ->limit($limit)
             ->get();
+
         return response()->json($results);
     }
 
