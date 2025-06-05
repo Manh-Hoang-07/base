@@ -31,8 +31,16 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('js/toastr.min.js') }}"></script>
 <script src="{{ asset('js/select2.min.js') }}"></script>
+<script src="{{ asset('js/loading-utils.js') }}"></script>
 <script src="{{ asset('js/main.js') }}"></script>
 <script src="{{ asset('adminlte/js/adminlte.js') }}"></script>
+
+@if(config('app.env') === 'local')
+<!-- Development Optimization Tools -->
+<script src="{{ asset('js/css-optimizer.js') }}"></script>
+<script src="{{ asset('js/image-optimizer.js') }}"></script>
+<script src="{{ asset('js/performance-monitor.js') }}"></script>
+@endif
 
 @if(session('error'))
     <script>toastr.error("{{ session('error') }}");</script>

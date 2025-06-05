@@ -50,7 +50,17 @@ $(document).ready(function () {
                             })
                         };
                     },
-                    cache: true
+                    cache: true,
+                    beforeSend: function() {
+                        if (window.LoadingUtils) {
+                            window.LoadingUtils.setSelect2Loading(selectElement, true);
+                        }
+                    },
+                    complete: function() {
+                        if (window.LoadingUtils) {
+                            window.LoadingUtils.setSelect2Loading(selectElement, false);
+                        }
+                    }
                 };
             }
 
@@ -76,8 +86,8 @@ $(document).ready(function () {
                 selectElement.trigger('change');
 
                 // Sau đó load data để update text cho selected options
-                if (url) {
-                    $.ajax({
+                if (url && window.LoadingUtils) {
+                    window.LoadingUtils.ajaxWithLoading({
                         url: url,
                         dataType: 'json',
                         data: { term: '' },
@@ -92,9 +102,6 @@ $(document).ready(function () {
                             });
 
                             selectElement.trigger('change');
-                        },
-                        error: function() {
-                            // Không làm gì, giữ nguyên value làm text
                         }
                     });
                 }
@@ -129,21 +136,31 @@ $(document).ready(function () {
     window.initializeSelect2 = initializeSelect2;
 });
 
-function sendAjaxRequest(url, method, data, successCallback) {
-    $.ajax({
+function sendAjaxRequest(url, method, data, successCallback, options = {}) {
+    const config = {
         url: url,
         method: method,
         data: data,
+        showGlobalLoading: options.showLoading || false,
+        loadingMessage: options.loadingMessage || 'Đang xử lý...',
         success: function (response) {
             if (response.success) {
-                toastr.success(response.messages || 'Thành công');
+                if (window.LoadingUtils) {
+                    window.LoadingUtils.showToast(response.messages || 'Thành công', 'success');
+                } else {
+                    toastr.success(response.messages || 'Thành công');
+                }
                 if (typeof successCallback === 'function') {
                     successCallback(response);
                 } else {
                     location.reload(); // Tự động tải lại trang nếu không có callback
                 }
             } else {
-                toastr.error(response.messages || 'Có lỗi xảy ra');
+                if (window.LoadingUtils) {
+                    window.LoadingUtils.showToast(response.messages || 'Có lỗi xảy ra', 'error');
+                } else {
+                    toastr.error(response.messages || 'Có lỗi xảy ra');
+                }
             }
         },
         error: function (xhr) {
@@ -151,9 +168,20 @@ function sendAjaxRequest(url, method, data, successCallback) {
             if (xhr.responseJSON && xhr.responseJSON.messages) {
                 errorMessage = xhr.responseJSON.messages;
             }
-            toastr.error(errorMessage);
+
+            if (window.LoadingUtils) {
+                window.LoadingUtils.showToast(errorMessage, 'error');
+            } else {
+                toastr.error(errorMessage);
+            }
         }
-    });
+    };
+
+    if (window.LoadingUtils) {
+        return window.LoadingUtils.ajaxWithLoading(config);
+    } else {
+        return $.ajax(config);
+    }
 }
 
 function handleFormSubmit(event) {
