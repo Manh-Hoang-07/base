@@ -48,9 +48,11 @@
                                         name="permissions[]" multiple
                                         data-field="name"
                                         data-display-field="name"
-                                        data-selected='@json($role->permissions->pluck("name")->toArray())'
                                         data-url="{{ route('admin.permissions.autocomplete') }}">
                                     <option value="">Chọn quyền</option>
+                                    @foreach($role->permissions as $permission)
+                                        <option value="{{ $permission->name }}" selected>{{ $permission->name }}</option>
+                                    @endforeach
                                 </select>
                                 @error('permissions')
                                 <div class="invalid-feedback">{{ $message }}</div>

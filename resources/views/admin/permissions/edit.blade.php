@@ -49,9 +49,11 @@
                                         name="parent_id"
                                         data-field="id"
                                         data-display-field="name"
-                                        data-selected="{{ old('parent_id', $permission->parent_id ?? '') }}"
                                         data-url="{{ route('admin.permissions.autocomplete') }}">
                                     <option value="">Chọn quyền cha</option>
+                                    @if($permission->parent_id && $permission->parent)
+                                        <option value="{{ $permission->parent->id }}" selected>{{ $permission->parent->name }}</option>
+                                    @endif
                                 </select>
                                 @error('parent_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
