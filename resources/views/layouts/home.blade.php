@@ -7,36 +7,27 @@
 
     <title>@yield('title', 'Trang Chủ') - {{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Preload Critical Resources -->
-    <link rel="preload" href="{{ asset('fonts/figtree-400.woff2') }}" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{{ asset('fonts/figtree-500.woff2') }}" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{{ asset('fonts/figtree-600.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <!-- Quick Fix Script (Load first to prevent errors) -->
+    <script src="{{ asset('js/quick-fix.js') }}"></script>
 
-    <!-- Self-hosted Fonts -->
+    <!-- Preload Critical Resources -->
+    <!-- System fonts don't need preloading -->
+
+    <!-- Optimized System Fonts -->
     <style>
-        @font-face {
-            font-family: 'Figtree';
-            src: url('{{ asset('fonts/figtree-400.woff2') }}') format('woff2'),
-                 url('{{ asset('fonts/figtree-400.woff') }}') format('woff');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
+        :root {
+            --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
-        @font-face {
-            font-family: 'Figtree';
-            src: url('{{ asset('fonts/figtree-500.woff2') }}') format('woff2'),
-                 url('{{ asset('fonts/figtree-500.woff') }}') format('woff');
-            font-weight: 500;
-            font-style: normal;
-            font-display: swap;
+
+        body {
+            font-family: var(--font-family);
         }
-        @font-face {
-            font-family: 'Figtree';
-            src: url('{{ asset('fonts/figtree-600.woff2') }}') format('woff2'),
-                 url('{{ asset('fonts/figtree-600.woff') }}') format('woff');
-            font-weight: 600;
-            font-style: normal;
-            font-display: swap;
+
+        /* Preload critical system fonts */
+        .font-preload {
+            font-family: var(--font-family);
+            visibility: hidden;
+            position: absolute;
         }
     </style>
 

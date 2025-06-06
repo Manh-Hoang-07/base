@@ -6,6 +6,8 @@ const DYNAMIC_CACHE = 'dynamic-v1';
 // Assets to cache immediately
 const STATIC_ASSETS = [
     '/',
+    '/admin',
+    '/admin/dashboard',
     '/build/assets/app.css',
     '/build/assets/app.js',
     '/build/assets/admin.css',
@@ -15,13 +17,26 @@ const STATIC_ASSETS = [
     '/adminlte/css/adminlte.min.css',
     '/adminlte/js/adminlte.min.js',
     '/js/jquery-3.6.0.min.js',
+    '/js/select2.min.js',
+    '/js/toastr.min.js',
+    '/js/loading-utils.js',
+    '/js/main.js',
+    '/css/select2.min.css',
+    '/css/toastr.min.css',
     '/offline.html'
+];
+
+// API endpoints to cache
+const API_CACHE_PATTERNS = [
+    /\/admin\/permissions\/autocomplete/,
+    /\/admin\/roles\/autocomplete/,
+    /\/api\/dashboard\/stats/
 ];
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
     console.log('Service Worker installing...');
-    
+
     event.waitUntil(
         caches.open(STATIC_CACHE)
             .then((cache) => {
@@ -32,14 +47,14 @@ self.addEventListener('install', (event) => {
                 console.error('Failed to cache static assets:', error);
             })
     );
-    
+
     self.skipWaiting();
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
     console.log('Service Worker activating...');
-    
+
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
@@ -52,7 +67,7 @@ self.addEventListener('activate', (event) => {
             );
         })
     );
-    
+
     self.clients.claim();
 });
 
@@ -60,17 +75,17 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     const { request } = event;
     const url = new URL(request.url);
-    
+
     // Skip non-GET requests
     if (request.method !== 'GET') {
         return;
     }
-    
+
     // Skip external requests
     if (url.origin !== location.origin) {
         return;
     }
-    
+
     // Handle different types of requests
     if (isStaticAsset(request.url)) {
         event.respondWith(cacheFirst(request));
@@ -88,13 +103,13 @@ async function cacheFirst(request) {
         if (cachedResponse) {
             return cachedResponse;
         }
-        
+
         const networkResponse = await fetch(request);
         if (networkResponse.ok) {
             const cache = await caches.open(STATIC_CACHE);
             cache.put(request, networkResponse.clone());
         }
-        
+
         return networkResponse;
     } catch (error) {
         console.error('Cache first strategy failed:', error);
@@ -121,14 +136,14 @@ async function staleWhileRevalidate(request) {
     try {
         const cache = await caches.open(DYNAMIC_CACHE);
         const cachedResponse = await cache.match(request);
-        
+
         const networkResponsePromise = fetch(request).then((networkResponse) => {
             if (networkResponse.ok) {
                 cache.put(request, networkResponse.clone());
             }
             return networkResponse;
         });
-        
+
         return cachedResponse || await networkResponsePromise;
     } catch (error) {
         console.error('Stale while revalidate strategy failed:', error);
@@ -195,7 +210,7 @@ self.addEventListener('push', (event) => {
                 }
             ]
         };
-        
+
         event.waitUntil(
             self.registration.showNotification(data.title, options)
         );
@@ -205,7 +220,7 @@ self.addEventListener('push', (event) => {
 // Notification click handling
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
-    
+
     if (event.action === 'explore') {
         event.waitUntil(
             clients.openWindow('/notifications/' + event.notification.data.primaryKey)

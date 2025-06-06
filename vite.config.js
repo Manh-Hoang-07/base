@@ -17,8 +17,11 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: {
-                    vendor: ['bootstrap'],
-                    admin: ['resources/js/admin.js'],
+                    // Core vendor libraries
+                    'vendor-ui': ['bootstrap'],
+
+                    // Admin core functionality
+                    'admin-core': ['resources/js/admin.js']
                 }
             }
         },
