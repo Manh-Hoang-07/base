@@ -9,6 +9,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Services\Admin\Permissions\PermissionService;
 use App\Services\Admin\Roles\RoleService;
+use App\Traits\ApiResponseTrait;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,8 @@ use lib\DataTable;
 
 class RoleController extends BaseController
 {
+    use ApiResponseTrait;
+
     protected PermissionService $permissionService;
 
     public function __construct(RoleService $roleService, PermissionService $permissionService)
@@ -35,15 +38,18 @@ class RoleController extends BaseController
     /**
      * Hiển thị danh sách vai trò
      * @param Request $request
-     * @return View|Application|Factory
+     * @return View|Application|Factory|JsonResponse
      */
-    public function index(Request $request): View|Application|Factory
+    public function index(Request $request): View|Application|Factory|JsonResponse
     {
-        $filters = $this->getFilters($request->all());
-        $options = $this->getOptions($request->all());
-        $options['relations'] = ['permissions'];
-        $roles = $this->getService()->getList($filters, $options);
-        return view('admin.roles.index', compact('roles', 'filters', 'options'));
+        return $this->apiOrViewResponse(
+            $request,
+            'admin.roles.index',
+            [
+                'filters' => $this->getFilters($request->all()),
+                'options' => $this->getOptions($request->all())
+            ]
+        );
     }
 
     /**

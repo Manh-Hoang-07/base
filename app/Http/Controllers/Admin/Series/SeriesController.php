@@ -6,14 +6,18 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\Series\StoreRequest;
 use App\Http\Requests\Admin\Series\UpdateRequest;
 use App\Services\Admin\Series\SeriesService;
+use App\Traits\ApiResponseTrait;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class SeriesController extends BaseController
 {
+    use ApiResponseTrait;
+
     public function __construct(SeriesService $seriesService)
     {
         $this->service = $seriesService;
@@ -27,14 +31,18 @@ class SeriesController extends BaseController
     /**
      * Hiển thị danh sách series
      * @param Request $request
-     * @return Factory|Application|View
+     * @return Factory|Application|View|JsonResponse
      */
-    public function index(Request $request): View|Application|Factory
+    public function index(Request $request): View|Application|Factory|JsonResponse
     {
-        $filters = $this->getFilters($request->all());
-        $options = $this->getOptions($request->all());
-        $series = $this->getService()->getList($filters, $options);
-        return view('admin.series.index', compact('series'));
+        return $this->apiOrViewResponse(
+            $request,
+            'admin.series.index',
+            [
+                'filters' => $this->getFilters($request->all()),
+                'options' => $this->getOptions($request->all())
+            ]
+        );
     }
 
     /**

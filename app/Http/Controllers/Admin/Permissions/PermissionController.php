@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Permissions\StoreRequest;
 use App\Http\Requests\Admin\Permissions\UpdateRequest;
 use App\Models\Permission;
 use App\Services\Admin\Permissions\PermissionService;
+use App\Traits\ApiResponseTrait;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -17,6 +18,8 @@ use lib\DataTable;
 
 class PermissionController extends BaseController
 {
+    use ApiResponseTrait;
+
     public function __construct(PermissionService $permissionService)
     {
         $this->service = $permissionService;
@@ -30,14 +33,18 @@ class PermissionController extends BaseController
     /**
      * Hiển thị danh sách quyền
      * @param Request $request
-     * @return Factory|Application|View
+     * @return Factory|Application|View|JsonResponse
      */
-    public function index(Request $request): View|Application|Factory
+    public function index(Request $request): View|Application|Factory|JsonResponse
     {
-        $filters = $this->getFilters($request->all());
-        $options = $this->getOptions($request->all());
-        $permissions = $this->getService()->getList($filters, $options);
-        return view('admin.permissions.index', compact('permissions'));
+        return $this->apiOrViewResponse(
+            $request,
+            'admin.permissions.index',
+            [
+                'filters' => $this->getFilters($request->all()),
+                'options' => $this->getOptions($request->all())
+            ]
+        );
     }
 
     /**

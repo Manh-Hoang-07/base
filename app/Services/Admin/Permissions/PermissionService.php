@@ -22,6 +22,25 @@ class PermissionService extends BaseService
     }
 
     /**
+     * Override getList để thêm thông tin parent
+     */
+    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
+    {
+        // Thêm relation parent để lấy thông tin parent
+        $options['relations'] = array_merge($options['relations'] ?? [], ['parent']);
+
+        $result = parent::getList($filters, $options);
+
+        // Thêm parent_title vào mỗi item trong paginated result
+        $items = $result->items();
+        foreach ($items as $permission) {
+            $permission->parent_title = $permission->parent ? $permission->parent->title : 'Không có';
+        }
+
+        return $result;
+    }
+
+    /**
      * Tạo mới quyền
      * @param array $data
      * @return array

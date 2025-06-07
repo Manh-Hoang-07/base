@@ -42,7 +42,14 @@ class BaseController extends Controller
      */
     public function autocomplete(Request $request): JsonResponse
     {
-        $term = $request->input('term');
-        return $this->service->autocomplete($term ?? '');
+        $term = $request->input('term', '');
+        $selected = $request->input('selected', []);
+
+        // Đảm bảo selected là array
+        if (!is_array($selected)) {
+            $selected = [];
+        }
+
+        return $this->service->autocomplete($term, 'title', 10, $selected);
     }
 }

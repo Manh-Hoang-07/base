@@ -48,6 +48,7 @@
 
 <!-- Essential Custom Scripts -->
 <script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('js/admin-actions.js') }}"></script>
 
 @if(session('error'))
     <script>toastr.error("{{ session('error') }}");</script>

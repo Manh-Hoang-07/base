@@ -18,97 +18,63 @@
                         <div class="row">
                             <div class="col-sm-9">
                                 <!-- Form lọc -->
-                                <form action="{{ route('admin.users.index') }}" method="GET">
+                                <form id="filter-form" method="GET">
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <input type="email" name="email" class="form-control" placeholder="Nhập email"
-                                                   value="{{ request('email') }}">
+                                            <input type="email" name="email" id="filter-email" class="form-control"
+                                                   placeholder="Nhập email" value="{{ request('email') }}">
                                         </div>
                                         <div class="col-md-4">
-                                            <button type="submit" class="btn btn-primary">Lọc</button>
-                                            <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Reset</a>
+                                            <select name="status" id="filter-status" class="form-select">
+                                                <option value="">-- Trạng thái --</option>
+                                                <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Hoạt động</option>
+                                                <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Khóa</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button type="button" id="filter-btn" class="btn btn-primary">Lọc</button>
+                                            <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <div class="col-sm-3 d-flex">
                                 @canany(['create_users'])
-                                    <a href="{{ route('admin.users.create') }}" class="btn btn-primary ms-auto">Thêm Tài khoản</a>
+                                    <a href="{{ route('admin.users.create') }}" class="btn btn-primary ms-auto">
+                                        <i class="fas fa-plus"></i> Thêm Tài khoản
+                                    </a>
                                 @endcanany
                             </div>
                         </div>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Email</th>
-                                <th>Ngày tạo</th>
-                                <th>Trạng thái</th>
-                                <th>Vai Trò</th>
-                                <th>Hành Động</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($users as $index => $user)
-                                <tr>
-                                    <td>{{ $users->firstItem() + $index }}</td>
-                                    <td>{{ $user->email ?? '' }}</td>
-                                    <td>{{ $user->created_at->format('d/m/Y') }}</td>
-                                    <td>{{ !empty($user->is_blocked) ? 'Khóa' : 'Không khóa' }}</td>
-                                    <td>
-                                        @php
-                                            $roleCount = $user->roles->count();
-                                        @endphp
-
-                                        @if ($roleCount > 0)
-                                            <button type="button"
-                                                    class="btn btn-sm btn-success"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#rolesModal_{{ $user->id }}">
-                                                {{ $roleCount }} vai trò
-                                            </button>
-                                        @else
-                                            <span class="badge bg-secondary">0 vai trò</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        {{-- Bỏ check quyền để hiển thị button phân quyền --}}
-                                        <a href="{{ route('admin.users.showAssignRolesForm', $user->id ?? '') }}" title="Gán vai trò"
-                                           class="btn btn-sm btn-warning"><i class="fas fa-user-tag"></i></a>
-                                        @canany(['edit_users'])
-                                            <a href="{{ route('admin.profiles.edit', $user->id ?? '') }}"
-                                               class="btn btn-sm btn-warning" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                            <form action="{{ route('admin.users.toggleBlock', $user->id ?? '') }}" method="POST"
-                                                  style="display:inline;">
-                                                @csrf
-                                                <input type="hidden" name="status" value="{{ !empty($user->is_blocked) ? 0 : 1 }}">
-                                                <button type="submit" title="Đổi trạng thái" class="btn btn-sm btn-warning">
-                                                    <i class="bi {{ !empty($user->is_blocked) ? 'bi-unlock-fill' : 'bi-lock-fill' }}"></i>
-                                                </button>
-                                            </form>
-                                        @endcanany
-                                        @canany(['delete_users'])
-                                            <form action="{{ route('admin.users.delete', $user->id ?? '') }}" method="POST"
-                                                  style="display:inline;">
-                                                @csrf
-                                                <button type="submit" title="Xóa" class="btn btn-sm btn-danger">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        @endcanany
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+                        {{-- Sử dụng API Table Component với bộ lọc --}}
+                        @include('components.api-table', [
+                            'id' => 'users',
+                            'url' => route('admin.users.index') . '?api=1',
+                            'fields' => ['id', 'email', 'created_at', 'is_blocked', 'roles_count'],
+                            'columns' => ['ID', 'Email', 'Ngày tạo', 'Trạng thái', 'Số vai trò'],
+                            'searchable' => false, // Tắt search box vì đã có filter form
+                            'actions' => true,
+                            'actionButtons' => [
+                                [
+                                    'url' => route('admin.users.showAssignRolesForm', ':id'),
+                                    'class' => 'btn-info',
+                                    'icon' => 'fas fa-user-tag',
+                                    'title' => 'Gán vai trò'
+                                ],
+                                [
+                                    'action' => 'delete',
+                                    'class' => 'btn-danger',
+                                    'icon' => 'fas fa-trash',
+                                    'title' => 'Xóa'
+                                ]
+                            ],
+                            'perPage' => 10
+                        ])
                     </div>
                     <!-- /.card-body -->
-
-                    <!-- Hiển thị phân trang -->
-                    @include('vendor.pagination.pagination', ['paginator' => $users])
                 </div>
                 <!-- /.card -->
             </div>
@@ -117,35 +83,61 @@
         <!--end::Container-->
     </div>
     <!--end::App Content-->
+@endsection
 
-    <!-- Modals hiển thị danh sách vai trò của từng tài khoản -->
-    @foreach($users as $user)
-        <div class="modal fade" id="rolesModal_{{ $user->id }}" tabindex="-1"
-             aria-labelledby="rolesModalLabel_{{ $user->id }}" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="rolesModalLabel_{{ $user->id }}">
-                            Vai trò của: <strong>{{ $user->email }}</strong>
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-                    </div>
-                    <div class="modal-body">
-                        @if ($user->roles->count())
-                            <ul class="list-group">
-                                @foreach ($user->roles as $role)
-                                    <li class="list-group-item">{{ $role->title ?? $role->name }}</li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <p>Người dùng này chưa có vai trò nào.</p>
-                        @endif
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endforeach
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Đợi API table được khởi tạo
+    setTimeout(function() {
+        // Kết nối filter form với API table
+        const filterBtn = document.getElementById('filter-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        if (filterBtn) {
+            filterBtn.addEventListener('click', function() {
+                const filters = {};
+
+                const emailInput = document.getElementById('filter-email');
+                const statusSelect = document.getElementById('filter-status');
+
+                if (emailInput && emailInput.value) {
+                    filters.email = emailInput.value;
+                }
+
+                if (statusSelect && statusSelect.value !== '') {
+                    filters.is_blocked = statusSelect.value;
+                }
+
+                console.log('Applying filters:', filters);
+
+                // Tìm API table instance và gọi applyFilters
+                if (window.apiTableInstances && window.apiTableInstances['users']) {
+                    window.apiTableInstances['users'].applyFilters(filters);
+                } else if (typeof loadData === 'function') {
+                    loadData(filters);
+                }
+            });
+        }
+
+        if (resetBtn) {
+            resetBtn.addEventListener('click', function() {
+                // Clear form
+                const emailInput = document.getElementById('filter-email');
+                const statusSelect = document.getElementById('filter-status');
+
+                if (emailInput) emailInput.value = '';
+                if (statusSelect) statusSelect.value = '';
+
+                // Reload without filters
+                if (window.apiTableInstances && window.apiTableInstances['users']) {
+                    window.apiTableInstances['users'].applyFilters({});
+                } else if (typeof loadData === 'function') {
+                    loadData();
+                }
+            });
+        }
+    }, 500);
+});
+</script>
 @endsection

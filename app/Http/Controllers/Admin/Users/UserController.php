@@ -7,15 +7,19 @@ use App\Http\Requests\Admin\Users\Users\AssignRequest;
 use App\Http\Requests\Admin\Users\Users\StoreRequest;
 use App\Http\Requests\Admin\Users\Users\UpdateRequest;
 use App\Services\Admin\Users\UserService;
+use App\Traits\ApiResponseTrait;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
 class UserController extends BaseController
 {
+    use ApiResponseTrait;
+
     public function __construct(UserService $userService)
     {
         $this->service = $userService;
@@ -29,14 +33,19 @@ class UserController extends BaseController
     /**
      * Hiển thị danh sách tài khoản
      * @param Request $request
-     * @return View|Application|Factory
+     * @return View|Application|Factory|JsonResponse
      */
-    public function index(Request $request): View|Application|Factory
+    public function index(Request $request): View|Application|Factory|JsonResponse
     {
-        $filters = $this->getFilters($request->all());
-        $options = $this->getOptions($request->all());
-        $users = $this->getService()->getList($filters, $options);
-        return view('admin.users.index', compact('users', 'filters', 'options'));
+        // Sử dụng trait để tự động xử lý API hoặc View
+        return $this->apiOrViewResponse(
+            $request,
+            'admin.users.index',
+            [
+                'filters' => $this->getFilters($request->all()),
+                'options' => $this->getOptions($request->all())
+            ]
+        );
     }
 
     /**

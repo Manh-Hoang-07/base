@@ -21,6 +21,25 @@ class RoleService extends BaseService
     }
 
     /**
+     * Override getList để thêm thông tin permissions
+     */
+    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
+    {
+        // Thêm relation permissions để đếm số lượng
+        $options['relations'] = array_merge($options['relations'] ?? [], ['permissions']);
+
+        $result = parent::getList($filters, $options);
+
+        // Thêm permissions_count vào mỗi item trong paginated result
+        $items = $result->items();
+        foreach ($items as $role) {
+            $role->permissions_count = $role->permissions->count();
+        }
+
+        return $result;
+    }
+
+    /**
      * Lấy thông tin vai trò theo ID
      * @param $id
      * @param array $options

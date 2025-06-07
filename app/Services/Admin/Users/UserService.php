@@ -3,12 +3,9 @@
 namespace App\Services\Admin\Users;
 
 use App\Repositories\Admin\Users\UserRepository;
-use App\Models\User;
 use App\Services\BaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use lib\DataTable;
 
 class UserService extends BaseService
@@ -21,6 +18,25 @@ class UserService extends BaseService
     protected function getRepository(): UserRepository
     {
         return $this->repository;
+    }
+
+    /**
+     * Override getList để thêm thông tin roles_count
+     */
+    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
+    {
+        // Thêm relation roles để đếm số lượng
+        $options['relations'] = array_merge($options['relations'] ?? [], ['roles']);
+
+        $result = parent::getList($filters, $options);
+
+        // Thêm roles_count vào mỗi item trong paginated result
+        $items = $result->items();
+        foreach ($items as $user) {
+            $user->roles_count = $user->roles->count();
+        }
+
+        return $result;
     }
 
     /**
@@ -113,10 +129,11 @@ class UserService extends BaseService
      * @param string $term
      * @param string $column
      * @param int $limit
+     * @param array $selected
      * @return JsonResponse
      */
-    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
+    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10, array $selected = []): JsonResponse
     {
-        return parent::autocomplete($term, 'email', $limit);
+        return parent::autocomplete($term, 'email', $limit, $selected);
     }
 }

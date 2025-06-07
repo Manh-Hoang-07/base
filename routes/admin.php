@@ -31,6 +31,28 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             'canAny_test' => $user->canAny(['view_users', 'create_users'])
         ]);
     })->name('test.permission');
+
+    Route::get('/test-api', function () {
+        return view('admin.test-api');
+    })->name('test.api');
+
+    Route::get('/test-json', function (\Illuminate\Http\Request $request) {
+        if ($request->has('api') || $request->wantsJson()) {
+            return response()->json([
+                'data' => [
+                    ['id' => 1, 'email' => 'test1@example.com', 'created_at' => '2024-01-01', 'is_blocked' => 0],
+                    ['id' => 2, 'email' => 'test2@example.com', 'created_at' => '2024-01-02', 'is_blocked' => 1],
+                ],
+                'current_page' => 1,
+                'last_page' => 1,
+                'total' => 2,
+                'from' => 1,
+                'to' => 2
+            ]);
+        }
+        return view('admin.test-api');
+    })->name('test.json');
+
     Route::prefix('users')->name('users.')->group(function () { // Chức năng quản lý tài khoản
         Route::middleware(['canAny:view_users'])->get('/index', [UserController::class, 'index'])->name('index'); // Hiển thị danh sách tài khoản
         Route::middleware(['canAny:create_users'])->get('/create', [UserController::class, 'create'])->name('create'); // Hiển thị form tạo tài khoản

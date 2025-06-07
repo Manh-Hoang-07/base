@@ -18,87 +18,63 @@
                         <div class="row">
                             <div class="col-sm-9">
                                 <!-- Form lọc -->
-                                <form action="{{ route('admin.permissions.index') }}" method="GET">
+                                <form id="filter-form" method="GET">
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <input type="text" name="title" class="form-control" placeholder="Ý nghĩa quyền"
-                                                   value="{{ request('title') }}">
+                                            <input type="text" name="title" id="filter-title" class="form-control"
+                                                   placeholder="Ý nghĩa quyền" value="{{ request('title') }}">
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="text" name="name" class="form-control" placeholder="Tên quyền"
-                                                   value="{{ request('name') }}">
+                                            <input type="text" name="name" id="filter-name" class="form-control"
+                                                   placeholder="Tên quyền" value="{{ request('name') }}">
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="text" name="parent" class="form-control" placeholder="Quyền cha"
-                                                   value="{{ request('parent') }}">
+                                            <input type="text" name="parent" id="filter-parent" class="form-control"
+                                                   placeholder="Quyền cha" value="{{ request('parent') }}">
                                         </div>
                                         <div class="col-md-3">
-                                            <button type="submit" class="btn btn-primary">Lọc</button>
-                                            <a href="{{ route('admin.permissions.index') }}" class="btn btn-secondary">Reset</a>
+                                            <button type="button" id="filter-btn" class="btn btn-primary">Lọc</button>
+                                            <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <div class="col-sm-3 d-flex">
                                 @canany(['manage_permissions', 'create_permissions'])
-                                    <a href="{{ route('admin.permissions.create') }}" class="btn btn-primary ms-auto">Thêm quyền</a>
+                                    <a href="{{ route('admin.permissions.create') }}" class="btn btn-primary ms-auto">
+                                        <i class="fas fa-plus"></i> Thêm quyền
+                                    </a>
                                 @endcanany
                             </div>
                         </div>
                     </div>
 
-                    <!-- /.card-body -->
                     <div class="card-body">
-                        @if(session('success'))
-                            <div class="alert alert-success">{{ session('success') }}</div>
-                        @endif
-
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Ý nghĩa quyền</th>
-                                <th>Tên quyền</th>
-                                <th>Quyền cha</th>
-                                <th>Mặc định</th>
-                                <th class="text-center">Hành động</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($permissions ?? [] as $permission)
-                                <tr>
-                                    <td>{{ $permission->id }}</td>
-                                    <td>{{ $permission->title }}</td>
-                                    <td>{{ $permission->name }}</td>
-                                    <td>{{ $permission->parent->title ?? 'Không có' }}</td>
-                                    <td>{{ $permission->is_default ? 'Có' : 'Không' }}</td>
-                                    <td class="text-center">
-                                        @canany(['manage_permissions', 'edit_permissions'])
-                                            <a href="{{ route('admin.permissions.edit', $permission->id) }}"
-                                               class="btn btn-sm btn-warning" title="Chỉnh sửa">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        @endcanany
-                                        @canany(['manage_permissions', 'delete_permissions'])
-                                            <form action="{{ route('admin.permissions.delete', $permission->id) }}" method="POST"
-                                                  style="display:inline-block;"
-                                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        @endcanany
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+                        {{-- Sử dụng API Table Component --}}
+                        @include('components.api-table', [
+                            'id' => 'permissions',
+                            'url' => route('admin.permissions.index') . '?api=1',
+                            'fields' => ['id', 'title', 'name', 'parent_title', 'is_default'],
+                            'columns' => ['ID', 'Ý nghĩa quyền', 'Tên quyền', 'Quyền cha', 'Mặc định'],
+                            'searchable' => false,
+                            'actions' => true,
+                            'actionButtons' => [
+                                [
+                                    'url' => route('admin.permissions.edit', ':id'),
+                                    'class' => 'btn-warning',
+                                    'icon' => 'fas fa-edit',
+                                    'title' => 'Sửa'
+                                ],
+                                [
+                                    'action' => 'delete',
+                                    'class' => 'btn-danger',
+                                    'icon' => 'fas fa-trash',
+                                    'title' => 'Xóa'
+                                ]
+                            ],
+                            'perPage' => 10
+                        ])
                     </div>
-
-                    <!-- Hiển thị phân trang -->
-                    @include('vendor.pagination.pagination', ['paginator' => $permissions])
                 </div>
                 <!-- /.card -->
             </div>
@@ -107,4 +83,57 @@
         <!--end::Container-->
     </div>
     <!--end::App Content-->
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        const filterBtn = document.getElementById('filter-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        if (filterBtn) {
+            filterBtn.addEventListener('click', function() {
+                const filters = {};
+
+                const titleInput = document.getElementById('filter-title');
+                const nameInput = document.getElementById('filter-name');
+                const parentInput = document.getElementById('filter-parent');
+
+                if (titleInput && titleInput.value) {
+                    filters.title = titleInput.value;
+                }
+
+                if (nameInput && nameInput.value) {
+                    filters.name = nameInput.value;
+                }
+
+                if (parentInput && parentInput.value) {
+                    filters.parent = parentInput.value;
+                }
+
+                if (window.apiTableInstances && window.apiTableInstances['permissions']) {
+                    window.apiTableInstances['permissions'].applyFilters(filters);
+                }
+            });
+        }
+
+        if (resetBtn) {
+            resetBtn.addEventListener('click', function() {
+                const titleInput = document.getElementById('filter-title');
+                const nameInput = document.getElementById('filter-name');
+                const parentInput = document.getElementById('filter-parent');
+
+                if (titleInput) titleInput.value = '';
+                if (nameInput) nameInput.value = '';
+                if (parentInput) parentInput.value = '';
+
+                if (window.apiTableInstances && window.apiTableInstances['permissions']) {
+                    window.apiTableInstances['permissions'].applyFilters({});
+                }
+            });
+        }
+    }, 500);
+});
+</script>
 @endsection
