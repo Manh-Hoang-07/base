@@ -19,23 +19,27 @@ if "%choice%"=="1" (
     copy "resources\js\admin-actions.js" "public\js\admin-actions.js" >nul
     echo ✓ Using static JS/CSS files for maximum speed
     echo ✓ No build process required
+    echo ✓ CSS/JS loaded directly from public folder
     echo.
     echo FAST MODE activated! 🚀
 ) else if "%choice%"=="2" (
     echo.
     echo Switching to VITE MODE...
-    echo Building assets...
+    copy "resources\views\admin\index-vite.blade.php" "resources\views\admin\index.blade.php" >nul
+    echo Building assets with Vite...
     npm run build
-    echo ✓ Using Vite built assets
-    echo ✓ Optimized and minified
+    echo ✓ Using Vite built assets with CSS processing
+    echo ✓ Optimized, minified, and cache-busted
+    echo ✓ CSS processed through Vite pipeline
     echo.
     echo VITE MODE activated! ⚡
 ) else if "%choice%"=="3" (
     echo.
     echo Switching to DEV MODE...
-    echo Starting Vite dev server...
+    copy "resources\views\admin\index-vite.blade.php" "resources\views\admin\index.blade.php" >nul
     echo ✓ Hot module replacement enabled
     echo ✓ Development mode with live reload
+    echo ✓ CSS/JS processed through Vite dev server
     echo.
     echo DEV MODE activated! 🔥
     echo Starting dev server...
