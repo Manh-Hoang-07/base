@@ -5,10 +5,8 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'resources/css/app.css',
-                'resources/js/app.js',
-                'resources/css/admin.css',
-                'resources/js/admin.js'
+                'resources/js/admin-actions.js',
+                'resources/js/main.js'
             ],
             refresh: true,
         }),
@@ -16,18 +14,12 @@ export default defineConfig({
     build: {
         rollupOptions: {
             output: {
-                manualChunks: {
-                    // Core vendor libraries
-                    'vendor-ui': ['bootstrap'],
-
-                    // Admin core functionality
-                    'admin-core': ['resources/js/admin.js']
-                }
+                manualChunks: undefined, // Disable manual chunks for faster builds
             }
         },
-        cssCodeSplit: true,
+        cssCodeSplit: true, // Enable CSS code splitting
         sourcemap: false,
-        minify: 'terser',
+        minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
         terserOptions: {
             compress: {
                 drop_console: true,
@@ -39,5 +31,11 @@ export default defineConfig({
         hmr: {
             host: 'web.local',
         },
+        host: 'web.local',
+        port: 5173,
     },
+    optimizeDeps: {
+        include: ['bootstrap'],
+        exclude: ['@fortawesome/fontawesome-free']
+    }
 });
