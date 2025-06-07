@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\Roles\RoleController;
 use App\Http\Controllers\Admin\Series\SeriesController;
 use App\Http\Controllers\Admin\Users\ProfileController;
 use App\Http\Controllers\Admin\Users\UserController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
@@ -15,43 +14,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         return view('admin.dashboard');
     })->name('index');
 
-    // Test route để debug permission
-    Route::get('/test-permission', function() {
-        $user = Auth::user();
-        if (!$user) {
-            return response()->json(['error' => 'Not authenticated']);
-        }
 
-        return response()->json([
-            'user_id' => $user->id,
-            'user_email' => $user->email,
-            'permissions' => $user->getPermissionNames(),
-            'roles' => $user->getRoleNames(),
-            'can_view_users' => $user->can('view_users'),
-            'canAny_test' => $user->canAny(['view_users', 'create_users'])
-        ]);
-    })->name('test.permission');
-
-    Route::get('/test-api', function () {
-        return view('admin.test-api');
-    })->name('test.api');
-
-    Route::get('/test-json', function (\Illuminate\Http\Request $request) {
-        if ($request->has('api') || $request->wantsJson()) {
-            return response()->json([
-                'data' => [
-                    ['id' => 1, 'email' => 'test1@example.com', 'created_at' => '2024-01-01', 'is_blocked' => 0],
-                    ['id' => 2, 'email' => 'test2@example.com', 'created_at' => '2024-01-02', 'is_blocked' => 1],
-                ],
-                'current_page' => 1,
-                'last_page' => 1,
-                'total' => 2,
-                'from' => 1,
-                'to' => 2
-            ]);
-        }
-        return view('admin.test-api');
-    })->name('test.json');
 
     Route::prefix('users')->name('users.')->group(function () { // Chức năng quản lý tài khoản
         Route::middleware(['canAny:view_users'])->get('/index', [UserController::class, 'index'])->name('index'); // Hiển thị danh sách tài khoản

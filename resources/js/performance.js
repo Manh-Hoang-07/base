@@ -20,19 +20,19 @@ class PerformanceOptimizer {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const img = entry.target;
-                        
+
                         // Load the actual image
                         if (img.dataset.src) {
                             img.src = img.dataset.src;
                             img.classList.remove('lazy');
                             img.classList.add('loaded');
                         }
-                        
+
                         // Load srcset if available
                         if (img.dataset.srcset) {
                             img.srcset = img.dataset.srcset;
                         }
-                        
+
                         imageObserver.unobserve(img);
                     }
                 });
@@ -80,7 +80,7 @@ class PerformanceOptimizer {
             document.querySelectorAll('img').forEach(img => {
                 if (img.src && !img.src.includes('.webp')) {
                     const webpSrc = img.src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
-                    
+
                     // Check if WebP version exists
                     this.checkImageExists(webpSrc).then(exists => {
                         if (exists) {
@@ -102,13 +102,13 @@ class PerformanceOptimizer {
     // Prefetching for better navigation
     setupPrefetching() {
         let prefetchedLinks = new Set();
-        
+
         // Prefetch on hover
         document.addEventListener('mouseover', (e) => {
-            if (e.target.tagName === 'A' && 
+            if (e.target.tagName === 'A' &&
                 e.target.hostname === window.location.hostname &&
                 !prefetchedLinks.has(e.target.href)) {
-                
+
                 this.prefetchPage(e.target.href);
                 prefetchedLinks.add(e.target.href);
             }
@@ -141,10 +141,10 @@ class PerformanceOptimizer {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
-                        console.log('SW registered: ', registration);
+                        // Service worker registered successfully
                     })
                     .catch(registrationError => {
-                        console.log('SW registration failed: ', registrationError);
+                        // Service worker registration failed
                     });
             });
         }
@@ -220,8 +220,6 @@ class PerformanceOptimizer {
                         total: perfData.loadEventEnd - perfData.navigationStart
                     };
 
-                    console.log('Performance Metrics:', metrics);
-                    
                     // Send to analytics if needed
                     // this.sendAnalytics(metrics);
                 }, 0);
