@@ -5,23 +5,18 @@ namespace App\Http\Controllers\Admin\Roles;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\Roles\StoreRequest;
 use App\Http\Requests\Admin\Roles\UpdateRequest;
-use App\Models\Permission;
-use App\Models\Role;
+
 use App\Services\Admin\Permissions\PermissionService;
 use App\Services\Admin\Roles\RoleService;
-use App\Traits\ApiResponseTrait;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use lib\DataTable;
+
 
 class RoleController extends BaseController
 {
-    use ApiResponseTrait;
-
     protected PermissionService $permissionService;
 
     public function __construct(RoleService $roleService, PermissionService $permissionService)
@@ -38,18 +33,14 @@ class RoleController extends BaseController
     /**
      * Hiển thị danh sách vai trò
      * @param Request $request
-     * @return View|Application|Factory|JsonResponse
+     * @return View|Application|Factory
      */
-    public function index(Request $request): View|Application|Factory|JsonResponse
+    public function index(Request $request): View|Application|Factory
     {
-        return $this->apiOrViewResponse(
-            $request,
-            'admin.roles.index',
-            [
-                'filters' => $this->getFilters($request->all()),
-                'options' => $this->getOptions($request->all())
-            ]
-        );
+        return view('admin.roles.index', [
+            'filters' => $this->getFilters($request->all()),
+            'options' => $this->getOptions($request->all())
+        ]);
     }
 
     /**
@@ -121,5 +112,30 @@ class RoleController extends BaseController
         }
         return redirect()->route('admin.roles.index')
             ->with('fail', $return['message'] ?? 'Xóa vai trò thất bại.');
+    }
+
+    /**
+     * Autocomplete vai trò (cho AJAX)
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function autocomplete(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $search = $request->get('search', '');
+        $limit = $request->get('limit', 10);
+
+        try {
+            $roles = $this->getService()->autocomplete($search, $limit);
+            return response()->json([
+                'success' => true,
+                'data' => $roles,
+                'message' => 'Lấy danh sách autocomplete thành công'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi khi lấy danh sách autocomplete: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

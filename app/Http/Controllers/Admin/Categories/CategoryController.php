@@ -6,18 +6,14 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\Categories\StoreRequest;
 use App\Http\Requests\Admin\Categories\UpdateRequest;
 use App\Services\Admin\Categories\CategoryService;
-use App\Traits\ApiResponseTrait;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class CategoryController extends BaseController
 {
-    use ApiResponseTrait;
-
     public function __construct(CategoryService $categoryService)
     {
         $this->service = $categoryService;
@@ -31,18 +27,14 @@ class CategoryController extends BaseController
     /**
      * Hiển thị danh sách danh mục
      * @param Request $request
-     * @return Factory|Application|View|JsonResponse
+     * @return Factory|Application|View
      */
-    public function index(Request $request): View|Application|Factory|JsonResponse
+    public function index(Request $request): View|Application|Factory
     {
-        return $this->apiOrViewResponse(
-            $request,
-            'admin.categories.index',
-            [
-                'filters' => $this->getFilters($request->all()),
-                'options' => $this->getOptions($request->all())
-            ]
-        );
+        return view('admin.categories.index', [
+            'filters' => $this->getFilters($request->all()),
+            'options' => $this->getOptions($request->all())
+        ]);
     }
 
     /**

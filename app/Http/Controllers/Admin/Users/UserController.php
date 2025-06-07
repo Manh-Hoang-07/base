@@ -7,19 +7,15 @@ use App\Http\Requests\Admin\Users\Users\AssignRequest;
 use App\Http\Requests\Admin\Users\Users\StoreRequest;
 use App\Http\Requests\Admin\Users\Users\UpdateRequest;
 use App\Services\Admin\Users\UserService;
-use App\Traits\ApiResponseTrait;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
 class UserController extends BaseController
 {
-    use ApiResponseTrait;
-
     public function __construct(UserService $userService)
     {
         $this->service = $userService;
@@ -33,19 +29,14 @@ class UserController extends BaseController
     /**
      * Hiển thị danh sách tài khoản
      * @param Request $request
-     * @return View|Application|Factory|JsonResponse
+     * @return View|Application|Factory
      */
-    public function index(Request $request): View|Application|Factory|JsonResponse
+    public function index(Request $request): View|Application|Factory
     {
-        // Sử dụng trait để tự động xử lý API hoặc View
-        return $this->apiOrViewResponse(
-            $request,
-            'admin.users.index',
-            [
-                'filters' => $this->getFilters($request->all()),
-                'options' => $this->getOptions($request->all())
-            ]
-        );
+        return view('admin.users.index', [
+            'filters' => $this->getFilters($request->all()),
+            'options' => $this->getOptions($request->all())
+        ]);
     }
 
     /**
@@ -54,7 +45,9 @@ class UserController extends BaseController
      */
     public function create(): View|Application|Factory
     {
-        return view('admin.users.create');
+        return view('admin.users.create', [
+            'roles' => Role::all()
+        ]);
     }
 
     /**
@@ -157,6 +150,31 @@ class UserController extends BaseController
         }
         return redirect()->route('admin.users.index')
             ->with('fail', $return['message'] ?? 'Thay đổi trạng thái tài khoản thất bại.');
+    }
+
+    /**
+     * Autocomplete tài khoản (cho AJAX)
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function autocomplete(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $search = $request->get('search', '');
+        $limit = $request->get('limit', 10);
+
+        try {
+            $users = $this->getService()->autocomplete($search, $limit);
+            return response()->json([
+                'success' => true,
+                'data' => $users,
+                'message' => 'Lấy danh sách autocomplete thành công'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi khi lấy danh sách autocomplete: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
 }

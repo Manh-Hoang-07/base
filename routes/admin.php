@@ -9,10 +9,10 @@ use App\Http\Controllers\Admin\Users\ProfileController;
 use App\Http\Controllers\Admin\Users\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', function () {
-        return view('admin.dashboard');
-    })->name('index');
+// Dashboard route
+Route::get('/', function () {
+    return view('admin.dashboard');
+})->name('index');
 
 
 
@@ -84,5 +84,3 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::middleware(['canAny:edit_declarations'])->post('/update/{id}', [PostController::class, 'update'])->name('update'); // Xử lý sửa bài đăng
         Route::middleware(['canAny:delete_declarations'])->delete('/delete/{id}', [PostController::class, 'delete'])->name('delete'); // Xử lý xóa bài đăng
     });
-
-});

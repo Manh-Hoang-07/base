@@ -6,18 +6,14 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\Posts\StoreRequest;
 use App\Http\Requests\Admin\Posts\UpdateRequest;
 use App\Services\Admin\Posts\PostService;
-use App\Traits\ApiResponseTrait;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class PostController extends BaseController
 {
-    use ApiResponseTrait;
-
     public function __construct(PostService $postService)
     {
         $this->service = $postService;
@@ -31,18 +27,14 @@ class PostController extends BaseController
     /**
      * Hiển thị danh sách bài đăng
      * @param Request $request
-     * @return Factory|Application|View|JsonResponse
+     * @return Factory|Application|View
      */
-    public function index(Request $request): View|Application|Factory|JsonResponse
+    public function index(Request $request): View|Application|Factory
     {
-        return $this->apiOrViewResponse(
-            $request,
-            'admin.posts.index',
-            [
-                'filters' => $this->getFilters($request->all()),
-                'options' => $this->getOptions($request->all())
-            ]
-        );
+        return view('admin.posts.index', [
+            'filters' => $this->getFilters($request->all()),
+            'options' => $this->getOptions($request->all())
+        ]);
     }
 
     /**

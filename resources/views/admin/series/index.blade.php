@@ -43,7 +43,7 @@
                         {{-- Sử dụng API Table Component --}}
                         @include('components.api-table', [
                             'id' => 'series',
-                            'url' => route('admin.series.index') . '?api=1',
+                            'url' => '/api/v1/admin/series',
                             'fields' => ['id', 'name', 'code', 'status', 'created_at'],
                             'columns' => ['ID', 'Tên Series', 'Mã Series', 'Trạng thái', 'Ngày tạo'],
                             'searchable' => false,

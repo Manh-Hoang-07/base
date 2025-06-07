@@ -49,7 +49,7 @@
                         {{-- Sử dụng API Table Component --}}
                         @include('components.api-table', [
                             'id' => 'roles',
-                            'url' => route('admin.roles.index') . '?api=1',
+                            'url' => '/api/v1/admin/roles',
                             'fields' => ['id', 'title', 'name', 'permissions_count'],
                             'columns' => ['ID', 'Ý nghĩa vai trò', 'Tên vai trò', 'Số quyền'],
                             'searchable' => false,

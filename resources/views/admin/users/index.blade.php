@@ -52,7 +52,7 @@
                         {{-- Sử dụng API Table Component với bộ lọc --}}
                         @include('components.api-table', [
                             'id' => 'users',
-                            'url' => route('admin.users.index') . '?api=1',
+                            'url' => '/api/v1/admin/users',
                             'fields' => ['id', 'email', 'created_at', 'is_blocked', 'roles_count'],
                             'columns' => ['ID', 'Email', 'Ngày tạo', 'Trạng thái', 'Số vai trò'],
                             'searchable' => false, // Tắt search box vì đã có filter form

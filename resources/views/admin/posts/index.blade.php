@@ -55,7 +55,7 @@
                         {{-- Sử dụng API Table Component --}}
                         @include('components.api-table', [
                             'id' => 'posts',
-                            'url' => route('admin.posts.index') . '?api=1',
+                            'url' => '/api/v1/admin/posts',
                             'fields' => ['id', 'name', 'status', 'require_login', 'created_at'],
                             'columns' => ['ID', 'Tiêu đề', 'Trạng thái', 'Yêu cầu đăng nhập', 'Ngày tạo'],
                             'searchable' => false,
