@@ -7,12 +7,30 @@ use App\Http\Controllers\Admin\Roles\RoleController;
 use App\Http\Controllers\Admin\Series\SeriesController;
 use App\Http\Controllers\Admin\Users\ProfileController;
 use App\Http\Controllers\Admin\Users\UserController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard');
     })->name('index');
+
+    // Test route để debug permission
+    Route::get('/test-permission', function() {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Not authenticated']);
+        }
+
+        return response()->json([
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'permissions' => $user->getPermissionNames(),
+            'roles' => $user->getRoleNames(),
+            'can_view_users' => $user->can('view_users'),
+            'canAny_test' => $user->canAny(['view_users', 'create_users'])
+        ]);
+    })->name('test.permission');
     Route::prefix('users')->name('users.')->group(function () { // Chức năng quản lý tài khoản
         Route::middleware(['canAny:view_users'])->get('/index', [UserController::class, 'index'])->name('index'); // Hiển thị danh sách tài khoản
         Route::middleware(['canAny:create_users'])->get('/create', [UserController::class, 'create'])->name('create'); // Hiển thị form tạo tài khoản

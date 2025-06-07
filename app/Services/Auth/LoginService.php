@@ -4,6 +4,7 @@ namespace App\Services\Auth;
 
 use App\Repositories\Auth\LoginRepository;
 use App\Repositories\User\Users\UserRepository;
+use Illuminate\Support\Facades\Auth;
 
 class LoginService
 {
@@ -36,6 +37,7 @@ class LoginService
         }
         $data = ['email' => $credentials['email'], 'password' => $credentials['password']];
         if ($this->loginRepository->login($data, $remember)) {
+        // if (Auth::login($user, $remember)) {
             $return = ['success' => true, 'message' => 'Đăng nhập thành công!'];
         }
         return $return;

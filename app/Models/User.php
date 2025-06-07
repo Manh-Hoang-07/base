@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable {
@@ -54,31 +55,52 @@ class User extends Authenticatable {
 
     public function can($permission, $arguments = []): bool
     {
-        // Nếu user có quyền trực tiếp, trả về true
-        if (parent::can($permission, $arguments)) {
-            return true;
-        }
-
-        // Kiểm tra nếu quyền này có quyền cha nhiều cấp
-        $perm = Permission::where('name', $permission)->with('parent')->first();
-        while ($perm && $perm->parent) {
-            $perm = $perm->parent;
-            if (parent::can($perm->name, $arguments)) {
+        try {
+            // Nếu user có quyền trực tiếp, trả về true
+            if (parent::can($permission, $arguments)) {
                 return true;
             }
-        }
 
-        return false;
+            // Kiểm tra nếu quyền này có quyền cha nhiều cấp
+            $perm = Permission::where('name', $permission)->with('parent')->first();
+            $maxDepth = 5; // Giới hạn độ sâu để tránh vòng lặp vô hạn
+            $currentDepth = 0;
+
+            while ($perm && $perm->parent && $currentDepth < $maxDepth) {
+                $perm = $perm->parent;
+                if (parent::can($perm->name, $arguments)) {
+                    return true;
+                }
+                $currentDepth++;
+            }
+
+            return false;
+        } catch (\Exception $e) {
+            // Log lỗi và trả về false để tránh timeout
+            Log::error('Permission check error: ' . $e->getMessage());
+            return false;
+        }
     }
 
     public function canAny($permissions, $arguments = []): bool
     {
-        foreach ($permissions as $permission) {
-            if ($this->can($permission, $arguments)) {
-                return true;
+        try {
+            // Nếu không có permissions hoặc rỗng, trả về false
+            if (empty($permissions)) {
+                return false;
             }
+
+            foreach ($permissions as $permission) {
+                if ($this->can($permission, $arguments)) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (\Exception $e) {
+            // Log lỗi và trả về false để tránh timeout
+            Log::error('CanAny permission check error: ' . $e->getMessage());
+            return false;
         }
-        return false;
     }
 
     public function profile(): HasOne
