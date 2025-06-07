@@ -282,11 +282,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const title = button.title || '';
 
                 if (button.action === 'delete') {
-                    return `<button class="btn btn-sm ${className} me-1" onclick="deleteItem(${item.id})" title="${title}">
+                    return `<button class="btn btn-sm ${className} me-1" onclick="deleteItem(${item.id}, null, 'Bạn có chắc chắn muốn xóa?', () => window.apiTableInstances['${this.config.id}'].loadData())" title="${title}">
                         <i class="${icon}"></i>
                     </button>`;
                 } else if (button.action === 'toggle-status') {
-                    return `<button class="btn btn-sm ${className} me-1" onclick="toggleStatus(${item.id}, ${item.is_blocked || false})" title="${title}">
+                    return `<button class="btn btn-sm ${className} me-1" onclick="toggleStatus(${item.id}, ${item.is_blocked || false}, null, () => window.apiTableInstances['${this.config.id}'].loadData())" title="${title}">
                         <i class="${icon}"></i>
                     </button>`;
                 } else if (button.url) {
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Thêm nút delete mặc định nếu không có
             if (!this.config.actionButtons.some(btn => btn.action === 'delete')) {
-                buttons += `<button class="btn btn-sm btn-danger" onclick="deleteItem(${item.id})" title="Xóa">
+                buttons += `<button class="btn btn-sm btn-danger" onclick="deleteItem(${item.id}, null, 'Bạn có chắc chắn muốn xóa?', () => window.apiTableInstances['${this.config.id}'].loadData())" title="Xóa">
                     <i class="fas fa-trash"></i>
                 </button>`;
             }

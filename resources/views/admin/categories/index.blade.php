@@ -46,7 +46,7 @@
                         {{-- Sử dụng API Table Component --}}
                         @include('components.api-table', [
                             'id' => 'categories',
-                            'url' => '/api/v1/admin/categories',
+                            'url' => '/api/v1/admin/categories/list',
                             'fields' => ['id', 'name', 'code', 'slug', 'status'],
                             'columns' => ['ID', 'Tên danh mục', 'Mã', 'Slug', 'Trạng thái'],
                             'searchable' => false,

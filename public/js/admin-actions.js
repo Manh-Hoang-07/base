@@ -3,87 +3,149 @@
  * Xử lý các thao tác CRUD trong admin panel
  */
 
-// Xóa item với confirmation
-function deleteItem(id, url = null, message = 'Bạn có chắc chắn muốn xóa?', reloadCallback = null) {
+// Xóa item với confirmation (API version)
+async function deleteItem(id, url = null, message = 'Bạn có chắc chắn muốn xóa?', reloadCallback = null) {
     if (confirm(message)) {
-        // Nếu không có URL, tự động tạo từ current path
+        // Nếu không có URL, tự động tạo API URL từ current path
         if (!url) {
             const currentPath = window.location.pathname;
-            url = currentPath.replace('/index', '') + '/delete/' + id;
+            // Convert web path to API path
+            // /admin/users/index -> /api/v1/admin/users/delete/{id}
+            const pathParts = currentPath.split('/');
+            if (pathParts.includes('admin')) {
+                const module = pathParts[pathParts.length - 2]; // users, roles, etc.
+                url = `/api/v1/admin/${module}/delete/${id}`;
+            }
         }
 
-        // Tạo form để submit DELETE request
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = url;
-        form.style.display = 'none';
+        try {
+            // Get CSRF token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-        // CSRF token
-        const csrfToken = document.querySelector('meta[name="csrf-token"]');
-        if (csrfToken) {
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = csrfToken.getAttribute('content');
-            form.appendChild(csrfInput);
-        }
-
-        // Method spoofing for DELETE
-        const methodInput = document.createElement('input');
-        methodInput.type = 'hidden';
-        methodInput.name = '_method';
-        methodInput.value = 'DELETE';
-        form.appendChild(methodInput);
-
-        // Add success callback for API tables
-        if (reloadCallback && typeof reloadCallback === 'function') {
-            form.addEventListener('submit', function() {
-                setTimeout(() => {
-                    reloadCallback();
-                }, 1000); // Wait for server response
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
             });
-        }
 
-        document.body.appendChild(form);
-        form.submit();
+            const data = await response.json();
+
+            if (data.success) {
+                if (typeof toastr !== 'undefined') {
+                    toastr.success(data.message || 'Xóa thành công!');
+                } else {
+                    alert(data.message || 'Xóa thành công!');
+                }
+
+                // Reload API table if callback provided
+                if (reloadCallback && typeof reloadCallback === 'function') {
+                    setTimeout(() => {
+                        reloadCallback();
+                    }, 500);
+                } else {
+                    // Reload page if no callback
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                }
+            } else {
+                if (typeof toastr !== 'undefined') {
+                    toastr.error(data.message || 'Có lỗi xảy ra khi xóa!');
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra khi xóa!');
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            if (typeof toastr !== 'undefined') {
+                toastr.error('Có lỗi xảy ra khi xử lý yêu cầu!');
+            } else {
+                alert('Có lỗi xảy ra khi xử lý yêu cầu!');
+            }
+        }
     }
 }
 
-// Toggle status (block/unblock user)
-function toggleStatus(id, currentStatus, url = null) {
+// Toggle status (block/unblock user) - API version
+async function toggleStatus(id, currentStatus, url = null, reloadCallback = null) {
     const action = currentStatus ? 'mở khóa' : 'khóa';
     const message = `Bạn có chắc chắn muốn ${action} tài khoản này?`;
 
     if (confirm(message)) {
         if (!url) {
-            const currentPath = window.location.pathname;
-            url = currentPath.replace('/index', '') + '/toggle-block/' + id;
+            // Create API URL for status change
+            url = `/api/v1/admin/users/status/${id}`;
         }
 
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = url;
-        form.style.display = 'none';
+        try {
+            // Get CSRF token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-        // CSRF token
-        const csrfToken = document.querySelector('meta[name="csrf-token"]');
-        if (csrfToken) {
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = csrfToken.getAttribute('content');
-            form.appendChild(csrfInput);
+            const statusValue = currentStatus ? '0' : '1';
+
+            // Use FormData with method spoofing
+            const formData = new FormData();
+            formData.append('status', statusValue);
+            formData.append('_token', csrfToken);
+            formData.append('_method', 'PATCH');
+
+            // Debug log
+            console.log('Toggle Status Debug:', {
+                url: url,
+                currentStatus: currentStatus,
+                statusValue: statusValue,
+                csrfToken: csrfToken
+            });
+
+            const response = await fetch(url, {
+                method: 'POST', // Use POST with method spoofing
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                    // Don't set Content-Type for FormData, let browser set it
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                if (typeof toastr !== 'undefined') {
+                    toastr.success(data.message || `${action.charAt(0).toUpperCase() + action.slice(1)} tài khoản thành công!`);
+                } else {
+                    alert(data.message || `${action.charAt(0).toUpperCase() + action.slice(1)} tài khoản thành công!`);
+                }
+
+                // Reload API table if callback provided
+                if (reloadCallback && typeof reloadCallback === 'function') {
+                    setTimeout(() => {
+                        reloadCallback();
+                    }, 500);
+                } else {
+                    // Reload page if no callback
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                }
+            } else {
+                if (typeof toastr !== 'undefined') {
+                    toastr.error(data.message || `Có lỗi xảy ra khi ${action} tài khoản!`);
+                } else {
+                    alert(data.message || `Có lỗi xảy ra khi ${action} tài khoản!`);
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            if (typeof toastr !== 'undefined') {
+                toastr.error('Có lỗi xảy ra khi xử lý yêu cầu!');
+            } else {
+                alert('Có lỗi xảy ra khi xử lý yêu cầu!');
+            }
         }
-
-        // Status value
-        const statusInput = document.createElement('input');
-        statusInput.type = 'hidden';
-        statusInput.name = 'status';
-        statusInput.value = currentStatus ? '0' : '1';
-        form.appendChild(statusInput);
-
-        document.body.appendChild(form);
-        form.submit();
     }
 }
 
@@ -91,12 +153,16 @@ function toggleStatus(id, currentStatus, url = null) {
 function submitAjaxForm(formElement, successCallback = null) {
     const formData = new FormData(formElement);
 
+    // Get CSRF token
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
     fetch(formElement.action, {
         method: formElement.method,
         body: formData,
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
         }
     })
     .then(response => response.json())

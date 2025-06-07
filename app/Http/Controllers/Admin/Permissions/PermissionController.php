@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Admin\Permissions;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Admin\Permissions\StoreRequest;
-use App\Http\Requests\Admin\Permissions\UpdateRequest;
+
 use App\Services\Admin\Permissions\PermissionService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\RedirectResponse;
+
 use Illuminate\Http\Request;
 
 class PermissionController extends BaseController
@@ -48,21 +47,7 @@ class PermissionController extends BaseController
         return view('admin.permissions.create', compact('permissions'));
     }
 
-    /**
-     * Xử lý tạo quyền
-     * @param StoreRequest $request
-     * @return RedirectResponse
-     */
-    public function store(StoreRequest $request): RedirectResponse
-    {
-        $return = $this->getService()->create($request->all());
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.permissions.index')
-                ->with('success', $return['message'] ?? 'Tạo quyền thành công.');
-        }
-        return redirect()->route('admin.permissions.index')
-            ->with('fail', $return['message'] ?? 'Tạo quyền thất bại.');
-    }
+
 
     /**
      * Hiển thị form sửa quyền
@@ -76,38 +61,9 @@ class PermissionController extends BaseController
         return view('admin.permissions.edit', compact('permission', 'permissions'));
     }
 
-    /**
-     * Xử lý cập nhật quyền
-     * @param UpdateRequest $request
-     * @param $id
-     * @return RedirectResponse
-     */
-    public function update(UpdateRequest $request, $id): RedirectResponse
-    {
-        $return = $this->getService()->update($id, $request->all());
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.permissions.index')
-                ->with('success', $return['message'] ?? 'Cập nhật quyền thành công.');
-        }
-        return redirect()->route('admin.permissions.index')
-            ->with('fail', $return['message'] ?? 'Cập nhật quyền thất bại.');
-    }
 
-    /**
-     * Xóa quyền
-     * @param $id
-     * @return RedirectResponse
-     */
-    public function delete($id): RedirectResponse
-    {
-        $return = $this->getService()->delete($id);
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.permissions.index')
-                ->with('success', $return['message'] ?? 'Xóa quyền thành công.');
-        }
-        return redirect()->route('admin.permissions.index')
-            ->with('fail', $return['message'] ?? 'Xóa quyền thất bại.');
-    }
+
+
 
     /**
      * Autocomplete quyền (cho AJAX)

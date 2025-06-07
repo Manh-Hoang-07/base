@@ -76,15 +76,15 @@ class UserController extends BaseController
     public function store(StoreRequest $request): JsonResponse
     {
         $result = $this->getService()->create($request->all());
-        
+
         if ($result['success']) {
             return $this->successResponse(
-                $result['data'] ?? null, 
-                $result['message'] ?? 'Tạo tài khoản thành công', 
+                $result['data'] ?? null,
+                $result['message'] ?? 'Tạo tài khoản thành công',
                 201
             );
         }
-        
+
         return $this->errorResponse($result['message'] ?? 'Tạo tài khoản thất bại');
     }
 
@@ -97,14 +97,14 @@ class UserController extends BaseController
     public function update(UpdateRequest $request, int $id): JsonResponse
     {
         $result = $this->getService()->update($id, $request->all());
-        
+
         if ($result['success']) {
             return $this->successResponse(
-                $result['data'] ?? null, 
+                $result['data'] ?? null,
                 $result['message'] ?? 'Cập nhật tài khoản thành công'
             );
         }
-        
+
         return $this->errorResponse($result['message'] ?? 'Cập nhật tài khoản thất bại');
     }
 
@@ -116,14 +116,14 @@ class UserController extends BaseController
     public function destroy(int $id): JsonResponse
     {
         $result = $this->getService()->delete($id);
-        
+
         if ($result['success']) {
             return $this->successResponse(
-                null, 
+                null,
                 $result['message'] ?? 'Xóa tài khoản thành công'
             );
         }
-        
+
         return $this->errorResponse($result['message'] ?? 'Xóa tài khoản thất bại');
     }
 
@@ -135,19 +135,21 @@ class UserController extends BaseController
      */
     public function changeStatus(Request $request, int $id): JsonResponse
     {
+
+
         $request->validate([
             'status' => 'required|integer|in:0,1',
         ]);
 
         $result = $this->getService()->changeStatus($id, (int)$request->status);
-        
+
         if ($result['success']) {
             return $this->successResponse(
-                $result['data'] ?? null, 
+                $result['data'] ?? null,
                 $result['message'] ?? 'Thay đổi trạng thái tài khoản thành công'
             );
         }
-        
+
         return $this->errorResponse($result['message'] ?? 'Thay đổi trạng thái tài khoản thất bại');
     }
 
@@ -176,7 +178,7 @@ class UserController extends BaseController
     {
         $search = $request->get('search', '');
         $limit = $request->get('limit', 10);
-        
+
         try {
             $users = $this->getService()->autocomplete($search, $limit);
             return $this->successResponse($users, 'Lấy danh sách autocomplete thành công');

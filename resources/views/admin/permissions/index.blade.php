@@ -53,7 +53,7 @@
                         {{-- Sử dụng API Table Component --}}
                         @include('components.api-table', [
                             'id' => 'permissions',
-                            'url' => '/api/v1/admin/permissions',
+                            'url' => '/api/v1/admin/permissions/list',
                             'fields' => ['id', 'title', 'name', 'parent_title', 'is_default'],
                             'columns' => ['ID', 'Ý nghĩa quyền', 'Tên quyền', 'Quyền cha', 'Mặc định'],
                             'searchable' => false,

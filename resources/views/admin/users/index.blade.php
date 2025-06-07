@@ -52,17 +52,29 @@
                         {{-- Sử dụng API Table Component với bộ lọc --}}
                         @include('components.api-table', [
                             'id' => 'users',
-                            'url' => '/api/v1/admin/users',
+                            'url' => '/api/v1/admin/users/list',
                             'fields' => ['id', 'email', 'created_at', 'is_blocked', 'roles_count'],
                             'columns' => ['ID', 'Email', 'Ngày tạo', 'Trạng thái', 'Số vai trò'],
                             'searchable' => false, // Tắt search box vì đã có filter form
                             'actions' => true,
                             'actionButtons' => [
                                 [
+                                    'url' => route('admin.users.edit', ':id'),
+                                    'class' => 'btn-warning',
+                                    'icon' => 'fas fa-edit',
+                                    'title' => 'Sửa'
+                                ],
+                                [
                                     'url' => route('admin.users.showAssignRolesForm', ':id'),
                                     'class' => 'btn-info',
                                     'icon' => 'fas fa-user-tag',
                                     'title' => 'Gán vai trò'
+                                ],
+                                [
+                                    'action' => 'toggle-status',
+                                    'class' => 'btn-secondary',
+                                    'icon' => 'fas fa-ban',
+                                    'title' => 'Thay đổi trạng thái'
                                 ],
                                 [
                                     'action' => 'delete',
