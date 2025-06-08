@@ -131,14 +131,34 @@
         /* Menu sidebar fixes */
         .sidebar-menu .nav-item.menu-open > .nav-link .nav-arrow {
             transform: rotate(90deg);
+            transition: transform 0.2s ease;
         }
 
+        .sidebar-menu .nav-link .nav-arrow {
+            transition: transform 0.2s ease;
+        }
+
+        /* Important: Force submenu visibility rules */
         .sidebar-menu .nav-treeview {
-            display: none;
+            display: none !important;
+            overflow: hidden;
+            background-color: rgba(0,0,0,0.1);
+            margin-left: 0.5rem;
         }
 
         .sidebar-menu .nav-item.menu-open > .nav-treeview {
-            display: block;
+            display: block !important;
+        }
+
+        /* Debug: Add border to see submenu */
+        .sidebar-menu .nav-treeview {
+            border-left: 2px solid #007bff;
+            padding-left: 0.5rem;
+        }
+
+        /* Ensure parent menu items are clickable */
+        .sidebar-menu .nav-item > .nav-link {
+            cursor: pointer;
         }
 
         /* Bootstrap Icons fallback */
@@ -226,6 +246,30 @@
 
         // Initialize sidebar menu
         initializeSidebarMenu();
+
+        // Fallback: Initialize menu again after a delay to ensure AdminLTE is loaded
+        setTimeout(function() {
+            console.log('Fallback menu initialization...');
+            initializeSidebarMenu();
+        }, 500);
+
+        // Debug: Add test button
+        $('body').append('<button id="debug-menu" style="position:fixed;top:10px;right:10px;z-index:9999;background:red;color:white;padding:5px;">Debug Menu</button>');
+        $('#debug-menu').on('click', function() {
+            console.log('=== MENU DEBUG ===');
+            console.log('Menu items with submenus:', $('.sidebar-menu .nav-item:has(.nav-treeview)').length);
+            console.log('Open menus:', $('.sidebar-menu .nav-item.menu-open').length);
+            $('.sidebar-menu .nav-item:has(.nav-treeview)').each(function(i) {
+                const $item = $(this);
+                const $submenu = $item.find('.nav-treeview');
+                console.log(`Menu ${i+1}:`, {
+                    text: $item.find('> .nav-link p').first().text().trim(),
+                    hasMenuOpen: $item.hasClass('menu-open'),
+                    submenuVisible: $submenu.is(':visible'),
+                    submenuDisplay: $submenu.css('display')
+                });
+            });
+        });
     });
 
     // Global AJAX setup
@@ -235,25 +279,71 @@
         }
     });
 
-    // Sidebar menu functionality
+    // Sidebar menu functionality - Simple and reliable
     function initializeSidebarMenu() {
-        // Handle menu toggle
+        console.log('Initializing sidebar menu...');
+
+        // Remove AdminLTE's default treeview behavior
+        $('.sidebar-menu').removeAttr('data-lte-toggle');
+
+        // Remove all existing click handlers
+        $('.sidebar-menu .nav-link').off('click');
+
+        // Handle menu toggle with simple logic
         $('.sidebar-menu .nav-link').on('click', function(e) {
-            const $this = $(this);
-            const $parent = $this.parent('.nav-item');
-            const $submenu = $parent.find('.nav-treeview');
+            const $link = $(this);
+            const $parent = $link.closest('.nav-item');
+            const $submenu = $parent.find('> .nav-treeview');
+
+            console.log('Menu clicked:', $link.text().trim());
+            console.log('Has submenu:', $submenu.length > 0);
 
             // If this is a parent menu item (has submenu)
             if ($submenu.length > 0) {
                 e.preventDefault();
+                e.stopPropagation();
+
+                console.log('Processing parent menu...');
+
+                // Check current state
+                const isOpen = $parent.hasClass('menu-open');
+                console.log('Currently open:', isOpen);
+
+                // Close all other menus first
+                $('.sidebar-menu .nav-item.menu-open').not($parent).each(function() {
+                    $(this).removeClass('menu-open');
+                    $(this).find('.nav-treeview').hide();
+                });
 
                 // Toggle current menu
-                $parent.toggleClass('menu-open');
+                if (isOpen) {
+                    console.log('Closing menu...');
+                    $parent.removeClass('menu-open');
+                    $submenu.slideUp(200);
+                } else {
+                    console.log('Opening menu...');
+                    $parent.addClass('menu-open');
 
-                // Close other open menus at same level
-                $parent.siblings('.nav-item.menu-open').removeClass('menu-open');
+                    // Force show submenu with multiple methods
+                    $submenu.show();
+                    $submenu.css('display', 'block');
+                    $submenu.slideDown(200);
+
+                    // Double check after animation
+                    setTimeout(function() {
+                        if (!$submenu.is(':visible')) {
+                            console.log('Force showing submenu...');
+                            $submenu.show();
+                        }
+                    }, 250);
+                }
+            } else {
+                console.log('Regular link, allowing navigation...');
+                // Regular link, allow normal navigation
             }
         });
+
+        console.log('Sidebar menu initialized');
     }
 </script>
 

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('content');
             $table->string('image')->nullable();
             $table->boolean('require_login')->default(false);
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->enum('status', BasicStatus::values())->default(BasicStatus::ACTIVE->value);
             $table->timestamps();
         });
