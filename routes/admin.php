@@ -14,6 +14,15 @@ Route::get('/', function () {
     return redirect()->route('admin.users.index');
 })->name('index');
 
+// Test route for debugging roles
+Route::get('/test-roles', function () {
+    $roles = \Spatie\Permission\Models\Role::all(['id', 'name', 'title']);
+    return response()->json([
+        'count' => $roles->count(),
+        'roles' => $roles->toArray()
+    ]);
+});
+
 
 
     Route::prefix('users')->name('users.')->group(function () { // Chức năng quản lý tài khoản

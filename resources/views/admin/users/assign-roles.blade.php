@@ -32,11 +32,20 @@
                                 <label class="form-label"><strong>Vai trò:</strong></label>
                                 <select class="form-control select2" name="roles[]"
                                         multiple
-                                        data-field="name"
-                                        data-display-field="title"
                                         data-selected='@json($userRoles ?? [])'
                                         data-url="{{ route('admin.roles.autocomplete') }}">
                                     <option value="">Chọn vai trò</option>
+                                    {{-- Pre-populate selected roles --}}
+                                    @if(isset($userRoles) && is_array($userRoles))
+                                        @foreach($userRoles as $roleName)
+                                            @php
+                                                $role = \Spatie\Permission\Models\Role::where('name', $roleName)->first();
+                                            @endphp
+                                            @if($role)
+                                                <option value="{{ $role->name }}" selected>{{ $role->title ?? $role->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    @endif
                                 </select>
                                 @error('roles')
                                 <span class="text-danger">{{ $message }}</span>
