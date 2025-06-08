@@ -454,6 +454,137 @@
 
     @yield('scripts')
 
+    <!-- Admin Functions for compatibility -->
+    <script>
+        // Define deleteItem function for compatibility with admin components
+        async function deleteItem(id, url = null, message = 'Bạn có chắc chắn muốn xóa?', reloadCallback = null) {
+            if (confirm(message)) {
+                // Nếu không có URL, tự động tạo API URL từ current path
+                if (!url) {
+                    const currentPath = window.location.pathname;
+                    // Convert web path to API path
+                    // /admin/users/index -> /api/v1/admin/users/delete/{id}
+                    const pathParts = currentPath.split('/');
+                    if (pathParts.includes('admin')) {
+                        const module = pathParts[pathParts.length - 2]; // users, roles, etc.
+                        url = `/api/v1/admin/${module}/delete/${id}`;
+                    }
+                }
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        if (typeof toastr !== 'undefined') {
+                            toastr.success(data.message || 'Xóa thành công!');
+                        } else {
+                            alert(data.message || 'Xóa thành công!');
+                        }
+
+                        // Reload API table if callback provided
+                        if (reloadCallback && typeof reloadCallback === 'function') {
+                            setTimeout(() => {
+                                reloadCallback();
+                            }, 500);
+                        } else {
+                            // Reload page if no callback
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        }
+                    } else {
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error(data.message || 'Có lỗi xảy ra khi xóa!');
+                        } else {
+                            alert(data.message || 'Có lỗi xảy ra khi xóa!');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    if (typeof toastr !== 'undefined') {
+                        toastr.error('Có lỗi xảy ra khi xử lý yêu cầu!');
+                    } else {
+                        alert('Có lỗi xảy ra khi xử lý yêu cầu!');
+                    }
+                }
+            }
+        }
+
+        // Define toggleStatus function for compatibility
+        async function toggleStatus(id, currentStatus, url = null, reloadCallback = null) {
+            const action = currentStatus ? 'mở khóa' : 'khóa';
+            const message = `Bạn có chắc chắn muốn ${action} người dùng này?`;
+
+            if (confirm(message)) {
+                if (!url) {
+                    const currentPath = window.location.pathname;
+                    const pathParts = currentPath.split('/');
+                    if (pathParts.includes('admin')) {
+                        const module = pathParts[pathParts.length - 2];
+                        url = `/api/v1/admin/${module}/toggle-status/${id}`;
+                    }
+                }
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        if (typeof toastr !== 'undefined') {
+                            toastr.success(data.message || 'Cập nhật thành công!');
+                        } else {
+                            alert(data.message || 'Cập nhật thành công!');
+                        }
+
+                        if (reloadCallback && typeof reloadCallback === 'function') {
+                            setTimeout(() => {
+                                reloadCallback();
+                            }, 500);
+                        } else {
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        }
+                    } else {
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error(data.message || 'Có lỗi xảy ra!');
+                        } else {
+                            alert(data.message || 'Có lỗi xảy ra!');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    if (typeof toastr !== 'undefined') {
+                        toastr.error('Có lỗi xảy ra khi xử lý yêu cầu!');
+                    } else {
+                        alert('Có lỗi xảy ra khi xử lý yêu cầu!');
+                    }
+                }
+            }
+        }
+
+        // Export functions for global use
+        window.deleteItem = deleteItem;
+        window.toggleStatus = toggleStatus;
+    </script>
+
     <!-- Performance optimizations -->
     <script>
         // Lazy load images
