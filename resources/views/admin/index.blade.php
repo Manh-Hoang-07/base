@@ -91,6 +91,41 @@
         .select2-dropdown {
             border: 1px solid #e0e6ed;
             border-radius: 6px;
+            z-index: 9999 !important;
+        }
+
+        /* Fix Select2 dropdown positioning and overflow */
+        .select2-container--open .select2-dropdown {
+            z-index: 9999 !important;
+        }
+
+        .select2-container--open .select2-dropdown--below {
+            border-top: none;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        .select2-container--open .select2-dropdown--above {
+            border-bottom: none;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        /* Ensure dropdown doesn't overflow container */
+        .select2-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .select2-dropdown {
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+        .select2-results__option {
+            padding: 8px 12px;
+            word-wrap: break-word;
+            white-space: normal;
         }
 
         /* Menu sidebar fixes */
@@ -109,6 +144,29 @@
         /* Bootstrap Icons fallback */
         .bi::before {
             font-family: "bootstrap-icons" !important;
+        }
+
+        /* Form container overflow fixes */
+        .form-group, .mb-3 {
+            position: relative;
+            overflow: visible;
+        }
+
+        .card-body {
+            overflow: visible;
+        }
+
+        .container-fluid {
+            overflow: visible;
+        }
+
+        /* Specific fixes for Select2 in modals or constrained containers */
+        .modal .select2-container {
+            z-index: 10060;
+        }
+
+        .modal .select2-dropdown {
+            z-index: 10061;
         }
     </style>
 

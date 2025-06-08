@@ -223,19 +223,12 @@ abstract class BaseRepository
      * @param string $term
      * @param string $column
      * @param int $limit
+     * @param string $idField
+     * @param string $nameField
      * @return array
      */
-    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): array
+    public function autocomplete(string $term = '', string $column = 'name', int $limit = 10, string $idField = 'id', string $nameField = 'name'): array
     {
-        $columns = $this->getColumns();
-        $selectColumns[] = 'id';
-        if (in_array('name', $columns)) {
-            $selectColumns[] = 'name';
-        }
-        if (in_array('title', $columns)) {
-            $selectColumns[] = 'title';
-        }
-
         $query = $this->getModel()->query();
 
         // Nếu có term thì search
@@ -243,11 +236,15 @@ abstract class BaseRepository
             $query->where($column, 'like', '%' . $term . '%');
         }
 
-        $results = $query->select($selectColumns)
-            ->limit($limit)
-            ->get();
+        $results = $query->limit($limit)->get();
 
-        return $results->toArray();
+        // Format data theo chuẩn {id, name}
+        return $results->map(function ($item) use ($idField, $nameField) {
+            return [
+                'id' => $item->{$idField},
+                'name' => $item->{$nameField}
+            ];
+        })->toArray();
     }
 
     /**

@@ -95,4 +95,18 @@ class RoleService extends BaseService
         }
         return $return;
     }
+
+    /**
+     * Autocomplete cho roles - id = name, name = title
+     * @param string $term
+     * @param string $column
+     * @param int $limit
+     * @param string $idField
+     * @param string $nameField
+     * @return array
+     */
+    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10, string $idField = 'name', string $nameField = 'title'): array
+    {
+        return parent::autocomplete($term, $column, $limit, $idField, $nameField);
+    }
 }

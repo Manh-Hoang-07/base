@@ -68,10 +68,12 @@ class SeriesService extends BaseService
      * @param string $term
      * @param string $column
      * @param int $limit
+     * @param string $idField
+     * @param string $nameField
      * @return array
      */
-    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): array
+    public function autocomplete(string $term = '', string $column = 'name', int $limit = 10, string $idField = 'id', string $nameField = 'name'): array
     {
-        return parent::autocomplete($term, 'name', $limit);
+        return parent::autocomplete($term, $column, $limit, $idField, $nameField);
     }
 }

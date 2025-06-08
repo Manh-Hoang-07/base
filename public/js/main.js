@@ -14,7 +14,8 @@ $(document).ready(function () {
                 minimumInputLength: 0, // Cho phép search ngay từ đầu
                 minimumResultsForSearch: 0, // Luôn hiển thị search box
                 tags: false, // Không cho phép tạo tag mới
-                dropdownAutoWidth: true,
+                dropdownAutoWidth: false, // Tắt auto width để tránh overflow
+                dropdownParent: $select.closest('.form-group, .mb-3, .col, .container, body'), // Tìm parent container phù hợp
                 language: {
                     noResults: function() {
                         return "Không tìm thấy kết quả";
@@ -27,9 +28,6 @@ $(document).ready(function () {
 
             const url = $select.data('url');
             if (url) {
-                const field = $select.data('field') || 'id';
-                const displayField = $select.data('display-field') || 'name';
-
                 config.ajax = {
                     url: url,
                     dataType: 'json',
@@ -62,10 +60,10 @@ $(document).ready(function () {
                             }
                         });
 
-                        // Map data từ server
+                        // Map data từ server - API đã trả về format chuẩn {id, name}
                         const serverResults = data.map(item => ({
-                            id: item[field],
-                            text: item[displayField]
+                            id: item.id,
+                            text: item.name
                         }));
 
                         // Merge selected options với server results, tránh duplicate
@@ -87,6 +85,19 @@ $(document).ready(function () {
                 console.log('Initializing Select2 with config:', config);
                 $select.select2(config);
                 console.log('Select2 initialized successfully for:', $select.attr('name'));
+
+                // Fix dropdown positioning after initialization
+                $select.on('select2:open', function() {
+                    const dropdown = $('.select2-dropdown');
+                    if (dropdown.length) {
+                        // Ensure dropdown is positioned correctly
+                        dropdown.css({
+                            'max-width': '100%',
+                            'width': 'auto',
+                            'min-width': $select.outerWidth() + 'px'
+                        });
+                    }
+                });
             } catch (error) {
                 console.error('Select2 initialization failed:', error);
             }
