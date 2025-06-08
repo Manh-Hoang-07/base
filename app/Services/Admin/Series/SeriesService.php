@@ -68,9 +68,9 @@ class SeriesService extends BaseService
      * @param string $term
      * @param string $column
      * @param int $limit
-     * @return JsonResponse
+     * @return array
      */
-    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
+    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): array
     {
         return parent::autocomplete($term, 'name', $limit);
     }

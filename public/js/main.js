@@ -10,7 +10,7 @@ $(document).ready(function () {
                 placeholder: 'Chọn mục',
                 allowClear: true,
                 width: '100%',
-                theme: 'default',
+                theme: 'bootstrap-5',
                 minimumInputLength: 0, // Cho phép search ngay từ đầu
                 minimumResultsForSearch: 0, // Luôn hiển thị search box
                 tags: false, // Không cho phép tạo tag mới
@@ -34,8 +34,24 @@ $(document).ready(function () {
                     url: url,
                     dataType: 'json',
                     delay: 250,
-                    data: params => ({term: params.term || ''}),
-                    processResults: function(data) {
+                    data: params => ({
+                        search: params.term || '',  // Change 'term' to 'search' to match controller
+                        limit: 20
+                    }),
+                    processResults: function(response) {
+                        console.log('Select2 AJAX response:', response);
+
+                        // Handle different response formats
+                        let data = response;
+                        if (response.success && response.data) {
+                            data = response.data;
+                        } else if (Array.isArray(response)) {
+                            data = response;
+                        } else {
+                            console.warn('Unexpected response format:', response);
+                            data = [];
+                        }
+
                         // Lấy các selected options hiện tại
                         const selectedOptions = [];
                         $select.find('option:selected').each(function() {
@@ -60,6 +76,7 @@ $(document).ready(function () {
                             }
                         });
 
+                        console.log('Select2 processed results:', allResults);
                         return {results: allResults};
                     },
                     cache: true
@@ -67,7 +84,9 @@ $(document).ready(function () {
             }
 
             try {
+                console.log('Initializing Select2 with config:', config);
                 $select.select2(config);
+                console.log('Select2 initialized successfully for:', $select.attr('name'));
             } catch (error) {
                 console.error('Select2 initialization failed:', error);
             }

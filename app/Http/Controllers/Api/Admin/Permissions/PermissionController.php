@@ -73,15 +73,15 @@ class PermissionController extends BaseController
     public function store(StoreRequest $request): JsonResponse
     {
         $result = $this->getService()->create($request->all());
-        
+
         if ($result['success']) {
             return $this->successResponse(
-                $result['data'] ?? null, 
-                $result['message'] ?? 'Tạo quyền thành công', 
+                $result['data'] ?? null,
+                $result['message'] ?? 'Tạo quyền thành công',
                 201
             );
         }
-        
+
         return $this->errorResponse($result['message'] ?? 'Tạo quyền thất bại');
     }
 
@@ -94,14 +94,14 @@ class PermissionController extends BaseController
     public function update(UpdateRequest $request, int $id): JsonResponse
     {
         $result = $this->getService()->update($id, $request->all());
-        
+
         if ($result['success']) {
             return $this->successResponse(
-                $result['data'] ?? null, 
+                $result['data'] ?? null,
                 $result['message'] ?? 'Cập nhật quyền thành công'
             );
         }
-        
+
         return $this->errorResponse($result['message'] ?? 'Cập nhật quyền thất bại');
     }
 
@@ -113,14 +113,14 @@ class PermissionController extends BaseController
     public function destroy(int $id): JsonResponse
     {
         $result = $this->getService()->delete($id);
-        
+
         if ($result['success']) {
             return $this->successResponse(
-                null, 
+                null,
                 $result['message'] ?? 'Xóa quyền thành công'
             );
         }
-        
+
         return $this->errorResponse($result['message'] ?? 'Xóa quyền thất bại');
     }
 
@@ -131,11 +131,11 @@ class PermissionController extends BaseController
      */
     public function autocomplete(Request $request): JsonResponse
     {
-        $search = $request->get('search', '');
-        $limit = $request->get('limit', 10);
-        
+        $search = $request->get('search') ?? '';
+        $limit = $request->get('limit') ?? 10;
+
         try {
-            $permissions = $this->getService()->autocomplete($search, $limit);
+            $permissions = $this->getService()->autocomplete($search, 'name', $limit);
             return $this->successResponse($permissions, 'Lấy danh sách autocomplete thành công');
         } catch (\Exception $e) {
             return $this->errorResponse('Lỗi khi lấy danh sách autocomplete: ' . $e->getMessage());

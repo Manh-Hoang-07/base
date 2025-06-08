@@ -66,23 +66,61 @@
             border-color: #007bff;
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         }
+
+        /* Select2 Fixes */
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection {
+            border: 1px solid #e0e6ed;
+            border-radius: 6px;
+            min-height: 38px;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single {
+            height: 38px;
+            line-height: 38px;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            padding-left: 12px;
+            padding-right: 20px;
+        }
+
+        .select2-dropdown {
+            border: 1px solid #e0e6ed;
+            border-radius: 6px;
+        }
+
+        /* Menu sidebar fixes */
+        .sidebar-menu .nav-item.menu-open > .nav-link .nav-arrow {
+            transform: rotate(90deg);
+        }
+
+        .sidebar-menu .nav-treeview {
+            display: none;
+        }
+
+        .sidebar-menu .nav-item.menu-open > .nav-treeview {
+            display: block;
+        }
+
+        /* Bootstrap Icons fallback */
+        .bi::before {
+            font-family: "bootstrap-icons" !important;
+        }
     </style>
 
-    <!-- Non-critical CSS - load asynchronously with fallback -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
-
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"></noscript>
-
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></noscript>
+    <!-- Critical CSS for admin functionality -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     <!-- Critical JS - load early -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-    <!-- Admin Actions JS - Load early -->
-    @vite(['resources/js/admin-actions.js'])
 
     @yield('styles')
 </head>
@@ -99,14 +137,15 @@
 <script>
     // Admin Panel JavaScript
     $(document).ready(function() {
-        // Initialize Select2
-        $('.select2').select2({
-            theme: 'bootstrap-5',
-            width: '100%'
-        });
+        console.log('jQuery ready, initializing admin components...');
+
+        // Select2 will be initialized by main.js
+        console.log('Skipping Select2 initialization - handled by main.js');
 
         // Initialize tooltips
-        $('[data-bs-toggle="tooltip"]').tooltip();
+        if (typeof bootstrap !== 'undefined') {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        }
 
         // Initialize CKEditor
         if (typeof CKEDITOR !== 'undefined') {
@@ -129,6 +168,9 @@
 
         // Auto-hide alerts
         $('.alert').delay(5000).fadeOut();
+
+        // Initialize sidebar menu
+        initializeSidebarMenu();
     });
 
     // Global AJAX setup
@@ -137,144 +179,119 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
+    // Sidebar menu functionality
+    function initializeSidebarMenu() {
+        // Handle menu toggle
+        $('.sidebar-menu .nav-link').on('click', function(e) {
+            const $this = $(this);
+            const $parent = $this.parent('.nav-item');
+            const $submenu = $parent.find('.nav-treeview');
+
+            // If this is a parent menu item (has submenu)
+            if ($submenu.length > 0) {
+                e.preventDefault();
+
+                // Toggle current menu
+                $parent.toggleClass('menu-open');
+
+                // Close other open menus at same level
+                $parent.siblings('.nav-item.menu-open').removeClass('menu-open');
+            }
+        });
+
+        console.log('Sidebar menu initialized');
+    }
 </script>
 
 
 
-<!-- Ensure functions are available globally -->
+<!-- Check admin functions after page load -->
 <script>
-// Fallback functions in case admin-actions.js fails to load
-if (typeof window.deleteItem === 'undefined') {
-    console.warn('admin-actions.js not loaded, defining fallback functions');
+// Wait for all scripts to load then check functions
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        console.log('Checking admin functions:', {
+            deleteItem: typeof window.deleteItem,
+            toggleStatus: typeof window.toggleStatus
+        });
 
-    window.deleteItem = async function(id, url = null, message = 'Bạn có chắc chắn muốn xóa?', reloadCallback = null) {
-        if (confirm(message)) {
-            if (!url) {
-                const currentPath = window.location.pathname;
-                const pathParts = currentPath.split('/');
-                if (pathParts.includes('admin')) {
-                    const module = pathParts[pathParts.length - 2];
-                    url = `/api/v1/admin/${module}/delete/${id}`;
+        // Only define fallback if functions are still missing
+        if (typeof window.deleteItem === 'undefined') {
+            console.warn('defineItem function missing, defining fallback');
+            window.deleteItem = async function(id, url = null, message = 'Bạn có chắc chắn muốn xóa?', reloadCallback = null) {
+                if (confirm(message)) {
+                    if (!url) {
+                        const currentPath = window.location.pathname;
+                        const pathParts = currentPath.split('/');
+                        if (pathParts.includes('admin')) {
+                            const module = pathParts[pathParts.length - 2];
+                            url = `/api/v1/admin/${module}/delete/${id}`;
+                        }
+                    }
+
+                    try {
+                        const response = await fetch(url, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            if (typeof toastr !== 'undefined') {
+                                toastr.success(data.message || 'Xóa thành công!');
+                            } else {
+                                alert(data.message || 'Xóa thành công!');
+                            }
+
+                            if (reloadCallback && typeof reloadCallback === 'function') {
+                                setTimeout(() => {
+                                    reloadCallback();
+                                }, 500);
+                            } else {
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1500);
+                            }
+                        } else {
+                            if (typeof toastr !== 'undefined') {
+                                toastr.error(data.message || 'Có lỗi xảy ra khi xóa!');
+                            } else {
+                                alert(data.message || 'Có lỗi xảy ra khi xóa!');
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error('Có lỗi xảy ra khi xử lý yêu cầu!');
+                        } else {
+                            alert('Có lỗi xảy ra khi xử lý yêu cầu!');
+                        }
+                    }
                 }
-            }
-
-            try {
-                const response = await fetch(url, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    if (typeof toastr !== 'undefined') {
-                        toastr.success(data.message || 'Xóa thành công!');
-                    } else {
-                        alert(data.message || 'Xóa thành công!');
-                    }
-
-                    if (reloadCallback && typeof reloadCallback === 'function') {
-                        setTimeout(() => {
-                            reloadCallback();
-                        }, 500);
-                    } else {
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1500);
-                    }
-                } else {
-                    if (typeof toastr !== 'undefined') {
-                        toastr.error(data.message || 'Có lỗi xảy ra khi xóa!');
-                    } else {
-                        alert(data.message || 'Có lỗi xảy ra khi xóa!');
-                    }
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                if (typeof toastr !== 'undefined') {
-                    toastr.error('Có lỗi xảy ra khi xử lý yêu cầu!');
-                } else {
-                    alert('Có lỗi xảy ra khi xử lý yêu cầu!');
-                }
-            }
+            };
         }
-    };
-
-    window.toggleStatus = async function(id, currentStatus, url = null, reloadCallback = null) {
-        const action = currentStatus ? 'mở khóa' : 'khóa';
-        const message = `Bạn có chắc chắn muốn ${action} người dùng này?`;
-
-        if (confirm(message)) {
-            if (!url) {
-                const currentPath = window.location.pathname;
-                const pathParts = currentPath.split('/');
-                if (pathParts.includes('admin')) {
-                    const module = pathParts[pathParts.length - 2];
-                    url = `/api/v1/admin/${module}/toggle-status/${id}`;
-                }
-            }
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    if (typeof toastr !== 'undefined') {
-                        toastr.success(data.message || 'Cập nhật thành công!');
-                    } else {
-                        alert(data.message || 'Cập nhật thành công!');
-                    }
-
-                    if (reloadCallback && typeof reloadCallback === 'function') {
-                        setTimeout(() => {
-                            reloadCallback();
-                        }, 500);
-                    } else {
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1500);
-                    }
-                } else {
-                    if (typeof toastr !== 'undefined') {
-                        toastr.error(data.message || 'Có lỗi xảy ra!');
-                    } else {
-                        alert(data.message || 'Có lỗi xảy ra!');
-                    }
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                if (typeof toastr !== 'undefined') {
-                    toastr.error('Có lỗi xảy ra khi xử lý yêu cầu!');
-                } else {
-                    alert('Có lỗi xảy ra khi xử lý yêu cầu!');
-                }
-            }
-        }
-    };
-}
-
-console.log('Admin functions loaded:', {
-    deleteItem: typeof window.deleteItem,
-    toggleStatus: typeof window.toggleStatus
+    }, 1000); // Wait 1 second for all scripts to load
 });
 </script>
 
+<!-- Critical JS for admin functionality -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 <!-- Non-critical JS - load async -->
-<script async src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script async src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script async src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+
+<!-- Admin Actions JS - Load after other libraries -->
+<script src="{{ asset('js/admin-actions.js') }}"></script>
+
+<!-- Main JS for Select2 autocomplete -->
+<script src="{{ asset('js/main.js') }}"></script>
 
 @if(session('error'))
     <script>toastr.error("{{ session('error') }}");</script>

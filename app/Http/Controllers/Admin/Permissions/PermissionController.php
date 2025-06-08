@@ -72,11 +72,11 @@ class PermissionController extends BaseController
      */
     public function autocomplete(Request $request): \Illuminate\Http\JsonResponse
     {
-        $search = $request->get('search', '');
-        $limit = $request->get('limit', 10);
+        $search = $request->get('search') ?? '';
+        $limit = $request->get('limit') ?? 10;
 
         try {
-            $permissions = $this->getService()->autocomplete($search, $limit);
+            $permissions = $this->getService()->autocomplete($search, 'name', $limit);
             return response()->json([
                 'success' => true,
                 'data' => $permissions,

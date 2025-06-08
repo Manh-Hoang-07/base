@@ -130,10 +130,10 @@ class UserService extends BaseService
      * @param string $column
      * @param int $limit
      * @param array $selected
-     * @return JsonResponse
+     * @return array
      */
-    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10, array $selected = []): JsonResponse
+    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10, array $selected = []): array
     {
-        return parent::autocomplete($term, 'email', $limit, $selected);
+        return parent::autocomplete($term, 'email', $limit);
     }
 }

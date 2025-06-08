@@ -87,11 +87,11 @@ class UserController extends BaseController
      */
     public function autocomplete(Request $request): \Illuminate\Http\JsonResponse
     {
-        $search = $request->get('search', '');
-        $limit = $request->get('limit', 10);
+        $search = $request->get('search') ?? '';
+        $limit = $request->get('limit') ?? 10;
 
         try {
-            $users = $this->getService()->autocomplete($search, $limit);
+            $users = $this->getService()->autocomplete($search, 'email', $limit);
             return response()->json([
                 'success' => true,
                 'data' => $users,

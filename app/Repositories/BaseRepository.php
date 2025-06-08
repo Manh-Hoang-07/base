@@ -223,9 +223,9 @@ abstract class BaseRepository
      * @param string $term
      * @param string $column
      * @param int $limit
-     * @return JsonResponse
+     * @return array
      */
-    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
+    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): array
     {
         $columns = $this->getColumns();
         $selectColumns[] = 'id';
@@ -247,7 +247,7 @@ abstract class BaseRepository
             ->limit($limit)
             ->get();
 
-        return response()->json($results);
+        return $results->toArray();
     }
 
     /**

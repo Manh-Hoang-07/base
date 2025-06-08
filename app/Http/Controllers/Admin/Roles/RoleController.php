@@ -77,11 +77,11 @@ class RoleController extends BaseController
      */
     public function autocomplete(Request $request): \Illuminate\Http\JsonResponse
     {
-        $search = $request->get('search', '');
-        $limit = $request->get('limit', 10);
+        $search = $request->get('search') ?? '';
+        $limit = $request->get('limit') ?? 10;
 
         try {
-            $roles = $this->getService()->autocomplete($search, $limit);
+            $roles = $this->getService()->autocomplete($search, 'title', $limit);
             return response()->json([
                 'success' => true,
                 'data' => $roles,
