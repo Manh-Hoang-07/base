@@ -195,10 +195,7 @@
 <script>
     // Admin Panel JavaScript
     $(document).ready(function() {
-        console.log('jQuery ready, initializing admin components...');
-
         // Select2 will be initialized by main.js
-        console.log('Skipping Select2 initialization - handled by main.js');
 
         // Initialize tooltips
         if (typeof bootstrap !== 'undefined') {
@@ -257,8 +254,6 @@
                 $parent.siblings('.nav-item.menu-open').removeClass('menu-open');
             }
         });
-
-        console.log('Sidebar menu initialized');
     }
 </script>
 
@@ -269,14 +264,8 @@
 // Wait for all scripts to load then check functions
 window.addEventListener('load', function() {
     setTimeout(function() {
-        console.log('Checking admin functions:', {
-            deleteItem: typeof window.deleteItem,
-            toggleStatus: typeof window.toggleStatus
-        });
-
         // Only define fallback if functions are still missing
         if (typeof window.deleteItem === 'undefined') {
-            console.warn('defineItem function missing, defining fallback');
             window.deleteItem = async function(id, url = null, message = 'Bạn có chắc chắn muốn xóa?', reloadCallback = null) {
                 if (confirm(message)) {
                     if (!url) {
@@ -324,7 +313,6 @@ window.addEventListener('load', function() {
                             }
                         }
                     } catch (error) {
-                        console.error('Error:', error);
                         if (typeof toastr !== 'undefined') {
                             toastr.error('Có lỗi xảy ra khi xử lý yêu cầu!');
                         } else {

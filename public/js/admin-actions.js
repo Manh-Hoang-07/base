@@ -60,7 +60,6 @@ async function deleteItem(id, url = null, message = 'Bạn có chắc chắn mu�
                 }
             }
         } catch (error) {
-            console.error('Error:', error);
             if (typeof toastr !== 'undefined') {
                 toastr.error('Có lỗi xảy ra khi xử lý yêu cầu!');
             } else {
@@ -93,13 +92,7 @@ async function toggleStatus(id, currentStatus, url = null, reloadCallback = null
             formData.append('_token', csrfToken);
             formData.append('_method', 'PATCH');
 
-            // Debug log
-            console.log('Toggle Status Debug:', {
-                url: url,
-                currentStatus: currentStatus,
-                statusValue: statusValue,
-                csrfToken: csrfToken
-            });
+
 
             const response = await fetch(url, {
                 method: 'POST', // Use POST with method spoofing
@@ -139,7 +132,6 @@ async function toggleStatus(id, currentStatus, url = null, reloadCallback = null
                 }
             }
         } catch (error) {
-            console.error('Error:', error);
             if (typeof toastr !== 'undefined') {
                 toastr.error('Có lỗi xảy ra khi xử lý yêu cầu!');
             } else {
@@ -212,7 +204,6 @@ function submitAjaxForm(formElement, successCallback = null) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
         if (typeof toastr !== 'undefined') {
             toastr.error('Có lỗi xảy ra khi xử lý yêu cầu');
         } else {

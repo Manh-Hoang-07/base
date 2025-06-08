@@ -1,6 +1,0 @@
-@echo off
-echo Switching to DEV MODE...
-copy "resources\views\admin\index-vite.blade.php" "resources\views\admin\index.blade.php" >nul
-echo ✓ DEV MODE activated! 🔥 (Hot reload enabled)
-echo Starting Vite dev server...
-start "Vite Dev Server" cmd /k "npm run dev"

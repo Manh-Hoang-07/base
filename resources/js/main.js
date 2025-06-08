@@ -37,8 +37,6 @@ $(document).ready(function () {
                         limit: 20
                     }),
                     processResults: function(response) {
-                        console.log('Select2 AJAX response:', response);
-
                         // Handle different response formats
                         let data = response;
                         if (response.success && response.data) {
@@ -46,7 +44,6 @@ $(document).ready(function () {
                         } else if (Array.isArray(response)) {
                             data = response;
                         } else {
-                            console.warn('Unexpected response format:', response);
                             data = [];
                         }
 
@@ -74,7 +71,6 @@ $(document).ready(function () {
                             }
                         });
 
-                        console.log('Select2 processed results:', allResults);
                         return {results: allResults};
                     },
                     cache: true
@@ -82,9 +78,7 @@ $(document).ready(function () {
             }
 
             try {
-                console.log('Initializing Select2 with config:', config);
                 $select.select2(config);
-                console.log('Select2 initialized successfully for:', $select.attr('name'));
 
                 // Fix dropdown positioning after initialization
                 $select.on('select2:open', function() {
@@ -99,7 +93,7 @@ $(document).ready(function () {
                     }
                 });
             } catch (error) {
-                console.error('Select2 initialization failed:', error);
+                // Silent fail
             }
         });
     }

@@ -1,6 +1,0 @@
-@echo off
-echo Switching to VITE MODE...
-copy "resources\views\admin\index-vite.blade.php" "resources\views\admin\index.blade.php" >nul
-echo Building assets...
-npm run build
-echo ✓ VITE MODE activated! ⚡ (Optimized build with CSS processing)
