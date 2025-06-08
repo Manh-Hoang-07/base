@@ -94,7 +94,7 @@
                     if(response.success === true) {
                         toastr.success(response.message || 'Đăng nhập thành công');
                         setTimeout(function() {
-                            window.location.href = "{{ url('/dashboard') }}";
+                            window.location.href = "{{ route('admin.index') }}";
                         }, 1000);
                     } else {
                         toastr.error(response.message || 'Đăng nhập thất bại');

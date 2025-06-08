@@ -9,9 +9,9 @@ use App\Http\Controllers\Admin\Users\ProfileController;
 use App\Http\Controllers\Admin\Users\UserController;
 use Illuminate\Support\Facades\Route;
 
-// Dashboard route
+// Redirect to users management as default admin page
 Route::get('/', function () {
-    return view('admin.dashboard');
+    return redirect()->route('admin.users.index');
 })->name('index');
 
 

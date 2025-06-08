@@ -50,7 +50,7 @@ class GoogleController extends BaseController
                 $result = $this->registerService->register($data);
             }
             if ($result['success']) {
-                return redirect()->route('dashboard')->with('success', $result['message']);
+                return redirect()->route('admin.index')->with('success', $result['message']);
             }
             return redirect()->route('registerForm')->with('error', $result['message']);
         } catch (Exception $e) {

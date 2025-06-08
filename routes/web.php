@@ -33,11 +33,7 @@ Route::prefix('home')->name('home.')->group(function () {
     });
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-});
+
 
 Route::post('/upload', [UploadController::class, 'upload'])->name('upload');
 

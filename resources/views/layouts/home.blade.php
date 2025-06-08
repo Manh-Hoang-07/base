@@ -85,8 +85,8 @@
                                 <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{{ route('dashboard') }}">
-                                    <i class="fas fa-tachometer-alt me-1"></i> Bảng Điều Khiển
+                                <li><a class="dropdown-item" href="{{ route('admin.index') }}">
+                                    <i class="fas fa-tachometer-alt me-1"></i> Quản Lý
                                 </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>

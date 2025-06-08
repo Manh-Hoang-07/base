@@ -173,7 +173,7 @@
                     if(response.success === true) {
                         toastr.success(response.message || 'Đăng ký tài khoản thành công');
                         setTimeout(function() {
-                            window.location.href = "{{ url('/dashboard') }}";
+                            window.location.href = "{{ route('admin.index') }}";
                         }, 3000);
                     } else {
                         toastr.error(response.message || 'Đăng ký tài khoản thất bại');

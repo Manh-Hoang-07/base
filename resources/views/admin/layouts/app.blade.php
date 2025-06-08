@@ -122,7 +122,7 @@
         <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
             <!-- Sidebar Brand -->
             <div class="sidebar-brand">
-                <a href="{{ route('dashboard') }}" class="brand-link">
+                <a href="{{ route('admin.index') }}" class="brand-link">
                     <img src="{{ asset('adminlte/assets/img/AdminLTELogo.png') }}"
                          alt="Admin Logo"
                          class="brand-image opacity-75 shadow"
