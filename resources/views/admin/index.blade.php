@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- DNS prefetch for faster CDN loading -->
+    <link rel="dns-prefetch" href="//code.jquery.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+
     <!-- Preload critical resources -->
     <link rel="preload" href="https://code.jquery.com/jquery-3.7.1.min.js" as="script">
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" as="script">
@@ -190,12 +195,21 @@
         }
     </style>
 
-    <!-- Critical CSS for admin functionality -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!-- Non-critical CSS - load async -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+
+    <!-- Fallback for browsers that don't support preload -->
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    </noscript>
 
     <!-- Critical JS - load early -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -248,28 +262,7 @@
         initializeSidebarMenu();
 
         // Fallback: Initialize menu again after a delay to ensure AdminLTE is loaded
-        setTimeout(function() {
-            console.log('Fallback menu initialization...');
-            initializeSidebarMenu();
-        }, 500);
-
-        // Debug: Add test button
-        $('body').append('<button id="debug-menu" style="position:fixed;top:10px;right:10px;z-index:9999;background:red;color:white;padding:5px;">Debug Menu</button>');
-        $('#debug-menu').on('click', function() {
-            console.log('=== MENU DEBUG ===');
-            console.log('Menu items with submenus:', $('.sidebar-menu .nav-item:has(.nav-treeview)').length);
-            console.log('Open menus:', $('.sidebar-menu .nav-item.menu-open').length);
-            $('.sidebar-menu .nav-item:has(.nav-treeview)').each(function(i) {
-                const $item = $(this);
-                const $submenu = $item.find('.nav-treeview');
-                console.log(`Menu ${i+1}:`, {
-                    text: $item.find('> .nav-link p').first().text().trim(),
-                    hasMenuOpen: $item.hasClass('menu-open'),
-                    submenuVisible: $submenu.is(':visible'),
-                    submenuDisplay: $submenu.css('display')
-                });
-            });
-        });
+        setTimeout(initializeSidebarMenu, 500);
     });
 
     // Global AJAX setup
@@ -279,71 +272,38 @@
         }
     });
 
-    // Sidebar menu functionality - Simple and reliable
+    // Sidebar menu functionality - Optimized
     function initializeSidebarMenu() {
-        console.log('Initializing sidebar menu...');
-
         // Remove AdminLTE's default treeview behavior
         $('.sidebar-menu').removeAttr('data-lte-toggle');
-
-        // Remove all existing click handlers
         $('.sidebar-menu .nav-link').off('click');
 
-        // Handle menu toggle with simple logic
+        // Handle menu toggle
         $('.sidebar-menu .nav-link').on('click', function(e) {
             const $link = $(this);
             const $parent = $link.closest('.nav-item');
             const $submenu = $parent.find('> .nav-treeview');
-
-            console.log('Menu clicked:', $link.text().trim());
-            console.log('Has submenu:', $submenu.length > 0);
 
             // If this is a parent menu item (has submenu)
             if ($submenu.length > 0) {
                 e.preventDefault();
                 e.stopPropagation();
 
-                console.log('Processing parent menu...');
-
-                // Check current state
                 const isOpen = $parent.hasClass('menu-open');
-                console.log('Currently open:', isOpen);
 
                 // Close all other menus first
-                $('.sidebar-menu .nav-item.menu-open').not($parent).each(function() {
-                    $(this).removeClass('menu-open');
-                    $(this).find('.nav-treeview').hide();
-                });
+                $('.sidebar-menu .nav-item.menu-open').not($parent).removeClass('menu-open').find('.nav-treeview').hide();
 
                 // Toggle current menu
                 if (isOpen) {
-                    console.log('Closing menu...');
                     $parent.removeClass('menu-open');
                     $submenu.slideUp(200);
                 } else {
-                    console.log('Opening menu...');
                     $parent.addClass('menu-open');
-
-                    // Force show submenu with multiple methods
-                    $submenu.show();
-                    $submenu.css('display', 'block');
-                    $submenu.slideDown(200);
-
-                    // Double check after animation
-                    setTimeout(function() {
-                        if (!$submenu.is(':visible')) {
-                            console.log('Force showing submenu...');
-                            $submenu.show();
-                        }
-                    }, 250);
+                    $submenu.show().slideDown(200);
                 }
-            } else {
-                console.log('Regular link, allowing navigation...');
-                // Regular link, allow normal navigation
             }
         });
-
-        console.log('Sidebar menu initialized');
     }
 </script>
 
@@ -416,18 +376,16 @@ window.addEventListener('load', function() {
 });
 </script>
 
-<!-- Critical JS for admin functionality -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-<!-- Non-critical JS - load async -->
+<!-- Non-critical JS - load deferred -->
+<script defer src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script async src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 
-<!-- Admin Actions JS - Load after other libraries -->
-<script src="{{ asset('js/admin-actions.js') }}"></script>
+<!-- Admin Actions JS - Load deferred -->
+<script defer src="{{ asset('js/admin-actions.js') }}"></script>
 
-<!-- Main JS for Select2 autocomplete -->
-<script src="{{ asset('js/main.js') }}"></script>
+<!-- Main JS for Select2 autocomplete - Load deferred -->
+<script defer src="{{ asset('js/main.js') }}"></script>
 
 @if(session('error'))
     <script>toastr.error("{{ session('error') }}");</script>

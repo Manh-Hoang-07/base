@@ -32,20 +32,11 @@ $(document).ready(function () {
                     url: url,
                     dataType: 'json',
                     delay: 250,
-                    data: function(params) {
-                        console.log('Select2 AJAX request:', {
-                            url: url,
-                            search: params.term || '',
-                            limit: 20
-                        });
-                        return {
-                            search: params.term || '',
-                            limit: 20
-                        };
-                    },
+                    data: params => ({
+                        search: params.term || '',
+                        limit: 20
+                    }),
                     processResults: function(response) {
-                        console.log('Select2 AJAX response:', response);
-
                         // Handle different response formats
                         let data = response;
                         if (response.success && response.data) {
@@ -53,7 +44,6 @@ $(document).ready(function () {
                         } else if (Array.isArray(response)) {
                             data = response;
                         } else {
-                            console.warn('Unexpected response format:', response);
                             data = [];
                         }
 
