@@ -7,34 +7,178 @@
 
     <title>@yield('title', 'Trang Chủ') - {{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Quick Fix Script (Load first to prevent errors) -->
-    <script src="{{ asset('js/quick-fix.js') }}"></script>
-
-    <!-- Preload Critical Resources -->
-    <!-- System fonts don't need preloading -->
-
-    <!-- Optimized System Fonts -->
+    <!-- Home Page Critical CSS -->
     <style>
         :root {
             --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
         }
 
         body {
             font-family: var(--font-family);
+            padding-top: 80px;
+            background-color: #f8f9ff;
+            color: #2c3e50;
+            line-height: 1.6;
         }
 
-        /* Preload critical system fonts */
-        .font-preload {
-            font-family: var(--font-family);
-            visibility: hidden;
-            position: absolute;
+        /* Critical navbar styles */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+            box-shadow: 0 2px 10px rgba(0,123,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white !important;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 6px;
         }
     </style>
 
-    <!-- Optimized CSS Bundle -->
-    @vite(['resources/css/app.css'])
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- All CSS moved to app.css for better performance -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Home Custom CSS -->
+    <style>
+        /* Additional Home Styles */
+        .post-card .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .post-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        .card-title a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .card-title a:hover {
+            color: var(--primary-color);
+        }
+
+        .card-footer {
+            background: transparent;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .badge {
+            border-radius: 20px;
+            font-weight: 500;
+            padding: 6px 12px;
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, var(--warning-color), #e0a800);
+            color: var(--dark);
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, var(--success-color), #1e7e34);
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--dark-text);
+        }
+
+        .pagination {
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .page-link {
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 5px;
+            color: var(--primary-color);
+            background: var(--white);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .page-link:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,123,255,0.3);
+        }
+
+        .page-item.active .page-link {
+            background: var(--primary-color);
+            color: var(--white);
+            box-shadow: 0 6px 15px rgba(0,123,255,0.3);
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: none;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .post-card .card-img-top {
+                height: 180px;
+            }
+
+            .footer {
+                text-align: center;
+            }
+
+            .footer .col-md-3,
+            .footer .col-md-4,
+            .footer .col-md-5 {
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
 
     @yield('styles')
 </head>
@@ -146,8 +290,167 @@
         </div>
     </footer>
 
-    <!-- Optimized JS Bundle -->
-    @vite(['resources/js/app.js'])
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Home Custom JS -->
+    <script>
+        // Home App JavaScript
+        class HomeApp {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.initializeComponents();
+                this.handlePageLoad();
+            }
+
+            setupEventListeners() {
+                // Smooth scrolling for anchor links
+                document.addEventListener('click', (e) => {
+                    if (e.target.matches('a[href^="#"]')) {
+                        e.preventDefault();
+                        const target = document.querySelector(e.target.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+
+                // Navbar scroll effect
+                window.addEventListener('scroll', () => {
+                    const navbar = document.querySelector('.navbar');
+                    if (navbar) {
+                        if (window.scrollY > 50) {
+                            navbar.style.boxShadow = '0 4px 20px rgba(0,123,255,0.2)';
+                        } else {
+                            navbar.style.boxShadow = '0 2px 10px rgba(0,123,255,0.1)';
+                        }
+                    }
+                });
+
+                // Back to top button
+                this.setupBackToTop();
+            }
+
+            setupBackToTop() {
+                // Create back to top button
+                const backToTop = document.createElement('button');
+                backToTop.innerHTML = '<i class="fas fa-arrow-up"></i>';
+                backToTop.className = 'btn btn-primary back-to-top';
+                document.body.appendChild(backToTop);
+
+                // Show/hide on scroll
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 300) {
+                        backToTop.style.display = 'block';
+                    } else {
+                        backToTop.style.display = 'none';
+                    }
+                });
+
+                // Scroll to top on click
+                backToTop.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+
+            initializeComponents() {
+                // Initialize tooltips
+                this.initTooltips();
+                // Initialize lazy loading
+                this.initLazyLoading();
+                // Initialize animations
+                this.initAnimations();
+            }
+
+            initTooltips() {
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            }
+
+            initLazyLoading() {
+                if ('IntersectionObserver' in window) {
+                    const imageObserver = new IntersectionObserver((entries, observer) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const img = entry.target;
+                                img.src = img.dataset.src;
+                                img.classList.remove('lazy');
+                                img.classList.add('loaded');
+                                imageObserver.unobserve(img);
+                            }
+                        });
+                    });
+
+                    document.querySelectorAll('img[data-src]').forEach(img => {
+                        imageObserver.observe(img);
+                    });
+                }
+            }
+
+            initAnimations() {
+                // Fade in animation for cards
+                if ('IntersectionObserver' in window) {
+                    const animationObserver = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.style.opacity = '1';
+                                entry.target.style.transform = 'translateY(0)';
+                            }
+                        });
+                    });
+
+                    document.querySelectorAll('.card, .post-item').forEach(el => {
+                        el.style.opacity = '0';
+                        el.style.transform = 'translateY(20px)';
+                        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                        animationObserver.observe(el);
+                    });
+                }
+            }
+
+            handlePageLoad() {
+                // Remove loading class if exists
+                document.body.classList.remove('loading');
+                // Preload critical resources
+                this.preloadResources();
+            }
+
+            preloadResources() {
+                // Preload next page links on hover
+                let preloadedLinks = new Set();
+
+                document.addEventListener('mouseover', function(e) {
+                    if (e.target.tagName === 'A' &&
+                        e.target.hostname === window.location.hostname &&
+                        !preloadedLinks.has(e.target.href)) {
+
+                        const link = document.createElement('link');
+                        link.rel = 'prefetch';
+                        link.href = e.target.href;
+                        document.head.appendChild(link);
+                        preloadedLinks.add(e.target.href);
+                    }
+                });
+            }
+        }
+
+        // Initialize app when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.HomeApp = new HomeApp();
+        });
+    </script>
 
     @yield('scripts')
 

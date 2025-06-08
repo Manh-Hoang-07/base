@@ -5,6 +5,10 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
+                // Home assets
+                'resources/css/app.css',
+                'resources/js/app.js',
+                // Admin assets
                 'resources/css/admin.css',
                 'resources/js/admin-actions.js',
                 'resources/js/main.js'
