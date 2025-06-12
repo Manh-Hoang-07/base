@@ -9,6 +9,28 @@ use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
 
+// Test route
+Route::get('/test', function () {
+    return response()->json([
+        'message' => 'Laravel is working!',
+        'timestamp' => now(),
+        'php_version' => PHP_VERSION,
+        'laravel_version' => app()->version()
+    ]);
+});
+
+// Vue SPA Route - Serve SPA for main routes
+Route::get('/', function () {
+    return view('spa');
+})->name('spa.home');
+
+// Vue SPA Route - Catch all routes and serve SPA
+Route::get('/{any}', function () {
+    return view('spa');
+})->where('any', '^(?!api|login|register|logout|auth|upload|test).*$')->name('spa');
+
+// Keep existing API and auth routes below...
+
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login.index'); // Hiển thị form login
 Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login'); // Xử lý login
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout'); // Xử lý đăng xuất

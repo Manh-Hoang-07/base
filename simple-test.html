@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Vue Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        button { padding: 8px 16px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>Simple Vue SPA Test</h1>
+    
+    <div id="test-results"></div>
+    
+    <button onclick="runAllTests()">Run All Tests</button>
+    <button onclick="clearResults()">Clear Results</button>
+    
+    <h2>Manual Tests</h2>
+    <button onclick="testHomePage()">Test Home Page</button>
+    <button onclick="testAdminPage()">Test Admin Page</button>
+    <button onclick="testUsersPage()">Test Users Page</button>
+    
+    <script>
+        const results = document.getElementById('test-results');
+        
+        function addResult(type, message) {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+        
+        function clearResults() {
+            results.innerHTML = '';
+        }
+        
+        async function testBasicConnectivity() {
+            addResult('info', 'Testing basic connectivity...');
+            
+            try {
+                const response = await fetch('/');
+                if (response.ok) {
+                    addResult('success', '✓ Server is responding');
+                } else {
+                    addResult('error', `✗ Server error: ${response.status}`);
+                }
+            } catch (error) {
+                addResult('error', `✗ Connection error: ${error.message}`);
+            }
+        }
+        
+        async function testSPARoute() {
+            addResult('info', 'Testing SPA route...');
+            
+            try {
+                const response = await fetch('/admin');
+                if (response.ok) {
+                    const text = await response.text();
+                    if (text.includes('app-vue')) {
+                        addResult('success', '✓ SPA route returns Vue app');
+                    } else {
+                        addResult('warning', '⚠ SPA route works but may not include Vue app');
+                    }
+                } else {
+                    addResult('error', `✗ SPA route error: ${response.status}`);
+                }
+            } catch (error) {
+                addResult('error', `✗ SPA route error: ${error.message}`);
+            }
+        }
+        
+        async function testAPIEndpoints() {
+            addResult('info', 'Testing API endpoints...');
+            
+            const endpoints = [
+                '/api/v1/admin/users/list',
+                '/api/v1/admin/roles/list',
+                '/api/v1/admin/posts/list'
+            ];
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint);
+                    if (response.ok) {
+                        addResult('success', `✓ API endpoint working: ${endpoint}`);
+                    } else {
+                        addResult('warning', `⚠ API endpoint returned ${response.status}: ${endpoint}`);
+                    }
+                } catch (error) {
+                    addResult('error', `✗ API endpoint error: ${endpoint} - ${error.message}`);
+                }
+            }
+        }
+        
+        async function testViteBuildFiles() {
+            addResult('info', 'Testing Vite build files...');
+            
+            try {
+                const manifestResponse = await fetch('/build/manifest.json');
+                if (manifestResponse.ok) {
+                    const manifest = await manifestResponse.json();
+                    addResult('success', '✓ Vite manifest found');
+                    
+                    // Check if app-vue.js exists in manifest
+                    if (manifest['resources/js/app-vue.js']) {
+                        const appFile = manifest['resources/js/app-vue.js'].file;
+                        addResult('success', `✓ Vue app file: ${appFile}`);
+                        
+                        // Test if the actual file exists
+                        const fileResponse = await fetch(`/build/${appFile}`);
+                        if (fileResponse.ok) {
+                            addResult('success', '✓ Vue app file is accessible');
+                        } else {
+                            addResult('error', '✗ Vue app file not accessible');
+                        }
+                    } else {
+                        addResult('error', '✗ Vue app file not found in manifest');
+                    }
+                } else {
+                    addResult('error', '✗ Vite manifest not found');
+                }
+            } catch (error) {
+                addResult('error', `✗ Vite build test error: ${error.message}`);
+            }
+        }
+        
+        async function testHomePage() {
+            window.open('/', '_blank');
+        }
+        
+        async function testAdminPage() {
+            window.open('/admin', '_blank');
+        }
+        
+        async function testUsersPage() {
+            window.open('/admin/users', '_blank');
+        }
+        
+        async function runAllTests() {
+            clearResults();
+            addResult('info', 'Starting comprehensive tests...');
+            
+            await testBasicConnectivity();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testSPARoute();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testViteBuildFiles();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testAPIEndpoints();
+            
+            addResult('info', 'All tests completed!');
+        }
+        
+        // Auto-run basic tests on load
+        window.onload = function() {
+            setTimeout(runAllTests, 1000);
+        };
+    </script>
+</body>
+</html>

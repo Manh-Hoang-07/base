@@ -21,7 +21,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
+// Test route without auth
+Route::get('v1/admin/test', function () {
+    return response()->json([
+        'message' => 'Admin API is working!',
+        'timestamp' => now(),
+        'routes' => [
+            'users' => '/api/v1/admin/users/list',
+            'roles' => '/api/v1/admin/roles/list',
+            'posts' => '/api/v1/admin/posts/list'
+        ]
+    ]);
+});
 
 Route::prefix('v1/admin')->name('api.admin.')->group(function () {
 

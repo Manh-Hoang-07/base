@@ -14,6 +14,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Test API route
+Route::get('/test', function () {
+    return response()->json([
+        'message' => 'API is working!',
+        'timestamp' => now(),
+        'version' => 'v1'
+    ]);
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Load admin API routes
+require __DIR__ . '/api/admin.php';

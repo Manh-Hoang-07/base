@@ -1,19 +1,25 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
     plugins: [
         laravel({
             input: [
-                // Home assets
+                // Vue SPA entry point
+                'resources/js/app-vue.js',
+                // CSS files
                 'resources/css/app.css',
-                'resources/js/app.js',
-                // Admin assets
-                'resources/css/admin.css',
-                'resources/js/admin-actions.js',
-                'resources/js/main.js'
             ],
             refresh: true,
+        }),
+        vue({
+            template: {
+                transformAssetUrls: {
+                    base: null,
+                    includeAbsolute: false,
+                },
+            },
         }),
     ],
     build: {

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Vue SPA</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        pre { background: #f5f5f5; padding: 10px; overflow-x: auto; max-height: 300px; }
+        button { margin: 5px; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>Vue SPA Debug Page</h1>
+    
+    <div class="debug-section">
+        <h2>JavaScript Console Errors</h2>
+        <div id="console-errors"></div>
+        <button onclick="clearErrors()">Clear Errors</button>
+    </div>
+
+    <div class="debug-section">
+        <h2>Vue App Status</h2>
+        <div id="vue-status"></div>
+        <button onclick="checkVueStatus()">Check Vue Status</button>
+    </div>
+
+    <div class="debug-section">
+        <h2>Network Requests</h2>
+        <div id="network-status"></div>
+        <button onclick="testNetworkRequests()">Test Network</button>
+    </div>
+
+    <div class="debug-section">
+        <h2>Component Tests</h2>
+        <div id="component-tests"></div>
+        <button onclick="testComponents()">Test Components</button>
+    </div>
+
+    <div class="debug-section">
+        <h2>Manual Vue App Test</h2>
+        <div id="manual-vue-app"></div>
+        <button onclick="createTestVueApp()">Create Test Vue App</button>
+    </div>
+
+    <script>
+        // Capture console errors
+        const originalConsoleError = console.error;
+        const errors = [];
+        
+        console.error = function(...args) {
+            errors.push({
+                timestamp: new Date().toISOString(),
+                message: args.join(' ')
+            });
+            updateErrorDisplay();
+            originalConsoleError.apply(console, args);
+        };
+
+        function updateErrorDisplay() {
+            const errorDiv = document.getElementById('console-errors');
+            if (errors.length === 0) {
+                errorDiv.innerHTML = '<p class="success">No JavaScript errors detected</p>';
+            } else {
+                errorDiv.innerHTML = '<h3 class="error">JavaScript Errors:</h3>';
+                errors.forEach(error => {
+                    errorDiv.innerHTML += `<div class="error">
+                        <strong>${error.timestamp}</strong><br>
+                        <pre>${error.message}</pre>
+                    </div>`;
+                });
+            }
+        }
+
+        function clearErrors() {
+            errors.length = 0;
+            updateErrorDisplay();
+        }
+
+        function checkVueStatus() {
+            const statusDiv = document.getElementById('vue-status');
+            let status = '';
+
+            // Check if Vue is loaded
+            if (typeof window.Vue !== 'undefined') {
+                status += '<p class="success">✓ Vue.js is loaded globally</p>';
+            } else {
+                status += '<p class="warning">⚠ Vue.js not found globally (this is normal for Vite builds)</p>';
+            }
+
+            // Check if app element exists
+            const appElement = document.getElementById('app');
+            if (appElement) {
+                status += '<p class="success">✓ #app element found</p>';
+                status += `<p>App element content: <pre>${appElement.innerHTML.substring(0, 200)}...</pre></p>`;
+            } else {
+                status += '<p class="error">✗ #app element not found</p>';
+            }
+
+            // Check if Vite is loaded
+            if (typeof window.__vite__ !== 'undefined') {
+                status += '<p class="success">✓ Vite is loaded</p>';
+            }
+
+            // Check for Vue Router
+            if (window.location.hash.includes('#/') || window.history.state) {
+                status += '<p class="success">✓ Vue Router appears to be working</p>';
+            }
+
+            statusDiv.innerHTML = status;
+        }
+
+        function testNetworkRequests() {
+            const networkDiv = document.getElementById('network-status');
+            networkDiv.innerHTML = '<p>Testing network requests...</p>';
+
+            const tests = [
+                { url: '/api/v1/admin/users/list', name: 'Users API' },
+                { url: '/api/v1/admin/roles/list', name: 'Roles API' },
+                { url: '/api/v1/admin/posts/list', name: 'Posts API' }
+            ];
+
+            tests.forEach(test => {
+                fetch(test.url)
+                    .then(response => {
+                        if (response.ok) {
+                            networkDiv.innerHTML += `<p class="success">✓ ${test.name} - Status: ${response.status}</p>`;
+                        } else {
+                            networkDiv.innerHTML += `<p class="error">✗ ${test.name} - Status: ${response.status}</p>`;
+                        }
+                    })
+                    .catch(error => {
+                        networkDiv.innerHTML += `<p class="error">✗ ${test.name} - Error: ${error.message}</p>`;
+                    });
+            });
+        }
+
+        function testComponents() {
+            const testDiv = document.getElementById('component-tests');
+            let results = '';
+
+            // Test if common CSS classes exist
+            const testClasses = ['btn', 'card', 'table', 'form-control'];
+            testClasses.forEach(className => {
+                const elements = document.getElementsByClassName(className);
+                if (elements.length > 0) {
+                    results += `<p class="success">✓ CSS class "${className}" found (${elements.length} elements)</p>`;
+                } else {
+                    results += `<p class="warning">⚠ CSS class "${className}" not found</p>`;
+                }
+            });
+
+            // Test if FontAwesome is loaded
+            const faTest = document.createElement('i');
+            faTest.className = 'fas fa-test';
+            document.body.appendChild(faTest);
+            const faStyles = window.getComputedStyle(faTest);
+            if (faStyles.fontFamily.includes('Font Awesome')) {
+                results += '<p class="success">✓ FontAwesome is loaded</p>';
+            } else {
+                results += '<p class="warning">⚠ FontAwesome may not be loaded</p>';
+            }
+            document.body.removeChild(faTest);
+
+            testDiv.innerHTML = results;
+        }
+
+        function createTestVueApp() {
+            const testDiv = document.getElementById('manual-vue-app');
+            
+            // Create a simple test div
+            testDiv.innerHTML = `
+                <div id="test-vue-app">
+                    <h3>Manual Vue Test</h3>
+                    <p>If Vue is working, you should see a counter below:</p>
+                    <div id="vue-test-content">Loading...</div>
+                </div>
+            `;
+
+            // Try to create a simple Vue app
+            try {
+                // This will only work if Vue is available globally
+                if (typeof window.Vue !== 'undefined') {
+                    const { createApp } = window.Vue;
+                    const app = createApp({
+                        data() {
+                            return { count: 0 };
+                        },
+                        template: `
+                            <div>
+                                <p>Count: {{ count }}</p>
+                                <button @click="count++">Increment</button>
+                            </div>
+                        `
+                    });
+                    app.mount('#vue-test-content');
+                    testDiv.innerHTML += '<p class="success">✓ Manual Vue app created successfully</p>';
+                } else {
+                    testDiv.innerHTML += '<p class="warning">⚠ Cannot create manual Vue app (Vue not globally available)</p>';
+                }
+            } catch (error) {
+                testDiv.innerHTML += `<p class="error">✗ Error creating Vue app: ${error.message}</p>`;
+            }
+        }
+
+        // Auto-run initial checks
+        window.onload = function() {
+            updateErrorDisplay();
+            checkVueStatus();
+            
+            // Check for build files
+            const scripts = document.querySelectorAll('script[src*="build"]');
+            const links = document.querySelectorAll('link[href*="build"]');
+            
+            console.log(`Found ${scripts.length} build scripts and ${links.length} build stylesheets`);
+            
+            // Wait a bit then check again
+            setTimeout(() => {
+                checkVueStatus();
+            }, 2000);
+        };
+
+        // Monitor for new errors
+        setInterval(updateErrorDisplay, 1000);
+    </script>
+</body>
+</html>
