@@ -26,14 +26,22 @@ export default defineConfig({
                 manualChunks: {
                     vendor: ['vue', 'vue-router'],
                     bootstrap: ['bootstrap']
-                }
+                },
+                // Optimize chunk names for better caching
+                chunkFileNames: 'assets/[name]-[hash].js',
+                entryFileNames: 'assets/[name]-[hash].js',
+                assetFileNames: 'assets/[name]-[hash].[ext]'
             }
         },
-        cssCodeSplit: true, // Enable CSS code splitting
+        cssCodeSplit: false, // Disable CSS code splitting for fewer requests
         sourcemap: false,
-        minify: 'esbuild', // Use esbuild for faster minification
+        minify: 'terser', // Use terser for better compression
         target: 'es2015',
-        chunkSizeWarningLimit: 1000,
+        chunkSizeWarningLimit: 2000,
+        // Enable compression
+        reportCompressedSize: false,
+        // Optimize for production
+        assetsInlineLimit: 4096,
     },
     server: {
         hmr: {

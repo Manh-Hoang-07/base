@@ -19,23 +19,16 @@
               <div v-for="field in fields" :key="field.name" class="mb-3">
                 <!-- Status Select -->
                 <template v-if="field.type === 'status'">
-                  <label :for="field.name" class="form-label">
-                    {{ field.label }}
-                    <span v-if="field.required" class="text-danger">*</span>
-                  </label>
-                  <StatusSelect
+                  <SelectField
                     :id="field.name"
                     v-model="form[field.name]"
+                    :label="field.label"
                     :placeholder="field.placeholder || 'Chọn trạng thái...'"
                     :required="field.required"
-                    :error-message="errors[field.name]"
+                    :error="errors[field.name]"
+                    :help="field.help"
+                    :options="statusOptions"
                   />
-                  <!-- Help text -->
-                  <div v-if="field.help" class="form-text">{{ field.help }}</div>
-                  <!-- Error message -->
-                  <div v-if="errors[field.name]" class="invalid-feedback">
-                    {{ errors[field.name] }}
-                  </div>
                 </template>
 
                 <!-- Other field types -->
@@ -173,14 +166,14 @@
 <script>
 import { ref, reactive, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import VueSelect from './VueSelect.vue'
-import StatusSelect from './StatusSelect.vue'
+import SelectField from './SelectField.vue'
 import BaseSelect from './BaseSelect.vue'
 
 export default {
   name: 'FormModal',
   components: {
     VueSelect,
-    StatusSelect,
+    SelectField,
     BaseSelect
   },
   props: {
@@ -231,6 +224,12 @@ export default {
     const loading = ref(false)
     let modalInstance = null
 
+    // Status options for SelectField
+    const statusOptions = [
+      { value: 'active', label: 'Hoạt động' },
+      { value: 'inactive', label: 'Không hoạt động' }
+    ]
+
     // Initialize form data
     const initializeForm = () => {
       // Reset form
@@ -244,6 +243,8 @@ export default {
           form[field.name] = false
         } else if (field.type === 'select' && field.multiple) {
           form[field.name] = []
+        } else if (field.type === 'status') {
+          form[field.name] = 'active' // Default status
         } else {
           form[field.name] = ''
         }
@@ -369,6 +370,7 @@ export default {
       errorMessage,
       successMessage,
       loading,
+      statusOptions,
       handleSubmit,
       handleFileChange,
       show,

@@ -124,9 +124,10 @@ import { ref, computed, onMounted } from 'vue'
 import DataTable from '../../../components/DataTable.vue'
 import FormModal from '../../../components/FormModal.vue'
 import Select2 from '../../../components/Select2.vue'
+import SelectField from '../../../components/SelectField.vue'
 import { useApi } from '../../../composables/useApi'
 import { useToast } from '../../../composables/useToast'
-import { normalizeStatus } from '../../../utils/statusHelper'
+
 import { getUserCreateFields, getUserEditFields } from '../../../composables/useFormFields'
 
 
@@ -135,7 +136,8 @@ export default {
   components: {
     DataTable,
     FormModal,
-    Select2
+    Select2,
+    SelectField
   },
   setup() {
     const { fetchList, create, update, remove, toggleStatus: apiToggleStatus, bulkDelete } = useApi()
@@ -252,7 +254,14 @@ export default {
     }
 
     const showCreateModal = async () => {
-      editingUser.value = null
+      editingUser.value = {
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+        status: 'active',
+        roles: []
+      }
       const { Modal } = await import('bootstrap')
       const modal = new Modal(document.getElementById('userModal'))
       modal.show()
@@ -263,7 +272,8 @@ export default {
         id: user.id,
         name: user.name,
         email: user.email,
-        status: normalizeStatus(user.status)
+        status: user.status,
+        roles: user.roles ? user.roles.map(role => role.id) : []
       }
       const { Modal } = await import('bootstrap')
       const modal = new Modal(document.getElementById('userModal'))

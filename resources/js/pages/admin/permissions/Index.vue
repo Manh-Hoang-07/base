@@ -35,14 +35,27 @@
         </div>
       </template>
 
-      <!-- Custom column: description -->
-      <template #column-description="{ item }">
-        <span class="text-muted">{{ truncateText(item.description, 80) }}</span>
+
+
+      <!-- Custom column: parent -->
+      <template #column-parent="{ item }">
+        <span v-if="item.parent" class="badge bg-secondary">
+          {{ item.parent.title || item.parent.name }}
+        </span>
+        <span v-else class="text-muted">-</span>
       </template>
 
       <!-- Custom column: guard_name -->
       <template #column-guard_name="{ item }">
         <span class="badge bg-info">{{ item.guard_name || 'web' }}</span>
+      </template>
+
+      <!-- Custom column: is_default -->
+      <template #column-is_default="{ item }">
+        <span v-if="item.is_default" class="badge bg-warning">
+          <i class="fas fa-star me-1"></i>Mặc định
+        </span>
+        <span v-else class="text-muted">-</span>
       </template>
     </DataTable>
 
@@ -54,7 +67,95 @@
       :initial-data="editingPermission || {}"
       icon="fas fa-key"
       @submit="handleSubmit"
-    />
+    >
+      <!-- Custom form with Select2 for parent permission -->
+      <template #form="{ form, errors }">
+        <div class="mb-3">
+          <label for="name" class="form-label">
+            Tên Quyền <span class="text-danger">*</span>
+          </label>
+          <input
+            id="name"
+            v-model="form.name"
+            type="text"
+            class="form-control"
+            :class="{ 'is-invalid': errors.name }"
+            placeholder="Nhập tên quyền (ví dụ: manage_users)"
+            required
+          >
+          <div class="form-text">Tên quyền không được chứa khoảng trắng và ký tự đặc biệt</div>
+          <div v-if="errors.name" class="invalid-feedback">{{ errors.name }}</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="title" class="form-label">Tiêu đề</label>
+          <input
+            id="title"
+            v-model="form.title"
+            type="text"
+            class="form-control"
+            :class="{ 'is-invalid': errors.title }"
+            placeholder="Nhập tiêu đề hiển thị (ví dụ: Xem người dùng)"
+          >
+          <div v-if="errors.title" class="invalid-feedback">{{ errors.title }}</div>
+        </div>
+
+
+
+        <div class="mb-3">
+          <Select2
+            label="Quyền cha"
+            placeholder="Chọn quyền cha (tùy chọn)..."
+            :multiple="false"
+            v-model="form.parent_id"
+            api-url="/v1/admin/permissions/list?for_select=true"
+            search-param="search"
+            :limit="50"
+            help="Chọn quyền cha để tạo cấu trúc phân cấp quyền hạn"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="guard_name" class="form-label">Guard</label>
+          <select
+            id="guard_name"
+            v-model="form.guard_name"
+            class="form-select"
+            :class="{ 'is-invalid': errors.guard_name }"
+          >
+            <option value="web">Web</option>
+            <option value="api">API</option>
+          </select>
+          <div v-if="errors.guard_name" class="invalid-feedback">{{ errors.guard_name }}</div>
+        </div>
+
+        <SelectField
+          v-model="form.status"
+          label="Trạng thái"
+          :required="true"
+          :error="errors.status"
+          :options="statusOptions"
+          help="Chọn trạng thái hoạt động của quyền này"
+        />
+
+        <div class="mb-3">
+          <div class="form-check">
+            <input
+              id="is_default"
+              v-model="form.is_default"
+              type="checkbox"
+              class="form-check-input"
+              :class="{ 'is-invalid': errors.is_default }"
+            >
+            <label for="is_default" class="form-check-label">
+              Quyền mặc định
+            </label>
+          </div>
+          <div class="form-text">Quyền mặc định sẽ được gán tự động cho người dùng mới</div>
+          <div v-if="errors.is_default" class="invalid-feedback">{{ errors.is_default }}</div>
+        </div>
+      </template>
+    </FormModal>
   </div>
 </template>
 
@@ -62,14 +163,19 @@
 import { ref, computed, onMounted } from 'vue'
 import DataTable from '../../../components/DataTable.vue'
 import FormModal from '../../../components/FormModal.vue'
+import Select2 from '../../../components/Select2.vue'
+import SelectField from '../../../components/SelectField.vue'
 import { useApi } from '../../../composables/useApi'
 import { useToast } from '../../../composables/useToast'
+import { Status, statusToString, StatusOptions } from '../../../enums/Status.js'
 
 export default {
   name: 'AdminPermissionsIndex',
   components: {
     DataTable,
-    FormModal
+    FormModal,
+    Select2,
+    SelectField
   },
   setup() {
     const { fetchList, create, update, remove, bulkDelete } = useApi()
@@ -79,12 +185,22 @@ export default {
     const loading = ref(false)
     const editingPermission = ref(null)
 
+    // Status options for SelectField
+    const statusOptions = computed(() => {
+      return StatusOptions.map(option => ({
+        value: String(option.value),
+        label: option.label
+      }))
+    })
+
     // Table configuration
     const columns = [
       { key: 'id', label: 'ID', sortable: true },
       { key: 'name', label: 'Tên Quyền', sortable: true },
-      { key: 'description', label: 'Mô tả' },
+      { key: 'parent', label: 'Quyền cha' },
       { key: 'guard_name', label: 'Guard' },
+      { key: 'is_default', label: 'Quyền mặc định', type: 'boolean' },
+      { key: 'status', label: 'Trạng thái', type: 'status' },
       { key: 'created_at', label: 'Ngày tạo', type: 'date', sortable: true }
     ]
 
@@ -97,41 +213,8 @@ export default {
       { name: 'bulk-delete', label: 'Xóa đã chọn', icon: 'fas fa-trash', class: 'btn btn-outline-danger btn-sm' }
     ]
 
-    const statusOptions = []
-
-    // Form fields for modal
-    const permissionFields = computed(() => [
-      {
-        name: 'name',
-        label: 'Tên Quyền',
-        type: 'text',
-        required: true,
-        placeholder: 'Nhập tên quyền (ví dụ: view_users)'
-      },
-      {
-        name: 'title',
-        label: 'Tiêu đề',
-        type: 'text',
-        placeholder: 'Nhập tiêu đề hiển thị (ví dụ: Xem người dùng)'
-      },
-      {
-        name: 'description',
-        label: 'Mô tả',
-        type: 'textarea',
-        rows: 3,
-        placeholder: 'Nhập mô tả chi tiết về quyền này'
-      },
-      {
-        name: 'guard_name',
-        label: 'Guard',
-        type: 'select',
-        options: [
-          { value: 'web', label: 'Web' },
-          { value: 'api', label: 'API' }
-        ],
-        default: 'web'
-      }
-    ])
+    // Form fields for modal (empty since we use custom template)
+    const permissionFields = computed(() => [])
 
     const fetchPermissions = async (filters = {}) => {
       loading.value = true
@@ -166,7 +249,14 @@ export default {
     }
 
     const showCreateModal = async () => {
-      editingPermission.value = null
+      editingPermission.value = {
+        name: '',
+        title: '',
+        parent_id: null,
+        guard_name: 'web',
+        status: statusToString(Status.ACTIVE),
+        is_default: false
+      }
       const { Modal } = await import('bootstrap')
       const modal = new Modal(document.getElementById('permissionModal'))
       modal.show()
@@ -174,7 +264,13 @@ export default {
 
     const showEditModal = async (permission) => {
       editingPermission.value = {
-        ...permission
+        id: permission.id,
+        name: permission.name,
+        title: permission.title,
+        parent_id: permission.parent_id,
+        guard_name: permission.guard_name || 'web',
+        status: permission.status !== undefined ? statusToString(permission.status) : statusToString(Status.ACTIVE),
+        is_default: Boolean(permission.is_default)
       }
       const { Modal } = await import('bootstrap')
       const modal = new Modal(document.getElementById('permissionModal'))

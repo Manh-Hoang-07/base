@@ -3,8 +3,8 @@
  */
 
 export const STATUS = {
-  INACTIVE: 0,
-  ACTIVE: 1
+  INACTIVE: 'inactive',
+  ACTIVE: 'active'
 }
 
 export const STATUS_OPTIONS = [
@@ -94,7 +94,7 @@ export function toggleStatus(status) {
 }
 
 /**
- * Normalize status to integer
+ * Normalize status to string
  */
 export function normalizeStatus(status) {
   return isActive(status) ? STATUS.ACTIVE : STATUS.INACTIVE

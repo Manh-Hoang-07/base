@@ -85,40 +85,29 @@
             </div>
 
             <!-- Status -->
-            <div class="col-md-6 mb-3">
-              <label for="status" class="form-label">Trạng thái</label>
-              <select
-                id="status"
+            <div class="col-md-6">
+              <SelectField
                 v-model="form.status"
-                class="form-select"
-                :class="{ 'is-invalid': errors.status }"
-              >
-                <option value="1">Hoạt động</option>
-                <option value="0">Không hoạt động</option>
-              </select>
-              <div v-if="errors.status" class="invalid-feedback">
-                {{ errors.status }}
-              </div>
+                label="Trạng thái"
+                :error="errors.status"
+                :options="statusOptions"
+                help="Chọn trạng thái hoạt động của người dùng"
+              />
             </div>
 
             <!-- Roles -->
-            <div class="col-md-6 mb-3">
-              <label for="roles" class="form-label">Vai trò</label>
-              <select
-                id="roles"
+            <div class="col-md-6">
+              <Select2
+                label="Vai trò"
+                placeholder="Chọn vai trò cho người dùng..."
+                :multiple="true"
                 v-model="form.roles"
-                class="form-select"
-                :class="{ 'is-invalid': errors.roles }"
-                multiple
-              >
-                <option v-for="role in availableRoles" :key="role.id" :value="role.id">
-                  {{ role.title || role.name }}
-                </option>
-              </select>
-              <div class="form-text">Giữ Ctrl để chọn nhiều vai trò</div>
-              <div v-if="errors.roles" class="invalid-feedback">
-                {{ errors.roles }}
-              </div>
+                api-url="/v1/admin/roles/list"
+                search-param="search"
+                :limit="50"
+                :error="errors.roles"
+                help="Chọn một hoặc nhiều vai trò cho người dùng này"
+              />
             </div>
           </div>
 
@@ -156,12 +145,19 @@
 </template>
 
 <script>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import SelectField from '../../../components/SelectField.vue'
+import Select2 from '../../../components/Select2.vue'
+import { Status, statusToString, StatusOptions } from '../../../enums/Status.js'
 
 export default {
   name: 'AdminUserCreate',
+  components: {
+    SelectField,
+    Select2
+  },
   setup() {
     const router = useRouter()
     
@@ -170,7 +166,7 @@ export default {
       email: '',
       password: '',
       password_confirmation: '',
-      status: 1,
+      status: statusToString(Status.ACTIVE),
       roles: []
     })
     
@@ -179,6 +175,14 @@ export default {
     const errorMessage = ref('')
     const successMessage = ref('')
     const loading = ref(false)
+
+    // Status options for SelectField
+    const statusOptions = computed(() => {
+      return StatusOptions.map(option => ({
+        value: String(option.value),
+        label: option.label
+      }))
+    })
 
     const fetchRoles = async () => {
       try {
@@ -266,6 +270,7 @@ export default {
       errorMessage,
       successMessage,
       loading,
+      statusOptions,
       handleSubmit
     }
   }

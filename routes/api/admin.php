@@ -65,7 +65,6 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
 
     // Users API
     Route::prefix('users')->name('users.')->group(function () {
-        // Direct database query for now
         Route::get('/list', function () {
             try {
                 $users = App\Models\User::with('roles')
@@ -310,7 +309,7 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
                 $limit = request('limit', 10);
                 $page = request('page', 1);
 
-                $query = Spatie\Permission\Models\Role::query();
+                $query = \App\Models\Role::query();
 
                 if (!empty($search)) {
                     $query->where('name', 'like', "%{$search}%")
@@ -319,17 +318,9 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
 
                 $roles = $query->paginate($limit, ['*'], 'page', $page);
 
-                // Format data for Select2
-                $formattedData = collect($roles->items())->map(function($role) {
-                    return [
-                        'id' => $role->id,
-                        'name' => !empty($role->title) ? $role->title : ucfirst($role->name)
-                    ];
-                })->toArray();
-
                 return response()->json([
                     'success' => true,
-                    'data' => $formattedData,
+                    'data' => $roles->items(),
                     'current_page' => $roles->currentPage(),
                     'last_page' => $roles->lastPage(),
                     'total' => $roles->total(),
@@ -351,7 +342,7 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
         })->name('list');
         Route::get('/find/{id}', function ($id) {
             try {
-                $role = Spatie\Permission\Models\Role::with('permissions')->findOrFail($id);
+                $role = \App\Models\Role::with('permissions')->findOrFail($id);
                 return response()->json([
                     'success' => true,
                     'data' => $role
@@ -369,13 +360,17 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
                 $data = request()->validate([
                     'name' => 'required|string|max:255|unique:roles,name',
                     'title' => 'required|string|max:255',
+                    'description' => 'nullable|string|max:500',
+                    'status' => 'required|in:0,1',
                     'permissions' => 'array',
                     'permissions.*' => 'exists:permissions,id'
                 ]);
 
-                $role = Spatie\Permission\Models\Role::create([
+                $role = \App\Models\Role::create([
                     'name' => $data['name'],
                     'title' => $data['title'],
+                    'description' => $data['description'],
+                    'status' => $data['status'],
                     'guard_name' => 'web'
                 ]);
 
@@ -398,18 +393,22 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
 
         Route::put('/update/{id}', function ($id) {
             try {
-                $role = Spatie\Permission\Models\Role::findOrFail($id);
+                $role = \App\Models\Role::findOrFail($id);
 
                 $data = request()->validate([
                     'name' => 'required|string|max:255|unique:roles,name,' . $id,
                     'title' => 'required|string|max:255',
+                    'description' => 'nullable|string|max:500',
+                    'status' => 'required|in:0,1',
                     'permissions' => 'array',
                     'permissions.*' => 'exists:permissions,id'
                 ]);
 
                 $role->update([
                     'name' => $data['name'],
-                    'title' => $data['title']
+                    'title' => $data['title'],
+                    'description' => $data['description'],
+                    'status' => $data['status']
                 ]);
 
                 if (isset($data['permissions'])) {
@@ -431,7 +430,7 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
 
         Route::delete('/delete/{id}', function ($id) {
             try {
-                $role = Spatie\Permission\Models\Role::findOrFail($id);
+                $role = \App\Models\Role::findOrFail($id);
 
                 if ($role->name === 'admin') {
                     return response()->json([
@@ -457,7 +456,7 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
         Route::get('/autocomplete', function () {
             try {
                 $search = request('search', '');
-                $roles = Spatie\Permission\Models\Role::where('name', 'like', "%{$search}%")
+                $roles = \App\Models\Role::where('name', 'like', "%{$search}%")
                     ->orWhere('title', 'like', "%{$search}%")
                     ->limit(10)
                     ->get(['id', 'name', 'title']);
@@ -479,7 +478,19 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
     Route::prefix('permissions')->name('permissions.')->group(function () {
         Route::get('/list', function () {
             try {
-                $permissions = Spatie\Permission\Models\Permission::paginate(request('per_page', 100));
+                $search = request('search', '');
+                $limit = request('limit', 50);
+                $page = request('page', 1);
+
+                $query = \App\Models\Permission::query();
+                $query->with('parent');
+
+                if (!empty($search)) {
+                    $query->where('name', 'like', "%{$search}%")
+                          ->orWhere('title', 'like', "%{$search}%");
+                }
+
+                $permissions = $query->paginate($limit, ['*'], 'page', $page);
 
                 return response()->json([
                     'success' => true,
@@ -505,7 +516,7 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
         })->name('list');
         Route::get('/find/{id}', function ($id) {
             try {
-                $permission = Spatie\Permission\Models\Permission::findOrFail($id);
+                $permission = \App\Models\Permission::findOrFail($id);
                 return response()->json([
                     'success' => true,
                     'data' => $permission
@@ -523,14 +534,18 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
                 $data = request()->validate([
                     'name' => 'required|string|max:255|unique:permissions,name',
                     'title' => 'required|string|max:255',
-                    'description' => 'nullable|string|max:500',
+                    'parent_id' => 'nullable|exists:permissions,id',
+                    'status' => 'required|in:0,1',
+                    'is_default' => 'boolean',
                     'guard_name' => 'string|in:web,api'
                 ]);
 
-                $permission = Spatie\Permission\Models\Permission::create([
+                $permission = \App\Models\Permission::create([
                     'name' => $data['name'],
                     'title' => $data['title'],
-                    'description' => $data['description'] ?? '',
+                    'parent_id' => $data['parent_id'] ?? null,
+                    'status' => $data['status'] ?? 1,
+                    'is_default' => $data['is_default'] ?? false,
                     'guard_name' => $data['guard_name'] ?? 'web'
                 ]);
 
@@ -549,12 +564,14 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
 
         Route::put('/update/{id}', function ($id) {
             try {
-                $permission = Spatie\Permission\Models\Permission::findOrFail($id);
+                $permission = \App\Models\Permission::findOrFail($id);
 
                 $data = request()->validate([
                     'name' => 'required|string|max:255|unique:permissions,name,' . $id,
                     'title' => 'required|string|max:255',
-                    'description' => 'nullable|string|max:500',
+                    'parent_id' => 'nullable|exists:permissions,id',
+                    'status' => 'required|in:0,1',
+                    'is_default' => 'boolean',
                     'guard_name' => 'string|in:web,api'
                 ]);
 
@@ -575,7 +592,7 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
 
         Route::delete('/delete/{id}', function ($id) {
             try {
-                $permission = Spatie\Permission\Models\Permission::findOrFail($id);
+                $permission = \App\Models\Permission::findOrFail($id);
                 $permission->delete();
 
                 return response()->json([
@@ -593,7 +610,7 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
         Route::get('/autocomplete', function () {
             try {
                 $search = request('search', '');
-                $permissions = Spatie\Permission\Models\Permission::where('name', 'like', "%{$search}%")
+                $permissions = \App\Models\Permission::where('name', 'like', "%{$search}%")
                     ->orWhere('title', 'like', "%{$search}%")
                     ->limit(10)
                     ->get(['id', 'name', 'title']);

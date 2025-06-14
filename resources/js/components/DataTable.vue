@@ -96,7 +96,14 @@
                 </td>
                 <td v-for="column in columns" :key="column.key">
                   <slot :name="`column-${column.key}`" :item="item" :value="getNestedValue(item, column.key)">
-                    {{ formatValue(getNestedValue(item, column.key), column.type) }}
+                    <span
+                      v-if="column.type === 'status'"
+                      :class="getStatusBadgeClass(getNestedValue(item, column.key))"
+                    >
+                      <i :class="getStatusIcon(getNestedValue(item, column.key))" class="me-1"></i>
+                      {{ getStatusLabel(getNestedValue(item, column.key)) }}
+                    </span>
+                    <span v-else>{{ formatValue(getNestedValue(item, column.key), column.type) }}</span>
                   </slot>
                 </td>
                 <td v-if="actions.length > 0">
@@ -327,12 +334,29 @@ export default {
       }
     }
 
+    // Status helper functions (inline for performance)
+    const getStatusLabel = (status) => {
+      if (status === 'active') return 'Hoạt động'
+      if (status === 'inactive') return 'Không hoạt động'
+      return 'Không xác định'
+    }
+
+    const getStatusBadgeClass = (status) => {
+      if (status === 'active') return 'badge bg-success'
+      if (status === 'inactive') return 'badge bg-secondary'
+      return 'badge bg-secondary'
+    }
+
+    const getStatusIcon = (status) => {
+      if (status === 'active') return 'fas fa-check-circle'
+      if (status === 'inactive') return 'fas fa-times-circle'
+      return 'fas fa-question-circle'
+    }
+
     // Watch per_page changes
     watch(() => localFilters.per_page, () => {
       applyFilters()
     })
-
-
 
     return {
       localFilters,
@@ -347,7 +371,10 @@ export default {
       changePage,
       toggleSelectAll,
       getNestedValue,
-      formatValue
+      formatValue,
+      getStatusLabel,
+      getStatusBadgeClass,
+      getStatusIcon
     }
   }
 }
@@ -370,5 +397,32 @@ export default {
 
 .btn-group-sm .btn {
   padding: 0.25rem 0.5rem;
+}
+
+/* Status badge styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35em 0.65em;
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.375rem;
+}
+
+.bg-success {
+  background-color: #198754 !important;
+}
+
+.bg-secondary {
+  background-color: #6c757d !important;
+}
+
+.me-1 {
+  margin-right: 0.25rem !important;
 }
 </style>

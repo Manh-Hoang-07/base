@@ -4,14 +4,13 @@ import router from './router'
 import App from './App.vue'
 import { useAuthStore } from './stores/auth'
 
-// Import bootstrap and axios configuration
+// Import axios configuration
 import './bootstrap'
 
-// Import CSS (app.css already includes Bootstrap and FontAwesome)
+// Import CSS (app.css includes custom styles, Bootstrap loaded via CDN)
 import '../css/app.css'
 
-// Import Bootstrap JS
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+// Bootstrap JS loaded via CDN
 
 
 

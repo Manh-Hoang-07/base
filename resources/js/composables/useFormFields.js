@@ -13,6 +13,7 @@ export function getStatusField(options = {}) {
     type: 'status',
     required: options.required !== false,
     help: options.help || 'Chọn trạng thái hoạt động',
+    placeholder: 'Chọn trạng thái...',
     ...options
   }
 }

@@ -49,7 +49,81 @@
       :initial-data="editingRole || {}"
       icon="fas fa-user-shield"
       @submit="handleSubmit"
-    />
+    >
+      <!-- Custom form with all fields -->
+      <template #form="{ form, errors }">
+        <div class="mb-3">
+          <label for="name" class="form-label">
+            Tên role <span class="text-danger">*</span>
+          </label>
+          <input
+            id="name"
+            v-model="form.name"
+            type="text"
+            class="form-control"
+            :class="{ 'is-invalid': errors.name }"
+            placeholder="Nhập tên role (ví dụ: editor)"
+            required
+          >
+          <div class="form-text">Tên role không được chứa khoảng trắng và ký tự đặc biệt</div>
+          <div v-if="errors.name" class="invalid-feedback">{{ errors.name }}</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="title" class="form-label">
+            Tiêu đề <span class="text-danger">*</span>
+          </label>
+          <input
+            id="title"
+            v-model="form.title"
+            type="text"
+            class="form-control"
+            :class="{ 'is-invalid': errors.title }"
+            placeholder="Nhập tiêu đề role (ví dụ: Biên tập viên)"
+            required
+          >
+          <div v-if="errors.title" class="invalid-feedback">{{ errors.title }}</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Mô tả</label>
+          <textarea
+            id="description"
+            v-model="form.description"
+            class="form-control"
+            :class="{ 'is-invalid': errors.description }"
+            rows="3"
+            placeholder="Nhập mô tả về vai trò này"
+          ></textarea>
+          <div v-if="errors.description" class="invalid-feedback">{{ errors.description }}</div>
+        </div>
+
+        <div class="mb-3">
+          <SelectField
+            v-model="form.status"
+            label="Trạng thái"
+            :required="true"
+            :error="errors.status"
+            :options="statusOptions"
+            help="Chọn trạng thái hoạt động của vai trò này"
+          />
+        </div>
+
+        <div class="mb-3">
+          <Select2
+            label="Quyền hạn"
+            placeholder="Chọn quyền hạn cho role này..."
+            :multiple="true"
+            v-model="form.permissions"
+            api-url="/v1/admin/permissions/list"
+            search-param="search"
+            :limit="50"
+            :error="errors.permissions"
+            help="Chọn các quyền hạn cho role này. Gõ để tìm kiếm hoặc cuộn để tải thêm."
+          />
+        </div>
+      </template>
+    </FormModal>
   </div>
 </template>
 
@@ -57,14 +131,19 @@
 import { ref, computed, onMounted } from 'vue'
 import DataTable from '../../../components/DataTable.vue'
 import FormModal from '../../../components/FormModal.vue'
+import Select2 from '../../../components/Select2.vue'
+import SelectField from '../../../components/SelectField.vue'
 import { useApi } from '../../../composables/useApi'
 import { useToast } from '../../../composables/useToast'
+import { Status, statusToString, StatusOptions } from '../../../enums/Status.js'
 
 export default {
   name: 'AdminRolesIndex',
   components: {
     DataTable,
-    FormModal
+    FormModal,
+    Select2,
+    SelectField
   },
   setup() {
     const { fetchList, create, update, remove, bulkDelete } = useApi()
@@ -73,13 +152,21 @@ export default {
     const roles = ref({ data: [], current_page: 1, last_page: 1, total: 0, from: 0, to: 0 })
     const loading = ref(false)
     const editingRole = ref(null)
-    const availablePermissions = ref([])
+
+    // Status options for SelectField
+    const statusOptions = computed(() => {
+      return StatusOptions.map(option => ({
+        value: String(option.value),
+        label: option.label
+      }))
+    })
 
     // Table configuration
     const columns = [
       { key: 'id', label: 'ID', sortable: true },
       { key: 'name', label: 'Tên', sortable: true },
       { key: 'title', label: 'Tiêu đề', sortable: true },
+      { key: 'status', label: 'Trạng thái', type: 'status' },
       { key: 'created_at', label: 'Ngày tạo', type: 'date', sortable: true }
     ]
 
@@ -92,32 +179,8 @@ export default {
       { name: 'bulk-delete', label: 'Xóa đã chọn', icon: 'fas fa-trash', class: 'btn btn-outline-danger btn-sm' }
     ]
 
-    // Form fields for modal
-    const roleFields = computed(() => [
-      {
-        name: 'name',
-        label: 'Tên role',
-        type: 'text',
-        required: true,
-        placeholder: 'Nhập tên role (ví dụ: editor)',
-        help: 'Tên role không được chứa khoảng trắng và ký tự đặc biệt'
-      },
-      {
-        name: 'title',
-        label: 'Tiêu đề',
-        type: 'text',
-        required: true,
-        placeholder: 'Nhập tiêu đề role (ví dụ: Biên tập viên)'
-      },
-      {
-        name: 'permissions',
-        label: 'Quyền hạn',
-        type: 'select',
-        multiple: true,
-        options: availablePermissions.value,
-        help: 'Chọn các quyền hạn cho role này'
-      }
-    ])
+    // Form fields for modal (empty since we use custom template)
+    const roleFields = computed(() => [])
 
     const fetchRoles = async (filters = {}) => {
       loading.value = true
@@ -142,25 +205,16 @@ export default {
       }
     }
 
-    const fetchPermissions = async () => {
-      try {
-        const apiUrl = window.Laravel?.routes?.api?.admin?.permissions?.list || '/api/v1/admin/permissions/list'
-        const response = await fetchList(apiUrl.replace(window.Laravel.apiUrl, ''))
-        if (response && response.data) {
-          availablePermissions.value = response.data.map(permission => ({
-            value: permission.id,
-            label: permission.title || permission.name,
-            description: permission.description || permission.name
-          }))
-        }
-      } catch (err) {
-        console.error('Error fetching permissions:', err)
-        availablePermissions.value = []
-      }
-    }
+
 
     const showCreateModal = async () => {
-      editingRole.value = null
+      editingRole.value = {
+        name: '',
+        title: '',
+        description: '',
+        status: statusToString(Status.ACTIVE),
+        permissions: []
+      }
       const { Modal } = await import('bootstrap')
       const modal = new Modal(document.getElementById('roleModal'))
       modal.show()
@@ -168,7 +222,11 @@ export default {
 
     const showEditModal = async (role) => {
       editingRole.value = {
-        ...role,
+        id: role.id,
+        name: role.name,
+        title: role.title,
+        description: role.description || '',
+        status: statusToString(role.status || Status.ACTIVE),
         permissions: role.permissions ? role.permissions.map(permission => permission.id) : []
       }
       const { Modal } = await import('bootstrap')
@@ -257,7 +315,6 @@ export default {
 
     onMounted(() => {
       fetchRoles()
-      fetchPermissions()
     })
 
     return {
@@ -268,6 +325,7 @@ export default {
       actions,
       bulkActions,
       roleFields,
+      statusOptions,
       showCreateModal,
       handleFilter,
       handleSort,
