@@ -85,7 +85,7 @@
 import { ref, computed, onMounted } from 'vue'
 import DataTable from '../../../components/DataTable.vue'
 import FormModal from '../../../components/FormModal.vue'
-import SelectField from '../../../components/SelectField.vue'
+
 import { useApi } from '../../../composables/useApi'
 import { useToast } from '../../../composables/useToast'
 import { Status, statusToString, StatusOptions } from '../../../enums/Status.js'
@@ -94,8 +94,7 @@ export default {
   name: 'AdminPostsIndex',
   components: {
     DataTable,
-    FormModal,
-    SelectField
+    FormModal
   },
   setup() {
     const { fetchList, create, update, remove, toggleStatus, bulkDelete } = useApi()

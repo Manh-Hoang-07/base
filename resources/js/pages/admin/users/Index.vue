@@ -123,8 +123,7 @@
 import { ref, computed, onMounted } from 'vue'
 import DataTable from '../../../components/DataTable.vue'
 import FormModal from '../../../components/FormModal.vue'
-import Select2 from '../../../components/Select2.vue'
-import SelectField from '../../../components/SelectField.vue'
+
 import { useApi } from '../../../composables/useApi'
 import { useToast } from '../../../composables/useToast'
 
@@ -135,9 +134,7 @@ export default {
   name: 'AdminUsersIndex',
   components: {
     DataTable,
-    FormModal,
-    Select2,
-    SelectField
+    FormModal
   },
   setup() {
     const { fetchList, create, update, remove, toggleStatus: apiToggleStatus, bulkDelete } = useApi()

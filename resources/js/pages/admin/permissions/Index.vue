@@ -103,9 +103,10 @@
 
 
         <div class="mb-3">
-          <Select2
+          <UniversalSelect
             label="Quyền cha"
             placeholder="Chọn quyền cha (tùy chọn)..."
+            mode="advanced"
             :multiple="false"
             v-model="form.parent_id"
             api-url="/v1/admin/permissions/list?for_select=true"
@@ -129,9 +130,10 @@
           <div v-if="errors.guard_name" class="invalid-feedback">{{ errors.guard_name }}</div>
         </div>
 
-        <SelectField
+        <UniversalSelect
           v-model="form.status"
           label="Trạng thái"
+          mode="simple"
           :required="true"
           :error="errors.status"
           :options="statusOptions"
@@ -163,8 +165,7 @@
 import { ref, computed, onMounted } from 'vue'
 import DataTable from '../../../components/DataTable.vue'
 import FormModal from '../../../components/FormModal.vue'
-import Select2 from '../../../components/Select2.vue'
-import SelectField from '../../../components/SelectField.vue'
+import UniversalSelect from '../../../components/UniversalSelect.vue'
 import { useApi } from '../../../composables/useApi'
 import { useToast } from '../../../composables/useToast'
 import { Status, statusToString, StatusOptions } from '../../../enums/Status.js'
@@ -174,8 +175,7 @@ export default {
   components: {
     DataTable,
     FormModal,
-    Select2,
-    SelectField
+    UniversalSelect
   },
   setup() {
     const { fetchList, create, update, remove, bulkDelete } = useApi()

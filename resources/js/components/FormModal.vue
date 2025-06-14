@@ -19,15 +19,17 @@
               <div v-for="field in fields" :key="field.name" class="mb-3">
                 <!-- Status Select -->
                 <template v-if="field.type === 'status'">
-                  <SelectField
+                  <UniversalSelect
                     :id="field.name"
                     v-model="form[field.name]"
                     :label="field.label"
+                    mode="simple"
                     :placeholder="field.placeholder || 'Chọn trạng thái...'"
                     :required="field.required"
                     :error="errors[field.name]"
                     :help="field.help"
                     :options="statusOptions"
+                    :show-label="false"
                   />
                 </template>
 
@@ -62,31 +64,30 @@
                     :required="field.required"
                   ></textarea>
 
-                  <!-- Base Select -->
-                  <BaseSelect
-                    v-else-if="field.type === 'base-select'"
+                  <!-- Universal Select -->
+                  <UniversalSelect
+                    v-else-if="field.type === 'select' || field.type === 'base-select' || field.type === 'select2'"
                     :id="field.name"
                     v-model="form[field.name]"
+                    :mode="field.mode || (field.searchable === false ? 'simple' : 'advanced')"
                     :options="field.options"
+                    :api-url="field.apiUrl"
+                    :multiple="field.multiple"
                     :placeholder="field.placeholder || 'Chọn...'"
                     :required="field.required"
                     :disabled="field.disabled"
                     :error-message="errors[field.name]"
                     :size="field.size"
                     :variant="field.variant"
-                  />
-
-                  <!-- Regular Select -->
-                  <VueSelect
-                    v-else-if="field.type === 'select'"
-                    :id="field.name"
-                    v-model="form[field.name]"
-                    :options="field.options"
-                    :multiple="field.multiple"
-                    :placeholder="field.placeholder || 'Chọn...'"
-                    :error-message="errors[field.name]"
                     :searchable="field.searchable !== false"
                     :clearable="field.clearable !== false"
+                    :value-key="field.valueKey || 'id'"
+                    :label-key="field.labelKey || 'name'"
+                    :description-key="field.descriptionKey"
+                    :limit="field.limit || 10"
+                    :search-param="field.searchParam || 'search'"
+                    :help="field.help"
+                    :show-label="false"
                   />
 
                   <!-- Checkbox -->
@@ -165,16 +166,12 @@
 
 <script>
 import { ref, reactive, watch, nextTick, onMounted, onUnmounted } from 'vue'
-import VueSelect from './VueSelect.vue'
-import SelectField from './SelectField.vue'
-import BaseSelect from './BaseSelect.vue'
+import UniversalSelect from './UniversalSelect.vue'
 
 export default {
   name: 'FormModal',
   components: {
-    VueSelect,
-    SelectField,
-    BaseSelect
+    UniversalSelect
   },
   props: {
     modalId: {

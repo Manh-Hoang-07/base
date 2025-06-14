@@ -125,7 +125,8 @@ export function getCategoryField(options = {}) {
   return {
     name: 'category_id',
     label: 'Danh mục',
-    type: 'base-select',
+    type: 'select',
+    mode: 'simple',
     required: true,
     placeholder: 'Chọn danh mục...',
     options: [], // Will be populated from API
@@ -140,7 +141,8 @@ export function getRoleField(options = {}) {
   return {
     name: 'role_id',
     label: 'Vai trò',
-    type: 'base-select',
+    type: 'select',
+    mode: 'simple',
     required: false,
     placeholder: 'Chọn vai trò...',
     options: [], // Will be populated from API
@@ -155,7 +157,8 @@ export function getUserField(options = {}) {
   return {
     name: 'user_id',
     label: 'Người dùng',
-    type: 'base-select',
+    type: 'select',
+    mode: 'simple',
     required: false,
     placeholder: 'Chọn người dùng...',
     options: [], // Will be populated from API

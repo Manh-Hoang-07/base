@@ -86,9 +86,10 @@
 
             <!-- Status -->
             <div class="col-md-6">
-              <SelectField
+              <UniversalSelect
                 v-model="form.status"
                 label="Trạng thái"
+                mode="simple"
                 :error="errors.status"
                 :options="statusOptions"
                 help="Chọn trạng thái hoạt động của người dùng"
@@ -97,9 +98,10 @@
 
             <!-- Roles -->
             <div class="col-md-6">
-              <Select2
+              <UniversalSelect
                 label="Vai trò"
                 placeholder="Chọn vai trò cho người dùng..."
+                mode="advanced"
                 :multiple="true"
                 v-model="form.roles"
                 api-url="/v1/admin/roles/list"
@@ -148,15 +150,13 @@
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import SelectField from '../../../components/SelectField.vue'
-import Select2 from '../../../components/Select2.vue'
+import UniversalSelect from '../../../components/UniversalSelect.vue'
 import { Status, statusToString, StatusOptions } from '../../../enums/Status.js'
 
 export default {
   name: 'AdminUserCreate',
   components: {
-    SelectField,
-    Select2
+    UniversalSelect
   },
   setup() {
     const router = useRouter()
