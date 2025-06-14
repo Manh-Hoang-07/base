@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/auth'
 // Import layouts
 import HomeLayout from '../layouts/HomeLayout.vue'
 import AdminLayout from '../layouts/AdminLayout.vue'
+import TestLayout from '../layouts/TestLayout.vue'
 import AuthLayout from '../layouts/AuthLayout.vue'
 
 // Import pages
@@ -25,6 +26,7 @@ import AdminRoleEdit from '../pages/admin/roles/Edit.vue'
 import AdminPosts from '../pages/admin/posts/Index.vue'
 import AdminPostCreate from '../pages/admin/posts/Create.vue'
 import AdminPostEdit from '../pages/admin/posts/Edit.vue'
+import TestComponent from '../pages/admin/TestComponent.vue'
 
 const routes = [
   // Home routes
@@ -69,8 +71,8 @@ const routes = [
   // Admin routes
   {
     path: '/admin',
-    component: AdminLayout,
-    meta: { requiresAuth: true, requiresAdmin: true },
+    component: AdminLayout, // Back to original AdminLayout
+    meta: { requiresAuth: false, requiresAdmin: false }, // Keep auth disabled for now
     children: [
       {
         path: '',
@@ -124,6 +126,36 @@ const routes = [
         name: 'admin.posts.edit',
         component: AdminPostEdit,
         props: true
+      },
+      {
+        path: 'permissions',
+        name: 'admin.permissions',
+        component: () => import('../pages/admin/permissions/Index.vue')
+      },
+      {
+        path: 'categories',
+        name: 'admin.categories',
+        component: () => import('../pages/admin/categories/Index.vue')
+      },
+      {
+        path: 'series',
+        name: 'admin.series',
+        component: () => import('../pages/admin/series/Index.vue')
+      },
+      {
+        path: 'profile',
+        name: 'admin.profile',
+        component: () => import('../pages/admin/Profile.vue')
+      },
+      {
+        path: 'settings',
+        name: 'admin.settings',
+        component: () => import('../pages/admin/Settings.vue')
+      },
+      {
+        path: 'test',
+        name: 'admin.test',
+        component: TestComponent
       }
     ]
   }

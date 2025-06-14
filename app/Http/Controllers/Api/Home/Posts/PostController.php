@@ -40,7 +40,7 @@ class PostController extends BaseController
         }
 
         // Chỉ lấy bài đăng công khai
-        $filters['status'] = 1;
+        $filters['status'] = 'active';
 
         $data = $this->getService()->getList($filters, $options);
 
@@ -62,7 +62,7 @@ class PostController extends BaseController
             $post = $this->getService()->findById($id);
             
             // Kiểm tra bài đăng có công khai không
-            if (!$post || $post->status != 1) {
+            if (!$post || $post->status != 'active') {
                 return $this->errorResponse('Bài đăng không tồn tại hoặc không công khai', null, 404);
             }
             

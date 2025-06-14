@@ -26,9 +26,15 @@ class Category extends Model
             ->withDefault(['name' => 'N/A']);
     }
 
-    // Định nghĩa mối quan hệ nếu cần
-//    public function books()
-//    {
-//        return $this->hasMany(Books::class);
-//    }
+    // Relationship với Posts
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    // Relationship với Series
+    public function series()
+    {
+        return $this->hasMany(Series::class);
+    }
 }

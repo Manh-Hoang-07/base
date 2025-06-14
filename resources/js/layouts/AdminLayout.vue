@@ -14,8 +14,8 @@
 
         <!-- Logo -->
         <router-link to="/admin" class="navbar-brand">
-          <img src="/images/logo-light.png" alt="Admin" height="35">
-          <span class="ms-2">Admin Panel</span>
+          <i class="fas fa-cogs me-2"></i>
+          <span>Admin Panel</span>
         </router-link>
 
         <!-- User menu -->
@@ -23,7 +23,7 @@
           <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
               <i class="fas fa-user-circle me-1"></i>
-              {{ authStore.user?.name }}
+              {{ authStore.user?.name || 'Admin User' }}
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
               <li>
@@ -74,6 +74,43 @@
               <span class="nav-text">Quản lý Posts</span>
             </router-link>
           </li>
+
+          <li class="nav-item">
+            <router-link to="/admin/permissions" class="nav-link" active-class="active">
+              <i class="fas fa-key"></i>
+              <span class="nav-text">Quản lý Quyền</span>
+            </router-link>
+          </li>
+
+          <li class="nav-item">
+            <router-link to="/admin/categories" class="nav-link" active-class="active">
+              <i class="fas fa-folder"></i>
+              <span class="nav-text">Quản lý Danh mục</span>
+            </router-link>
+          </li>
+
+          <li class="nav-item">
+            <router-link to="/admin/series" class="nav-link" active-class="active">
+              <i class="fas fa-list"></i>
+              <span class="nav-text">Quản lý Series</span>
+            </router-link>
+          </li>
+
+          <li class="nav-divider"></li>
+
+          <li class="nav-item">
+            <router-link to="/admin/profile" class="nav-link" active-class="active">
+              <i class="fas fa-user-circle"></i>
+              <span class="nav-text">Hồ sơ cá nhân</span>
+            </router-link>
+          </li>
+
+          <li class="nav-item">
+            <router-link to="/admin/settings" class="nav-link" active-class="active">
+              <i class="fas fa-cog"></i>
+              <span class="nav-text">Cài đặt hệ thống</span>
+            </router-link>
+          </li>
         </ul>
       </nav>
     </aside>
@@ -110,7 +147,15 @@ export default {
     }
 
     const handleLogout = async () => {
-      await authStore.logout()
+      try {
+        await authStore.logout()
+        // Redirect to home or login page
+        window.location.href = '/'
+      } catch (error) {
+        console.error('Logout error:', error)
+        // Force redirect anyway
+        window.location.href = '/'
+      }
     }
 
     return {

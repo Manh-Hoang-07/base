@@ -1,12 +1,6 @@
 <template>
   <div id="app">
-    <!-- Debug info -->
-    <div v-if="showDebug" style="position: fixed; top: 0; right: 0; background: rgba(0,0,0,0.8); color: white; padding: 10px; z-index: 9999; font-size: 12px;">
-      <div>Vue App: ✓ Loaded</div>
-      <div>Route: {{ $route?.path || 'Unknown' }}</div>
-      <div>Components: {{ componentCount }}</div>
-      <button @click="showDebug = false" style="background: red; color: white; border: none; padding: 2px 5px; margin-top: 5px;">Hide</button>
-    </div>
+
 
     <!-- Main app content -->
     <router-view v-slot="{ Component }">
@@ -31,19 +25,12 @@
     <ToastContainer />
     <GlobalConfirm />
 
-    <!-- Debug toggle -->
-    <button
-      @click="showDebug = !showDebug"
-      style="position: fixed; bottom: 10px; right: 10px; background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 3px; z-index: 9998;"
-      title="Toggle Debug Info"
-    >
-      Debug
-    </button>
+
   </div>
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import ToastContainer from './components/ToastContainer.vue'
 import GlobalConfirm from './components/GlobalConfirm.vue'
 
@@ -54,12 +41,6 @@ export default {
     GlobalConfirm
   },
   setup() {
-    const showDebug = ref(false)
-
-    const componentCount = computed(() => {
-      return Object.keys(this?.$options?.components || {}).length
-    })
-
     onMounted(() => {
       console.log('App.vue mounted successfully')
 
@@ -68,18 +49,9 @@ export default {
       if (loadingElement) {
         loadingElement.style.display = 'none'
       }
-
-      // Show debug info for 3 seconds
-      showDebug.value = true
-      setTimeout(() => {
-        showDebug.value = false
-      }, 3000)
     })
 
-    return {
-      showDebug,
-      componentCount
-    }
+    return {}
   }
 }
 </script>

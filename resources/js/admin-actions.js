@@ -14,7 +14,7 @@ async function deleteItem(id, url = null, message = 'Bạn có chắc chắn mu�
             const pathParts = currentPath.split('/');
             if (pathParts.includes('admin')) {
                 const module = pathParts[pathParts.length - 2]; // users, roles, etc.
-                url = `/api/v1/admin/${module}/delete/${id}`;
+                url = `http://web.local/api/v1/admin/${module}/delete/${id}`;
             }
         }
 
@@ -77,7 +77,7 @@ async function toggleStatus(id, currentStatus, url = null, reloadCallback = null
     if (confirm(message)) {
         if (!url) {
             // Create API URL for status change
-            url = `/api/v1/admin/users/status/${id}`;
+            url = `http://web.local/api/v1/admin/users/status/${id}`;
         }
 
         try {

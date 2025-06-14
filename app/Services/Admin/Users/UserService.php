@@ -4,9 +4,6 @@ namespace App\Services\Admin\Users;
 
 use App\Repositories\Admin\Users\UserRepository;
 use App\Services\BaseService;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\JsonResponse;
-use lib\DataTable;
 
 class UserService extends BaseService
 {
@@ -20,24 +17,7 @@ class UserService extends BaseService
         return $this->repository;
     }
 
-    /**
-     * Override getList để thêm thông tin roles_count
-     */
-    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
-    {
-        // Thêm relation roles để đếm số lượng
-        $options['relations'] = array_merge($options['relations'] ?? [], ['roles']);
 
-        $result = parent::getList($filters, $options);
-
-        // Thêm roles_count vào mỗi item trong paginated result
-        $items = $result->items();
-        foreach ($items as $user) {
-            $user->roles_count = $user->roles->count();
-        }
-
-        return $result;
-    }
 
     /**
      * Service xử lý tạo tài khoản

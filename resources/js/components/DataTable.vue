@@ -67,15 +67,15 @@
                     @change="toggleSelectAll"
                   >
                 </th>
-                <th 
-                  v-for="column in columns" 
+                <th
+                  v-for="column in columns"
                   :key="column.key"
                   :class="{ 'sortable': column.sortable }"
                   @click="column.sortable ? sort(column.key) : null"
                 >
                   {{ column.label }}
-                  <i 
-                    v-if="column.sortable && sortBy === column.key" 
+                  <i
+                    v-if="column.sortable && sortBy === column.key"
                     :class="sortOrder === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"
                     class="ms-1"
                   ></i>
@@ -85,7 +85,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in data.data" :key="item.id">
+              <tr v-for="item in (data?.data || [])" :key="item.id">
                 <td v-if="selectable">
                   <input
                     type="checkbox"
@@ -146,7 +146,7 @@
           <div class="text-muted">
             Hiển thị {{ data.from }} - {{ data.to }} trong tổng số {{ data.total }} bản ghi
           </div>
-          
+
           <nav aria-label="Table pagination">
             <ul class="pagination pagination-sm mb-0">
               <li class="page-item" :class="{ disabled: data.current_page === 1 }">
@@ -154,18 +154,18 @@
                   <i class="fas fa-chevron-left"></i>
                 </button>
               </li>
-              
-              <li 
-                v-for="page in visiblePages" 
-                :key="page" 
-                class="page-item" 
+
+              <li
+                v-for="page in visiblePages"
+                :key="page"
+                class="page-item"
                 :class="{ active: page === data.current_page }"
               >
                 <button class="page-link" @click="changePage(page)">
                   {{ page }}
                 </button>
               </li>
-              
+
               <li class="page-item" :class="{ disabled: data.current_page === data.last_page }">
                 <button class="page-link" @click="changePage(data.current_page + 1)">
                   <i class="fas fa-chevron-right"></i>
@@ -237,7 +237,7 @@ export default {
       status: '',
       per_page: 10
     })
-    
+
     const selectedItems = ref([])
     const sortBy = ref('')
     const sortOrder = ref('asc')
@@ -250,14 +250,14 @@ export default {
       const current = props.data.current_page
       const last = props.data.last_page
       const pages = []
-      
+
       const start = Math.max(1, current - 2)
       const end = Math.min(last, current + 2)
-      
+
       for (let i = start; i <= end; i++) {
         pages.push(i)
       }
-      
+
       return pages
     })
 
@@ -303,7 +303,7 @@ export default {
 
     const formatValue = (value, type) => {
       if (value === null || value === undefined) return '-'
-      
+
       switch (type) {
         case 'date':
           return new Intl.DateTimeFormat('vi-VN').format(new Date(value))
@@ -331,6 +331,8 @@ export default {
     watch(() => localFilters.per_page, () => {
       applyFilters()
     })
+
+
 
     return {
       localFilters,

@@ -1,10 +1,12 @@
 <template>
   <div class="admin-dashboard">
+
+
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <h1 class="h3 mb-0">Dashboard</h1>
-        <p class="text-muted">Chào mừng bạn đến với trang quản trị</p>
+        <p class="text-muted">Trang quản trị Vue.js</p>
       </div>
       <div class="text-muted">
         <i class="fas fa-calendar me-1"></i>
@@ -15,46 +17,67 @@
     <!-- Stats Cards -->
     <div class="row mb-4">
       <div class="col-xl-3 col-md-6 mb-4">
-        <StatsCard
-          title="Tổng Users"
-          :value="stats.users"
-          icon="fas fa-users"
-          color="primary"
-          :loading="loading.stats"
-          :trend="{ value: 12, type: 'percent', period: 'so với tháng trước', direction: 'up' }"
-        />
+        <div class="card bg-primary text-white shadow">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h4 class="mb-0">{{ stats.users }}</h4>
+                <p class="mb-0">Tổng Users</p>
+              </div>
+              <div class="align-self-center">
+                <i class="fas fa-users fa-2x"></i>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="col-xl-3 col-md-6 mb-4">
-        <StatsCard
-          title="Tổng Posts"
-          :value="stats.posts"
-          icon="fas fa-newspaper"
-          color="success"
-          :loading="loading.stats"
-          :trend="{ value: 8, type: 'percent', period: 'so với tuần trước', direction: 'up' }"
-        />
+        <div class="card bg-success text-white shadow">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h4 class="mb-0">{{ stats.posts }}</h4>
+                <p class="mb-0">Tổng Posts</p>
+              </div>
+              <div class="align-self-center">
+                <i class="fas fa-newspaper fa-2x"></i>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="col-xl-3 col-md-6 mb-4">
-        <StatsCard
-          title="Tổng Roles"
-          :value="stats.roles"
-          icon="fas fa-user-shield"
-          color="info"
-          :loading="loading.stats"
-        />
+        <div class="card bg-info text-white shadow">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h4 class="mb-0">{{ stats.roles }}</h4>
+                <p class="mb-0">Tổng Roles</p>
+              </div>
+              <div class="align-self-center">
+                <i class="fas fa-user-shield fa-2x"></i>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="col-xl-3 col-md-6 mb-4">
-        <StatsCard
-          title="Online Users"
-          :value="stats.online"
-          icon="fas fa-circle"
-          color="warning"
-          :loading="loading.stats"
-          subtitle="Đang hoạt động"
-        />
+        <div class="card bg-warning text-white shadow">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h4 class="mb-0">{{ stats.categories }}</h4>
+                <p class="mb-0">Tổng Danh mục</p>
+              </div>
+              <div class="align-self-center">
+                <i class="fas fa-folder fa-2x"></i>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -68,23 +91,23 @@
           <div class="card-body">
             <div class="row">
               <div class="col-lg-3 col-md-6 mb-3">
-                <router-link to="/admin/users/create" class="btn btn-primary btn-block">
-                  <i class="fas fa-user-plus me-2"></i>Tạo User mới
+                <router-link to="/admin/users" class="btn btn-primary btn-block">
+                  <i class="fas fa-user-plus me-2"></i>Quản lý Users
                 </router-link>
               </div>
               <div class="col-lg-3 col-md-6 mb-3">
-                <router-link to="/admin/posts/create" class="btn btn-success btn-block">
-                  <i class="fas fa-plus me-2"></i>Tạo Post mới
+                <router-link to="/admin/posts" class="btn btn-success btn-block">
+                  <i class="fas fa-newspaper me-2"></i>Quản lý Posts
                 </router-link>
               </div>
               <div class="col-lg-3 col-md-6 mb-3">
-                <router-link to="/admin/roles/create" class="btn btn-info btn-block">
-                  <i class="fas fa-shield-alt me-2"></i>Tạo Role mới
+                <router-link to="/admin/categories" class="btn btn-info btn-block">
+                  <i class="fas fa-folder me-2"></i>Quản lý Danh mục
                 </router-link>
               </div>
               <div class="col-lg-3 col-md-6 mb-3">
-                <router-link to="/" class="btn btn-secondary btn-block">
-                  <i class="fas fa-home me-2"></i>Xem trang chủ
+                <router-link to="/admin/series" class="btn btn-warning btn-block">
+                  <i class="fas fa-list me-2"></i>Quản lý Series
                 </router-link>
               </div>
             </div>
@@ -144,7 +167,7 @@
                   <i class="fas fa-newspaper text-success"></i>
                 </div>
                 <div class="flex-grow-1">
-                  <h6 class="mb-0">{{ post.title }}</h6>
+                  <h6 class="mb-0">{{ post.name || post.title }}</h6>
                   <small class="text-muted">{{ truncateText(post.description, 50) }}</small>
                 </div>
                 <small class="text-muted">{{ formatDate(post.created_at) }}</small>
@@ -162,21 +185,18 @@
 
 <script>
 import { ref, computed, onMounted } from 'vue'
-import StatsCard from '../../components/StatsCard.vue'
 import { useApi } from '../../composables/useApi'
 
 export default {
   name: 'AdminDashboard',
-  components: {
-    StatsCard
-  },
   setup() {
     const { fetchList } = useApi()
+
     const stats = ref({
       users: 0,
       posts: 0,
       roles: 0,
-      online: 0
+      categories: 0
     })
 
     const recentUsers = ref([])
@@ -197,60 +217,9 @@ export default {
       }).format(new Date())
     })
 
-    const fetchStats = async () => {
-      loading.value.stats = true
-      try {
-        // Fetch basic stats - you can create a dedicated API endpoint for this
-        const [usersRes, postsRes, rolesRes] = await Promise.all([
-          fetchList('/v1/admin/users/list', { per_page: 1 }),
-          fetchList('/v1/admin/posts/list', { per_page: 1 }),
-          fetchList('/v1/admin/roles/list', { per_page: 1 })
-        ])
-
-        stats.value = {
-          users: usersRes.total || 0,
-          posts: postsRes.total || 0,
-          roles: rolesRes.total || 0,
-          online: Math.floor(Math.random() * 10) + 1 // Mock data
-        }
-      } catch (error) {
-        console.error('Error fetching stats:', error)
-      } finally {
-        loading.value.stats = false
-      }
-    }
-
-    const fetchRecentUsers = async () => {
-      loading.value.users = true
-      try {
-        const data = await fetchList('/v1/admin/users/list', {
-          per_page: 5,
-          sort: 'created_at',
-          order: 'desc'
-        })
-        recentUsers.value = data.data || []
-      } catch (error) {
-        console.error('Error fetching recent users:', error)
-      } finally {
-        loading.value.users = false
-      }
-    }
-
-    const fetchRecentPosts = async () => {
-      loading.value.posts = true
-      try {
-        const data = await fetchList('/v1/admin/posts/list', {
-          per_page: 5,
-          sort: 'created_at',
-          order: 'desc'
-        })
-        recentPosts.value = data.data || []
-      } catch (error) {
-        console.error('Error fetching recent posts:', error)
-      } finally {
-        loading.value.posts = false
-      }
-    }
+    const currentTime = computed(() => {
+      return new Date().toLocaleTimeString('vi-VN')
+    })
 
     const formatDate = (date) => {
       return new Intl.DateTimeFormat('vi-VN').format(new Date(date))
@@ -259,6 +228,72 @@ export default {
     const truncateText = (text, length = 50) => {
       if (!text) return ''
       return text.length > length ? text.substring(0, length) + '...' : text
+    }
+
+    const fetchStats = async () => {
+      loading.value.stats = true
+      try {
+        // Try dashboard stats API first
+        const statsUrl = window.Laravel?.routes?.api?.admin?.dashboard?.stats || '/api/v1/admin/dashboard/stats'
+        const statsResponse = await fetchList(statsUrl.replace(window.Laravel.apiUrl, ''))
+
+        if (statsResponse && statsResponse.data) {
+          stats.value = statsResponse.data
+        } else {
+          // Fallback to static stats
+          stats.value = {
+            users: 0,
+            posts: 0,
+            roles: 0,
+            categories: 0,
+            series: 0,
+            permissions: 0
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching stats:', err)
+        // Fallback to static stats on error
+        stats.value = {
+          users: 0,
+          posts: 0,
+          roles: 0,
+          categories: 0,
+          series: 0,
+          permissions: 0
+        }
+      } finally {
+        loading.value.stats = false
+      }
+    }
+
+    const fetchRecentUsers = async () => {
+      loading.value.users = true
+      try {
+        const apiUrl = window.Laravel?.routes?.api?.admin?.users?.list || '/api/v1/admin/users/list'
+        const response = await fetchList(apiUrl.replace(window.Laravel.apiUrl, ''), { per_page: 5 })
+        if (response && response.data) {
+          recentUsers.value = response.data
+        }
+      } catch (err) {
+        console.error('Error fetching recent users:', err)
+      } finally {
+        loading.value.users = false
+      }
+    }
+
+    const fetchRecentPosts = async () => {
+      loading.value.posts = true
+      try {
+        const apiUrl = window.Laravel?.routes?.api?.admin?.posts?.list || '/api/v1/admin/posts/list'
+        const response = await fetchList(apiUrl.replace(window.Laravel.apiUrl, ''), { per_page: 5 })
+        if (response && response.data) {
+          recentPosts.value = response.data
+        }
+      } catch (err) {
+        console.error('Error fetching recent posts:', err)
+      } finally {
+        loading.value.posts = false
+      }
     }
 
     onMounted(() => {
@@ -273,6 +308,7 @@ export default {
       recentPosts,
       loading,
       currentDate,
+      currentTime,
       formatDate,
       truncateText
     }

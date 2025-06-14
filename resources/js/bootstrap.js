@@ -3,6 +3,8 @@ import axios from 'axios';
 // Configure axios
 window.axios = axios;
 
+
+
 // Set default headers
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.headers.common['Accept'] = 'application/json';
@@ -14,8 +16,12 @@ if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 }
 
-// Set base URL
-window.axios.defaults.baseURL = window.Laravel?.apiUrl || '/api';
+// Set base URL from Laravel config
+if (window.Laravel && window.Laravel.apiUrl) {
+    window.axios.defaults.baseURL = window.Laravel.apiUrl;
+} else {
+    window.axios.defaults.baseURL = 'http://web.local/api';
+}
 
 // Request interceptor
 window.axios.interceptors.request.use(
@@ -41,15 +47,6 @@ window.axios.interceptors.response.use(
         // Handle 401 errors (unauthorized)
         if (error.response?.status === 401) {
             localStorage.removeItem('token');
-            // Redirect to login if not already there
-            if (!window.location.pathname.includes('/auth/login')) {
-                window.location.href = '/auth/login';
-            }
-        }
-
-        // Handle 403 errors (forbidden)
-        if (error.response?.status === 403) {
-            console.warn('Access forbidden:', error.response.data?.message);
         }
 
         return Promise.reject(error);

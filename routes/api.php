@@ -14,14 +14,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Test API route
-Route::get('/test', function () {
+// Health check endpoint
+Route::get('/health', function () {
     return response()->json([
-        'message' => 'API is working!',
+        'status' => 'OK',
         'timestamp' => now(),
-        'version' => 'v1'
+        'version' => '1.0.0'
     ]);
 });
+
+
+
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -29,3 +33,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Load admin API routes
 require __DIR__ . '/api/admin.php';
+
+// Load web API routes
+require __DIR__ . '/api/web.php';

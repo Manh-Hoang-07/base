@@ -21,7 +21,8 @@ export const useAuthStore = defineStore('auth', {
     async login(credentials) {
       this.loading = true
       try {
-        const response = await axios.post('/api/v1/auth/login', credentials)
+        console.log('Login attempt with:', credentials.email);
+        const response = await axios.post('/v1/auth/login', credentials)
         
         if (response.data.success) {
           this.token = response.data.data.token
@@ -29,12 +30,14 @@ export const useAuthStore = defineStore('auth', {
           
           localStorage.setItem('token', this.token)
           axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+          console.log('Login successful:', this.user);
           
           return { success: true, message: response.data.message }
         }
         
         return { success: false, message: response.data.message }
       } catch (error) {
+        console.error('Login error:', error);
         const message = error.response?.data?.message || 'Đăng nhập thất bại'
         return { success: false, message }
       } finally {
@@ -45,7 +48,8 @@ export const useAuthStore = defineStore('auth', {
     async register(userData) {
       this.loading = true
       try {
-        const response = await axios.post('/api/v1/auth/register', userData)
+        console.log('Register attempt with:', userData.email);
+        const response = await axios.post('/v1/auth/register', userData)
         
         if (response.data.success) {
           return { success: true, message: response.data.message }
@@ -53,6 +57,7 @@ export const useAuthStore = defineStore('auth', {
         
         return { success: false, message: response.data.message }
       } catch (error) {
+        console.error('Register error:', error);
         const message = error.response?.data?.message || 'Đăng ký thất bại'
         return { success: false, message }
       } finally {
@@ -63,7 +68,7 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       try {
         if (this.token) {
-          await axios.post('/api/v1/auth/logout')
+          await axios.post('/v1/auth/logout')
         }
       } catch (error) {
         console.error('Logout error:', error)
@@ -79,9 +84,11 @@ export const useAuthStore = defineStore('auth', {
       if (!this.token) return
       
       try {
-        const response = await axios.get('/api/v1/auth/user')
+        console.log('Fetching user data...');
+        const response = await axios.get('/v1/auth/user')
         if (response.data.success) {
           this.user = response.data.data
+          console.log('User data fetched:', this.user);
         }
       } catch (error) {
         console.error('Fetch user error:', error)
@@ -91,6 +98,7 @@ export const useAuthStore = defineStore('auth', {
 
     initializeAuth() {
       if (this.token) {
+        console.log('Initializing auth with token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
         this.fetchUser()
       }

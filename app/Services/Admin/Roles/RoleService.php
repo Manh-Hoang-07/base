@@ -4,9 +4,6 @@ namespace App\Services\Admin\Roles;
 
 use App\Repositories\Admin\Roles\RoleRepository;
 use App\Services\BaseService;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Model;
-use lib\DataTable;
 
 class RoleService extends BaseService
 {
@@ -20,24 +17,7 @@ class RoleService extends BaseService
         return $this->repository;
     }
 
-    /**
-     * Override getList để thêm thông tin permissions
-     */
-    public function getList(array $filters = [], array $options = []): LengthAwarePaginator
-    {
-        // Thêm relation permissions để đếm số lượng
-        $options['relations'] = array_merge($options['relations'] ?? [], ['permissions']);
 
-        $result = parent::getList($filters, $options);
-
-        // Thêm permissions_count vào mỗi item trong paginated result
-        $items = $result->items();
-        foreach ($items as $role) {
-            $role->permissions_count = $role->permissions->count();
-        }
-
-        return $result;
-    }
 
     /**
      * Lấy thông tin vai trò theo ID

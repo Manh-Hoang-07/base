@@ -17,9 +17,15 @@ class Series extends Model
         'status'
     ];
 
-    // Quan hệ 1-n với Books (Một series có nhiều sách)
-    public function books(): HasMany
+    // Quan hệ 1-n với Posts (Một series có nhiều bài viết)
+    public function posts(): HasMany
     {
-        return $this->hasMany(Book::class);
+        return $this->hasMany(Post::class);
+    }
+
+    // Quan hệ với Category
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

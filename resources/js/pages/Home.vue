@@ -52,6 +52,8 @@
           </div>
         </div>
 
+
+
         <!-- Loading -->
         <div v-if="loading" class="text-center py-5">
           <div class="spinner-border text-primary" role="status">
@@ -63,15 +65,15 @@
         <div v-else class="row">
           <div v-for="post in posts.data" :key="post.id" class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100 post-card">
-              <img 
-                v-if="post.image" 
-                :src="post.image" 
-                class="card-img-top" 
-                :alt="post.title"
+              <img
+                v-if="post.image"
+                :src="post.image"
+                class="card-img-top"
+                :alt="post.name"
                 style="height: 200px; object-fit: cover;"
               >
               <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ post.title }}</h5>
+                <h5 class="card-title">{{ post.name }}</h5>
                 <p class="card-text text-muted flex-grow-1">
                   {{ truncateText(post.description, 100) }}
                 </p>
@@ -152,7 +154,7 @@ export default {
         const params = { page, per_page: 9 }
         if (search) params.search = search
 
-        const response = await axios.get('/api/v1/posts', { params })
+        const response = await axios.get('/v1/posts', { params })
         if (response.data) {
           posts.value = response.data
         }

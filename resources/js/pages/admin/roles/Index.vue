@@ -38,17 +38,7 @@
         <span class="badge bg-primary">{{ item.name }}</span>
       </template>
 
-      <!-- Custom column: users_count -->
-      <template #column-users_count="{ item }">
-        <span class="badge bg-info">{{ item.users_count || 0 }}</span>
-      </template>
 
-      <!-- Custom column: permissions -->
-      <template #column-permissions="{ item }">
-        <span class="text-muted">
-          {{ item.permissions ? item.permissions.length : 0 }} quyền
-        </span>
-      </template>
     </DataTable>
 
     <!-- Create/Edit Modal -->
@@ -90,8 +80,6 @@ export default {
       { key: 'id', label: 'ID', sortable: true },
       { key: 'name', label: 'Tên', sortable: true },
       { key: 'title', label: 'Tiêu đề', sortable: true },
-      { key: 'users_count', label: 'Số Users' },
-      { key: 'permissions', label: 'Quyền hạn' },
       { key: 'created_at', label: 'Ngày tạo', type: 'date', sortable: true }
     ]
 
@@ -134,10 +122,21 @@ export default {
     const fetchRoles = async (filters = {}) => {
       loading.value = true
       try {
-        const data = await fetchList('/v1/admin/roles/list', filters)
-        roles.value = data
+        const apiUrl = window.Laravel?.routes?.api?.admin?.roles?.list || '/api/v1/admin/roles/list'
+        const response = await fetchList(apiUrl.replace(window.Laravel.apiUrl, ''), filters)
+        if (response && response.data) {
+          roles.value = response
+        }
       } catch (err) {
         console.error('Error fetching roles:', err)
+        roles.value = {
+          data: [],
+          current_page: 1,
+          last_page: 1,
+          total: 0,
+          from: 0,
+          to: 0
+        }
       } finally {
         loading.value = false
       }
@@ -145,14 +144,18 @@ export default {
 
     const fetchPermissions = async () => {
       try {
-        const data = await fetchList('/v1/admin/permissions/list', { per_page: 100 })
-        availablePermissions.value = data.data.map(permission => ({
-          value: permission.id,
-          label: permission.title || permission.name,
-          description: permission.description
-        }))
+        const apiUrl = window.Laravel?.routes?.api?.admin?.permissions?.list || '/api/v1/admin/permissions/list'
+        const response = await fetchList(apiUrl.replace(window.Laravel.apiUrl, ''))
+        if (response && response.data) {
+          availablePermissions.value = response.data.map(permission => ({
+            value: permission.id,
+            label: permission.title || permission.name,
+            description: permission.description || permission.name
+          }))
+        }
       } catch (err) {
         console.error('Error fetching permissions:', err)
+        availablePermissions.value = []
       }
     }
 
