@@ -41,10 +41,10 @@ class BaseService
 
     /**
      * Lấy thông tin theo ID
-     * @param $id
+     * @param int $id
      * @return Model|null
      */
-    public function findById($id, array $options = []): ?Model
+    public function findById(int $id, array $options = []): ?Model
     {
         return $this->getRepository()->findById($id, $options);
     }

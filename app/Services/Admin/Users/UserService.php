@@ -28,15 +28,34 @@ class UserService extends BaseService
     {
         $return = [
             'success' => false,
-            'messages' => 'Thêm mới tài khoản thất bại'
+            'message' => 'Thêm mới tài khoản thất bại'
         ];
-        $keys = ['name', 'email', 'password'];
-        if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->getRepository()->create($insertData)
-        ) {
-            $return['success'] = true;
-            $return['messages'] = 'Thêm mới tài khoản thành công';
+
+        $keys = ['email', 'password', 'status'];
+        $insertData = DataTable::getChangeData($data, $keys);
+
+        // Hash password
+        if (isset($insertData['password'])) {
+            $insertData['password'] = bcrypt($insertData['password']);
         }
+
+        // Set default status
+        if (!isset($insertData['status'])) {
+            $insertData['status'] = 'active';
+        }
+
+        $user = $this->getRepository()->create($insertData);
+        if ($user) {
+            // Assign roles if provided
+            if (isset($data['roles']) && is_array($data['roles'])) {
+                $user->syncRoles($data['roles']);
+            }
+
+            $return['success'] = true;
+            $return['message'] = 'Thêm mới tài khoản thành công';
+            $return['data'] = $this->getRepository()->findById($user->id);
+        }
+
         return $return;
     }
 
@@ -50,17 +69,36 @@ class UserService extends BaseService
     {
         $return = [
             'success' => false,
-            'messages' => 'Cập nhật tài khoản thất bại'
+            'message' => 'Cập nhật tài khoản thất bại'
         ];
-        $keys = ['name', 'email'];
-        $updateData = DataTable::getChangeData($data, $keys);
-        if (!empty($updateData)
-            && ($user = $this->getRepository()->findById($id))
-            && $this->getRepository()->update($user, $data)
-        ) {
-            $return['success'] = true;
-            $return['messages'] = 'Cập nhật tài khoản thành công';
+
+        $user = $this->getRepository()->findById($id);
+        if (!$user) {
+            $return['message'] = 'Tài khoản không tồn tại';
+            return $return;
         }
+
+        $keys = ['email', 'password', 'status'];
+        $updateData = DataTable::getChangeData($data, $keys);
+
+        // Hash password if provided
+        if (isset($updateData['password']) && !empty($updateData['password'])) {
+            $updateData['password'] = bcrypt($updateData['password']);
+        } else {
+            unset($updateData['password']); // Don't update password if empty
+        }
+
+        if ($this->getRepository()->update($user, $updateData)) {
+            // Update roles if provided
+            if (isset($data['roles']) && is_array($data['roles'])) {
+                $user->syncRoles($data['roles']);
+            }
+
+            $return['success'] = true;
+            $return['message'] = 'Cập nhật tài khoản thành công';
+            $return['data'] = $this->getRepository()->findById($id);
+        }
+
         return $return;
     }
 
@@ -68,12 +106,31 @@ class UserService extends BaseService
      * Hàm đồng bộ lại vai trò của người dùng
      * @param $id
      * @param array $roles
-     * @return void
+     * @return array
      */
-    public function assignRoles($id, array $roles): void
+    public function assignRoles($id, array $roles): array
     {
+        $return = [
+            'success' => false,
+            'message' => 'Phân quyền thất bại'
+        ];
+
         $user = $this->getRepository()->findById($id);
-        $user->syncRoles($roles);
+        if (!$user) {
+            $return['message'] = 'Tài khoản không tồn tại';
+            return $return;
+        }
+
+        try {
+            $user->syncRoles($roles);
+            $return['success'] = true;
+            $return['message'] = 'Phân quyền thành công';
+            $return['data'] = $this->getRepository()->findById($id);
+        } catch (\Exception $e) {
+            $return['message'] = 'Phân quyền thất bại: ' . $e->getMessage();
+        }
+
+        return $return;
     }
 
     /**
@@ -86,21 +143,25 @@ class UserService extends BaseService
     {
         $return = [
             'success' => false,
-            'messages' => 'Thay đổi trạng thái tài khoản thất bại'
+            'message' => 'Thay đổi trạng thái tài khoản thất bại'
         ];
-        $status = !empty($status) ? 1 : 0;
-        if ($user = $this->getRepository()->findById($id)) {
-            if ((!empty($user->status) && !empty($status))
-                || (empty($user->status) && empty($status))
-            ) {
-                $return['messages'] = 'Trạng thái cần không thay đổi không đúng';
-            } elseif ($this->getRepository()->update($user, ['status' => $status])) {
-                $return['success'] = true;
-                $return['messages'] = 'Thay đổi trạng thái tài khoản thành công';
-            }
-        } else {
-            $return['messages'] = 'Tài khoản không hợp lệ';
+
+        $user = $this->getRepository()->findById($id);
+        if (!$user) {
+            $return['message'] = 'Tài khoản không hợp lệ';
+            return $return;
         }
+
+        // Chuẩn hóa status
+        $newStatus = !empty($status) ? 'active' : 'inactive';
+
+        if ($this->getRepository()->update($user, ['status' => $newStatus])) {
+            $return['success'] = true;
+            $return['message'] = 'Thay đổi trạng thái tài khoản thành công';
+            // Trả về user data với roles
+            $return['data'] = $this->getRepository()->findById($id);
+        }
+
         return $return;
     }
 

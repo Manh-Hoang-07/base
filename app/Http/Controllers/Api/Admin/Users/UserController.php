@@ -135,8 +135,6 @@ class UserController extends BaseController
      */
     public function changeStatus(Request $request, int $id): JsonResponse
     {
-
-
         $request->validate([
             'status' => 'required|integer|in:0,1',
         ]);
@@ -154,6 +152,17 @@ class UserController extends BaseController
     }
 
     /**
+     * Toggle trạng thái tài khoản (API) - alias cho changeStatus
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleStatus(Request $request, int $id): JsonResponse
+    {
+        return $this->changeStatus($request, $id);
+    }
+
+    /**
      * Gán vai trò cho tài khoản (API)
      * @param AssignRequest $request
      * @param int $id
@@ -161,12 +170,16 @@ class UserController extends BaseController
      */
     public function assignRoles(AssignRequest $request, int $id): JsonResponse
     {
-        try {
-            $this->getService()->assignRoles($id, $request->roles ?? []);
-            return $this->successResponse(null, 'Cập nhật vai trò thành công');
-        } catch (\Exception $e) {
-            return $this->errorResponse('Cập nhật vai trò thất bại: ' . $e->getMessage());
+        $result = $this->getService()->assignRoles($id, $request->roles ?? []);
+
+        if ($result['success']) {
+            return $this->successResponse(
+                $result['data'] ?? null,
+                $result['message'] ?? 'Cập nhật vai trò thành công'
+            );
         }
+
+        return $this->errorResponse($result['message'] ?? 'Cập nhật vai trò thất bại');
     }
 
     /**

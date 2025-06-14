@@ -4,6 +4,7 @@ namespace App\Services\Admin\Roles;
 
 use App\Repositories\Admin\Roles\RoleRepository;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Model;
 
 class RoleService extends BaseService
 {
@@ -21,11 +22,11 @@ class RoleService extends BaseService
 
     /**
      * Lấy thông tin vai trò theo ID
-     * @param $id
+     * @param int $id
      * @param array $options
      * @return Model|null
      */
-    public function findById($id, array $options = []): ?Model
+    public function findById(int $id, array $options = []): ?Model
     {
         $options['relations'] = ['permissions'];
         return $this->getRepository()->findById($id, $options);
