@@ -120,8 +120,11 @@
     <div class="row">
       <div class="col-lg-6 mb-4">
         <div class="card shadow">
-          <div class="card-header py-3">
+          <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Users gần đây</h6>
+            <router-link to="/admin/users" class="btn btn-sm btn-outline-primary">
+              <i class="fas fa-external-link-alt me-1"></i>Xem tất cả
+            </router-link>
           </div>
           <div class="card-body">
             <div v-if="loading.users" class="text-center py-3">
@@ -130,7 +133,7 @@
               </div>
             </div>
             <div v-else>
-              <div v-for="user in recentUsers" :key="user.id" class="d-flex align-items-center mb-3">
+              <div v-for="user in usersData.data" :key="user.id" class="d-flex align-items-center mb-3">
                 <div class="avatar me-3">
                   <div class="avatar-initial bg-primary rounded-circle">
                     {{ user.name.charAt(0).toUpperCase() }}
@@ -142,9 +145,23 @@
                 </div>
                 <small class="text-muted">{{ formatDate(user.created_at) }}</small>
               </div>
-              <div v-if="recentUsers.length === 0" class="text-center text-muted py-3">
+              <div v-if="usersData.data.length === 0" class="text-center text-muted py-3">
                 Chưa có users nào
               </div>
+
+              <!-- Pagination for users -->
+              <Pagination
+                v-if="usersData.last_page > 1"
+                :current-page="usersData.current_page"
+                :total-pages="usersData.last_page"
+                :total="usersData.total"
+                :from="usersData.from"
+                :to="usersData.to"
+                :show-info="false"
+                :show-first-last="false"
+                size="sm"
+                @page-change="handleUsersPageChange"
+              />
             </div>
           </div>
         </div>
@@ -152,8 +169,11 @@
 
       <div class="col-lg-6 mb-4">
         <div class="card shadow">
-          <div class="card-header py-3">
+          <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Posts gần đây</h6>
+            <router-link to="/admin/posts" class="btn btn-sm btn-outline-primary">
+              <i class="fas fa-external-link-alt me-1"></i>Xem tất cả
+            </router-link>
           </div>
           <div class="card-body">
             <div v-if="loading.posts" class="text-center py-3">
@@ -162,7 +182,7 @@
               </div>
             </div>
             <div v-else>
-              <div v-for="post in recentPosts" :key="post.id" class="d-flex align-items-center mb-3">
+              <div v-for="post in postsData.data" :key="post.id" class="d-flex align-items-center mb-3">
                 <div class="me-3">
                   <i class="fas fa-newspaper text-success"></i>
                 </div>
@@ -172,9 +192,23 @@
                 </div>
                 <small class="text-muted">{{ formatDate(post.created_at) }}</small>
               </div>
-              <div v-if="recentPosts.length === 0" class="text-center text-muted py-3">
+              <div v-if="postsData.data.length === 0" class="text-center text-muted py-3">
                 Chưa có posts nào
               </div>
+
+              <!-- Pagination for posts -->
+              <Pagination
+                v-if="postsData.last_page > 1"
+                :current-page="postsData.current_page"
+                :total-pages="postsData.last_page"
+                :total="postsData.total"
+                :from="postsData.from"
+                :to="postsData.to"
+                :show-info="false"
+                :show-first-last="false"
+                size="sm"
+                @page-change="handlePostsPageChange"
+              />
             </div>
           </div>
         </div>
@@ -186,9 +220,13 @@
 <script>
 import { ref, computed, onMounted } from 'vue'
 import { useApi } from '../../composables/useApi'
+import Pagination from '../../components/Pagination.vue'
 
 export default {
   name: 'AdminDashboard',
+  components: {
+    Pagination
+  },
   setup() {
     const { fetchList } = useApi()
 
@@ -199,8 +237,23 @@ export default {
       categories: 0
     })
 
-    const recentUsers = ref([])
-    const recentPosts = ref([])
+    const usersData = ref({
+      data: [],
+      current_page: 1,
+      last_page: 1,
+      total: 0,
+      from: 0,
+      to: 0
+    })
+
+    const postsData = ref({
+      data: [],
+      current_page: 1,
+      last_page: 1,
+      total: 0,
+      from: 0,
+      to: 0
+    })
 
     const loading = ref({
       stats: false,
@@ -266,13 +319,23 @@ export default {
       }
     }
 
-    const fetchRecentUsers = async () => {
+    const fetchRecentUsers = async (page = 1) => {
       loading.value.users = true
       try {
         const apiUrl = window.Laravel?.routes?.api?.admin?.users?.list || '/api/v1/admin/users/list'
-        const response = await fetchList(apiUrl.replace(window.Laravel.apiUrl, ''), { per_page: 5 })
-        if (response && response.data) {
-          recentUsers.value = response.data
+        const response = await fetchList(apiUrl.replace(window.Laravel.apiUrl, ''), {
+          per_page: 5,
+          page: page
+        })
+        if (response) {
+          usersData.value = {
+            data: response.data || [],
+            current_page: response.current_page || 1,
+            last_page: response.last_page || 1,
+            total: response.total || 0,
+            from: response.from || 0,
+            to: response.to || 0
+          }
         }
       } catch (err) {
         console.error('Error fetching recent users:', err)
@@ -281,19 +344,37 @@ export default {
       }
     }
 
-    const fetchRecentPosts = async () => {
+    const fetchRecentPosts = async (page = 1) => {
       loading.value.posts = true
       try {
         const apiUrl = window.Laravel?.routes?.api?.admin?.posts?.list || '/api/v1/admin/posts/list'
-        const response = await fetchList(apiUrl.replace(window.Laravel.apiUrl, ''), { per_page: 5 })
-        if (response && response.data) {
-          recentPosts.value = response.data
+        const response = await fetchList(apiUrl.replace(window.Laravel.apiUrl, ''), {
+          per_page: 5,
+          page: page
+        })
+        if (response) {
+          postsData.value = {
+            data: response.data || [],
+            current_page: response.current_page || 1,
+            last_page: response.last_page || 1,
+            total: response.total || 0,
+            from: response.from || 0,
+            to: response.to || 0
+          }
         }
       } catch (err) {
         console.error('Error fetching recent posts:', err)
       } finally {
         loading.value.posts = false
       }
+    }
+
+    const handleUsersPageChange = (page) => {
+      fetchRecentUsers(page)
+    }
+
+    const handlePostsPageChange = (page) => {
+      fetchRecentPosts(page)
     }
 
     onMounted(() => {
@@ -304,13 +385,15 @@ export default {
 
     return {
       stats,
-      recentUsers,
-      recentPosts,
+      usersData,
+      postsData,
       loading,
       currentDate,
       currentTime,
       formatDate,
-      truncateText
+      truncateText,
+      handleUsersPageChange,
+      handlePostsPageChange
     }
   }
 }

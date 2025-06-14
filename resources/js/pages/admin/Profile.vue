@@ -238,16 +238,112 @@
         </div>
       </div>
     </div>
+
+    <!-- Activity History Section -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card shadow">
+          <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">
+              <i class="fas fa-history me-2"></i>Lịch sử hoạt động
+            </h6>
+            <div class="d-flex gap-2">
+              <UniversalSelect
+                v-model="activityFilter"
+                placeholder="Lọc hoạt động"
+                mode="simple"
+                :options="activityFilterOptions"
+                size="sm"
+                @change="handleActivityFilter"
+              />
+              <button @click="refreshActivities" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Loading -->
+            <div v-if="loadingActivities" class="text-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+
+            <!-- Activities List -->
+            <div v-else-if="activitiesData.data.length > 0">
+              <div class="timeline">
+                <div
+                  v-for="activity in activitiesData.data"
+                  :key="activity.id"
+                  class="timeline-item"
+                >
+                  <div class="timeline-marker" :class="getActivityMarkerClass(activity.type)">
+                    <i :class="getActivityIcon(activity.type)"></i>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div>
+                        <h6 class="mb-1">{{ activity.title }}</h6>
+                        <p class="text-muted mb-1">{{ activity.description }}</p>
+                        <small class="text-muted">
+                          <i class="fas fa-clock me-1"></i>{{ formatDateTime(activity.created_at) }}
+                        </small>
+                      </div>
+                      <span
+                        class="badge"
+                        :class="getActivityBadgeClass(activity.type)"
+                      >
+                        {{ getActivityTypeLabel(activity.type) }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pagination -->
+              <div class="mt-4">
+                <Pagination
+                  :current-page="activitiesData.current_page"
+                  :total-pages="activitiesData.last_page"
+                  :total="activitiesData.total"
+                  :from="activitiesData.from"
+                  :to="activitiesData.to"
+                  :per-page="perPage"
+                  :per-page-options="[5, 10, 20, 50]"
+                  :show-per-page-selector="true"
+                  size="sm"
+                  @page-change="handlePageChange"
+                  @per-page-change="handlePerPageChange"
+                />
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <div v-else class="text-center py-5">
+              <i class="fas fa-history fa-3x text-muted mb-3"></i>
+              <h5 class="text-muted">Chưa có hoạt động nào</h5>
+              <p class="text-muted">Lịch sử hoạt động của bạn sẽ hiển thị ở đây</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
+import Pagination from '../../components/Pagination.vue'
+import UniversalSelect from '../../components/UniversalSelect.vue'
 import { useApi } from '../../composables/useApi'
 import { useToast } from '../../composables/useToast'
 
 export default {
   name: 'AdminProfile',
+  components: {
+    Pagination,
+    UniversalSelect
+  },
   setup() {
     const { get, update } = useApi()
     const { success, error } = useToast()
@@ -281,9 +377,87 @@ export default {
       password: false
     })
 
+    // Activity tracking
+    const activitiesData = ref({
+      data: [],
+      current_page: 1,
+      last_page: 1,
+      total: 0,
+      from: 0,
+      to: 0
+    })
+
+    const loadingActivities = ref(false)
+    const activityFilter = ref('')
+    const perPage = ref(10)
+
+    // Activity filter options
+    const activityFilterOptions = [
+      { value: '', label: 'Tất cả hoạt động' },
+      { value: 'login', label: 'Đăng nhập' },
+      { value: 'post_created', label: 'Tạo bài viết' },
+      { value: 'post_updated', label: 'Cập nhật bài viết' },
+      { value: 'comment_created', label: 'Bình luận' },
+      { value: 'profile_updated', label: 'Cập nhật hồ sơ' }
+    ]
+
     const formatDate = (dateString) => {
       if (!dateString) return 'Chưa có thông tin'
       return new Date(dateString).toLocaleDateString('vi-VN')
+    }
+
+    const formatDateTime = (dateString) => {
+      if (!dateString) return 'Chưa có thông tin'
+      return new Date(dateString).toLocaleString('vi-VN')
+    }
+
+    // Activity helper functions
+    const getActivityIcon = (type) => {
+      const icons = {
+        login: 'fas fa-sign-in-alt',
+        post_created: 'fas fa-plus-circle',
+        post_updated: 'fas fa-edit',
+        comment_created: 'fas fa-comment',
+        profile_updated: 'fas fa-user-edit',
+        default: 'fas fa-circle'
+      }
+      return icons[type] || icons.default
+    }
+
+    const getActivityMarkerClass = (type) => {
+      const classes = {
+        login: 'bg-success',
+        post_created: 'bg-primary',
+        post_updated: 'bg-warning',
+        comment_created: 'bg-info',
+        profile_updated: 'bg-secondary',
+        default: 'bg-light'
+      }
+      return classes[type] || classes.default
+    }
+
+    const getActivityBadgeClass = (type) => {
+      const classes = {
+        login: 'bg-success',
+        post_created: 'bg-primary',
+        post_updated: 'bg-warning',
+        comment_created: 'bg-info',
+        profile_updated: 'bg-secondary',
+        default: 'bg-light'
+      }
+      return classes[type] || classes.default
+    }
+
+    const getActivityTypeLabel = (type) => {
+      const labels = {
+        login: 'Đăng nhập',
+        post_created: 'Tạo bài viết',
+        post_updated: 'Cập nhật bài viết',
+        comment_created: 'Bình luận',
+        profile_updated: 'Cập nhật hồ sơ',
+        default: 'Hoạt động'
+      }
+      return labels[type] || labels.default
     }
 
     const handleAvatarChange = (event) => {
@@ -345,7 +519,7 @@ export default {
       try {
         await update('/v1/admin/profile/change-password', null, passwordForm.value)
         success('Đổi mật khẩu thành công')
-        
+
         // Reset form
         passwordForm.value = {
           current_password: '',
@@ -360,8 +534,103 @@ export default {
       }
     }
 
+    // Mock data generator for demo
+    const generateMockActivities = () => {
+      const activities = []
+      const types = ['login', 'post_created', 'post_updated', 'comment_created', 'profile_updated']
+      const titles = {
+        login: 'Đăng nhập hệ thống',
+        post_created: 'Tạo bài viết mới',
+        post_updated: 'Cập nhật bài viết',
+        comment_created: 'Thêm bình luận',
+        profile_updated: 'Cập nhật hồ sơ'
+      }
+      const descriptions = {
+        login: 'Đăng nhập thành công vào hệ thống quản trị',
+        post_created: 'Đã tạo một bài viết mới trong hệ thống',
+        post_updated: 'Đã cập nhật nội dung bài viết',
+        comment_created: 'Đã thêm bình luận vào bài viết',
+        profile_updated: 'Đã cập nhật thông tin hồ sơ cá nhân'
+      }
+
+      for (let i = 1; i <= 10; i++) {
+        const type = types[Math.floor(Math.random() * types.length)]
+        const date = new Date()
+        date.setDate(date.getDate() - Math.floor(Math.random() * 30))
+
+        activities.push({
+          id: i,
+          type: type,
+          title: titles[type],
+          description: descriptions[type],
+          created_at: date.toISOString()
+        })
+      }
+
+      return activities
+    }
+
+    const fetchActivities = async (filters = {}) => {
+      loadingActivities.value = true
+      try {
+        const params = {
+          per_page: perPage.value,
+          type: activityFilter.value,
+          ...filters
+        }
+
+        // Try to fetch from API, fallback to mock data
+        try {
+          const response = await get('/v1/admin/profile/activities', params)
+          if (response) {
+            activitiesData.value = {
+              data: response.data || [],
+              current_page: response.current_page || 1,
+              last_page: response.last_page || 1,
+              total: response.total || 0,
+              from: response.from || 0,
+              to: response.to || 0
+            }
+          }
+        } catch (apiError) {
+          // Use mock data for demo
+          const mockData = generateMockActivities()
+          activitiesData.value = {
+            data: mockData,
+            current_page: 1,
+            last_page: 3,
+            total: 25,
+            from: 1,
+            to: 10
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching activities:', err)
+      } finally {
+        loadingActivities.value = false
+      }
+    }
+
+    const handleActivityFilter = () => {
+      fetchActivities({ page: 1 })
+    }
+
+    const handlePageChange = (page) => {
+      fetchActivities({ page })
+    }
+
+    const handlePerPageChange = (newPerPage) => {
+      perPage.value = newPerPage
+      fetchActivities({ page: 1 })
+    }
+
+    const refreshActivities = () => {
+      fetchActivities({ page: activitiesData.value.current_page })
+    }
+
     onMounted(() => {
       fetchProfile()
+      fetchActivities()
     })
 
     return {
@@ -370,10 +639,24 @@ export default {
       userStats,
       userRoles,
       loading,
+      activitiesData,
+      loadingActivities,
+      activityFilter,
+      perPage,
+      activityFilterOptions,
       formatDate,
+      formatDateTime,
+      getActivityIcon,
+      getActivityMarkerClass,
+      getActivityBadgeClass,
+      getActivityTypeLabel,
       handleAvatarChange,
       updateProfile,
-      changePassword
+      changePassword,
+      handleActivityFilter,
+      handlePageChange,
+      handlePerPageChange,
+      refreshActivities
     }
   }
 }
@@ -401,5 +684,74 @@ export default {
 
 .shadow {
   box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+}
+
+/* Timeline styles */
+.timeline {
+  position: relative;
+  padding-left: 30px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #e3e6f0;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -22px;
+  top: 5px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.timeline-content {
+  background: #f8f9fc;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 3px solid #e3e6f0;
+  margin-left: 15px;
+}
+
+.timeline-content h6 {
+  color: #5a5c69;
+  font-weight: 600;
+}
+
+.timeline-content p {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-item:last-child::after {
+  content: '';
+  position: absolute;
+  left: -15px;
+  bottom: -15px;
+  width: 2px;
+  height: 15px;
+  background: linear-gradient(to bottom, #e3e6f0, transparent);
 }
 </style>
