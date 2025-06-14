@@ -73,6 +73,7 @@ import DataTable from '../../../components/DataTable.vue'
 import FormModal from '../../../components/FormModal.vue'
 import { useApi } from '../../../composables/useApi'
 import { useToast } from '../../../composables/useToast'
+import { getCategoryFields } from '../../../composables/useFormFields'
 
 export default {
   name: 'AdminCategoriesIndex',
@@ -115,44 +116,7 @@ export default {
     ]
 
     // Form fields for modal
-    const categoryFields = computed(() => [
-      {
-        name: 'name',
-        label: 'Tên Danh mục',
-        type: 'text',
-        required: true,
-        placeholder: 'Nhập tên danh mục'
-      },
-      {
-        name: 'slug',
-        label: 'Slug',
-        type: 'text',
-        placeholder: 'Nhập slug (tự động tạo nếu để trống)'
-      },
-      {
-        name: 'description',
-        label: 'Mô tả',
-        type: 'textarea',
-        rows: 3,
-        placeholder: 'Nhập mô tả danh mục'
-      },
-      {
-        name: 'status',
-        label: 'Trạng thái',
-        type: 'select',
-        options: [
-          { value: 0, label: 'Không hoạt động' },
-          { value: 1, label: 'Hoạt động' }
-        ],
-        default: 1
-      },
-      {
-        name: 'image',
-        label: 'Hình ảnh',
-        type: 'file',
-        accept: 'image/*'
-      }
-    ])
+    const categoryFields = computed(() => getCategoryFields())
 
     const fetchCategories = async (filters = {}) => {
       loading.value = true

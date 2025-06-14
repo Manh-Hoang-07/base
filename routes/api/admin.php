@@ -239,6 +239,31 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
             }
         })->name('roles');
 
+        Route::post('/assign-roles/{id}', function ($id) {
+            try {
+                $user = App\Models\User::findOrFail($id);
+
+                $data = request()->validate([
+                    'roles' => 'required|array',
+                    'roles.*' => 'exists:roles,id'
+                ]);
+
+                // Sync roles
+                $user->roles()->sync($data['roles']);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Phân quyền thành công',
+                    'data' => $user->load('roles')
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error assigning roles: ' . $e->getMessage()
+                ]);
+            }
+        })->name('assign-roles');
+
         Route::get('/autocomplete', function () {
             try {
                 $search = request('search', '');
@@ -266,15 +291,45 @@ Route::prefix('v1/admin')->name('api.admin.public.')->group(function () {
         Route::put('/update/{user_id}', [ProfileController::class, 'update'])->name('update');
     });
 
+    // Status API
+    Route::get('/status/options', function () {
+        return response()->json([
+            'success' => true,
+            'data' => [
+                ['value' => 1, 'label' => 'Hoạt động'],
+                ['value' => 0, 'label' => 'Không hoạt động']
+            ]
+        ]);
+    })->name('status.options');
+
     // Roles API
     Route::prefix('roles')->name('roles.')->group(function () {
         Route::get('/list', function () {
             try {
-                $roles = Spatie\Permission\Models\Role::paginate(request('per_page', 10));
+                $search = request('search', '');
+                $limit = request('limit', 10);
+                $page = request('page', 1);
+
+                $query = Spatie\Permission\Models\Role::query();
+
+                if (!empty($search)) {
+                    $query->where('name', 'like', "%{$search}%")
+                          ->orWhere('title', 'like', "%{$search}%");
+                }
+
+                $roles = $query->paginate($limit, ['*'], 'page', $page);
+
+                // Format data for Select2
+                $formattedData = collect($roles->items())->map(function($role) {
+                    return [
+                        'id' => $role->id,
+                        'name' => !empty($role->title) ? $role->title : ucfirst($role->name)
+                    ];
+                })->toArray();
 
                 return response()->json([
                     'success' => true,
-                    'data' => $roles->items(),
+                    'data' => $formattedData,
                     'current_page' => $roles->currentPage(),
                     'last_page' => $roles->lastPage(),
                     'total' => $roles->total(),

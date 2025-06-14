@@ -80,6 +80,42 @@
       icon="fas fa-user"
       @submit="handleSubmit"
     />
+
+    <!-- Assign Roles Modal -->
+    <div class="modal fade" id="assignRolesModal" tabindex="-1" aria-labelledby="assignRolesModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="assignRolesModalLabel">
+              <i class="fas fa-user-shield me-2"></i>
+              Phân quyền cho: {{ assigningRolesUser?.name }}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <Select2
+                label="Chọn vai trò:"
+                placeholder="Tìm kiếm vai trò..."
+                :multiple="true"
+                v-model="selectedRoles"
+                api-url="/v1/admin/roles/list"
+                search-param="search"
+                :limit="20"
+                help="Có thể chọn nhiều vai trò. Gõ để tìm kiếm hoặc cuộn để tải thêm."
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <button type="button" class="btn btn-primary" @click="handleAssignRoles">
+              <i class="fas fa-save me-1"></i>
+              Lưu phân quyền
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -87,15 +123,19 @@
 import { ref, computed, onMounted } from 'vue'
 import DataTable from '../../../components/DataTable.vue'
 import FormModal from '../../../components/FormModal.vue'
+import Select2 from '../../../components/Select2.vue'
 import { useApi } from '../../../composables/useApi'
 import { useToast } from '../../../composables/useToast'
+import { normalizeStatus } from '../../../utils/statusHelper'
+import { getUserCreateFields, getUserEditFields } from '../../../composables/useFormFields'
 
 
 export default {
   name: 'AdminUsersIndex',
   components: {
     DataTable,
-    FormModal
+    FormModal,
+    Select2
   },
   setup() {
     const { fetchList, create, update, remove, toggleStatus: apiToggleStatus, bulkDelete } = useApi()
@@ -106,6 +146,8 @@ export default {
     const loading = ref(false)
     const editingUser = ref(null)
     const availableRoles = ref([])
+    const assigningRolesUser = ref(null)
+    const selectedRoles = ref([])
 
     // Table configuration
     const columns = [
@@ -119,6 +161,7 @@ export default {
 
     const actions = [
       { name: 'edit', icon: 'fas fa-edit', class: 'btn btn-outline-primary', title: 'Chỉnh sửa' },
+      { name: 'assign-roles', icon: 'fas fa-user-shield', class: 'btn btn-outline-info', title: 'Phân quyền' },
       { name: 'toggle-status', icon: 'fas fa-ban', class: 'btn btn-outline-warning', title: 'Thay đổi trạng thái' },
       { name: 'delete', icon: 'fas fa-trash', class: 'btn btn-outline-danger', title: 'Xóa' }
     ]
@@ -133,29 +176,9 @@ export default {
     ]
 
     // Form fields for modal
-    const userFields = computed(() => [
-      { name: 'name', label: 'Họ và tên', type: 'text', required: true, placeholder: 'Nhập họ và tên' },
-      { name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'Nhập email' },
-      { name: 'password', label: 'Mật khẩu', type: 'password', required: true, placeholder: 'Nhập mật khẩu' },
-      { name: 'password_confirmation', label: 'Xác nhận mật khẩu', type: 'password', required: true, placeholder: 'Nhập lại mật khẩu' },
-      {
-        name: 'status',
-        label: 'Trạng thái',
-        type: 'select',
-        options: [
-          { value: 1, label: 'Hoạt động' },
-          { value: 0, label: 'Không hoạt động' }
-        ]
-      },
-      {
-        name: 'roles',
-        label: 'Vai trò',
-        type: 'select',
-        multiple: true,
-        options: availableRoles.value,
-        help: 'Giữ Ctrl để chọn nhiều vai trò'
-      }
-    ])
+    const userFields = computed(() => {
+      return editingUser.value ? getUserEditFields() : getUserCreateFields()
+    })
 
     const fetchUsers = async (filters = {}) => {
       loading.value = true
@@ -237,11 +260,21 @@ export default {
 
     const showEditModal = async (user) => {
       editingUser.value = {
-        ...user,
-        roles: user.roles ? user.roles.map(role => role.id) : []
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        status: normalizeStatus(user.status)
       }
       const { Modal } = await import('bootstrap')
       const modal = new Modal(document.getElementById('userModal'))
+      modal.show()
+    }
+
+    const showAssignRolesModal = async (user) => {
+      assigningRolesUser.value = user
+      selectedRoles.value = user.roles ? user.roles.map(role => role.id) : []
+      const { Modal } = await import('bootstrap')
+      const modal = new Modal(document.getElementById('assignRolesModal'))
       modal.show()
     }
 
@@ -262,6 +295,9 @@ export default {
       switch (action) {
         case 'edit':
           showEditModal(user)
+          break
+        case 'assign-roles':
+          showAssignRolesModal(user)
           break
         case 'toggle-status':
           if (confirm(`Bạn có chắc chắn muốn thay đổi trạng thái của user "${user.name}"?`)) {
@@ -328,6 +364,35 @@ export default {
       }
     }
 
+    const handleAssignRoles = async () => {
+      try {
+        const { Modal } = await import('bootstrap')
+        const modal = Modal.getInstance(document.getElementById('assignRolesModal'))
+
+        // Call API to assign roles using POST method
+        await create(`/v1/admin/users/assign-roles/${assigningRolesUser.value.id}`, {
+          roles: selectedRoles.value
+        })
+
+        // Update user roles in local data
+        const userIndex = users.value.data.findIndex(u => u.id === assigningRolesUser.value.id)
+        if (userIndex > -1) {
+          const updatedRoles = availableRoles.value.filter(role => selectedRoles.value.includes(role.value))
+          users.value.data[userIndex].roles = updatedRoles.map(role => ({
+            id: role.value,
+            title: role.label,
+            name: role.label.toLowerCase()
+          }))
+        }
+
+        modal.hide()
+        success('Phân quyền thành công')
+      } catch (err) {
+        console.error('Error assigning roles:', err)
+        error('Có lỗi xảy ra khi phân quyền')
+      }
+    }
+
     onMounted(() => {
       fetchUsers()
       fetchRoles()
@@ -337,6 +402,9 @@ export default {
       users,
       loading,
       editingUser,
+      assigningRolesUser,
+      selectedRoles,
+      availableRoles,
       columns,
       actions,
       bulkActions,
@@ -348,7 +416,8 @@ export default {
       handlePageChange,
       handleAction,
       handleBulkAction,
-      handleSubmit
+      handleSubmit,
+      handleAssignRoles
     }
   }
 }

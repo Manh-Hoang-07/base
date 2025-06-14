@@ -32,8 +32,7 @@
     <meta property="twitter:description" content="Laravel Vue.js SPA Application">
     <meta property="twitter:image" content="{{ asset('images/og-image.jpg') }}">
 
-    <!-- Vite CSS -->
-    @vite(['resources/css/app.css'])
+    <!-- CSS will be loaded by Vite through JS -->
 
     <!-- Additional CSS for loading state -->
     <style>

@@ -42,7 +42,7 @@ abstract class BaseRepository
     public function getList(array $filters = [], array $options = []): LengthAwarePaginator
     {
         $query = $this->applyQueryDefaults($filters, $options);
-        $perPage = $options['perPage'] ?? 10;
+        $perPage = $options['perPage'] ?? $options['per_page'] ?? 10;
         // Phân trang
         return $query->paginate($perPage);
     }
@@ -77,6 +77,12 @@ abstract class BaseRepository
             if (!empty($value)) {
                 if (is_array($value)) {
                     $query->whereIn($column, $value);
+                } elseif ($column === 'search') {
+                    // Tối ưu search cho posts - tìm trong name và description
+                    $query->where(function($q) use ($value) {
+                        $q->where('name', 'like', '%' . $value . '%')
+                          ->orWhere('description', 'like', '%' . $value . '%');
+                    });
                 } elseif (is_string($value)) {
                     $query->where($column, 'like', '%' . $value . '%');
                 } else {

@@ -4,7 +4,6 @@ import { useAuthStore } from '../stores/auth'
 // Import layouts
 import HomeLayout from '../layouts/HomeLayout.vue'
 import AdminLayout from '../layouts/AdminLayout.vue'
-import TestLayout from '../layouts/TestLayout.vue'
 import AuthLayout from '../layouts/AuthLayout.vue'
 
 // Import pages
@@ -26,7 +25,7 @@ import AdminRoleEdit from '../pages/admin/roles/Edit.vue'
 import AdminPosts from '../pages/admin/posts/Index.vue'
 import AdminPostCreate from '../pages/admin/posts/Create.vue'
 import AdminPostEdit from '../pages/admin/posts/Edit.vue'
-import TestComponent from '../pages/admin/TestComponent.vue'
+
 
 const routes = [
   // Home routes
@@ -152,11 +151,7 @@ const routes = [
         name: 'admin.settings',
         component: () => import('../pages/admin/Settings.vue')
       },
-      {
-        path: 'test',
-        name: 'admin.test',
-        component: TestComponent
-      }
+
     ]
   }
 ]

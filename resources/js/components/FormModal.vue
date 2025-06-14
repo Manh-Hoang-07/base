@@ -17,81 +17,119 @@
             <slot name="form" :form="form" :errors="errors" :loading="loading">
               <!-- Default form content -->
               <div v-for="field in fields" :key="field.name" class="mb-3">
-                <label :for="field.name" class="form-label">
-                  {{ field.label }}
-                  <span v-if="field.required" class="text-danger">*</span>
-                </label>
-
-                <!-- Text Input -->
-                <input
-                  v-if="field.type === 'text' || field.type === 'email' || field.type === 'password'"
-                  :id="field.name"
-                  v-model="form[field.name]"
-                  :type="field.type"
-                  class="form-control"
-                  :class="{ 'is-invalid': errors[field.name] }"
-                  :placeholder="field.placeholder"
-                  :required="field.required"
-                >
-
-                <!-- Textarea -->
-                <textarea
-                  v-else-if="field.type === 'textarea'"
-                  :id="field.name"
-                  v-model="form[field.name]"
-                  class="form-control"
-                  :class="{ 'is-invalid': errors[field.name] }"
-                  :placeholder="field.placeholder"
-                  :rows="field.rows || 3"
-                  :required="field.required"
-                ></textarea>
-
-                <!-- Select -->
-                <VueSelect
-                  v-else-if="field.type === 'select'"
-                  :id="field.name"
-                  v-model="form[field.name]"
-                  :options="field.options"
-                  :multiple="field.multiple"
-                  :placeholder="field.placeholder || 'Chọn...'"
-                  :error-message="errors[field.name]"
-                  :searchable="field.searchable !== false"
-                  :clearable="field.clearable !== false"
-                />
-
-                <!-- Checkbox -->
-                <div v-else-if="field.type === 'checkbox'" class="form-check">
-                  <input
+                <!-- Status Select -->
+                <template v-if="field.type === 'status'">
+                  <label :for="field.name" class="form-label">
+                    {{ field.label }}
+                    <span v-if="field.required" class="text-danger">*</span>
+                  </label>
+                  <StatusSelect
                     :id="field.name"
                     v-model="form[field.name]"
-                    type="checkbox"
-                    class="form-check-input"
-                    :class="{ 'is-invalid': errors[field.name] }"
-                  >
-                  <label :for="field.name" class="form-check-label">
-                    {{ field.checkboxLabel || field.label }}
+                    :placeholder="field.placeholder || 'Chọn trạng thái...'"
+                    :required="field.required"
+                    :error-message="errors[field.name]"
+                  />
+                  <!-- Help text -->
+                  <div v-if="field.help" class="form-text">{{ field.help }}</div>
+                  <!-- Error message -->
+                  <div v-if="errors[field.name]" class="invalid-feedback">
+                    {{ errors[field.name] }}
+                  </div>
+                </template>
+
+                <!-- Other field types -->
+                <template v-else>
+                  <label :for="field.name" class="form-label">
+                    {{ field.label }}
+                    <span v-if="field.required" class="text-danger">*</span>
                   </label>
-                </div>
 
-                <!-- File Upload -->
-                <input
-                  v-else-if="field.type === 'file'"
-                  :id="field.name"
-                  @change="handleFileChange($event, field.name)"
-                  type="file"
-                  class="form-control"
-                  :class="{ 'is-invalid': errors[field.name] }"
-                  :accept="field.accept"
-                  :multiple="field.multiple"
-                >
+                  <!-- Text Input -->
+                  <input
+                    v-if="field.type === 'text' || field.type === 'email' || field.type === 'password'"
+                    :id="field.name"
+                    v-model="form[field.name]"
+                    :type="field.type"
+                    class="form-control"
+                    :class="{ 'is-invalid': errors[field.name] }"
+                    :placeholder="field.placeholder"
+                    :required="field.required"
+                  >
 
-                <!-- Help text -->
-                <div v-if="field.help" class="form-text">{{ field.help }}</div>
+                  <!-- Textarea -->
+                  <textarea
+                    v-else-if="field.type === 'textarea'"
+                    :id="field.name"
+                    v-model="form[field.name]"
+                    class="form-control"
+                    :class="{ 'is-invalid': errors[field.name] }"
+                    :placeholder="field.placeholder"
+                    :rows="field.rows || 3"
+                    :required="field.required"
+                  ></textarea>
 
-                <!-- Error message -->
-                <div v-if="errors[field.name]" class="invalid-feedback">
-                  {{ errors[field.name] }}
-                </div>
+                  <!-- Base Select -->
+                  <BaseSelect
+                    v-else-if="field.type === 'base-select'"
+                    :id="field.name"
+                    v-model="form[field.name]"
+                    :options="field.options"
+                    :placeholder="field.placeholder || 'Chọn...'"
+                    :required="field.required"
+                    :disabled="field.disabled"
+                    :error-message="errors[field.name]"
+                    :size="field.size"
+                    :variant="field.variant"
+                  />
+
+                  <!-- Regular Select -->
+                  <VueSelect
+                    v-else-if="field.type === 'select'"
+                    :id="field.name"
+                    v-model="form[field.name]"
+                    :options="field.options"
+                    :multiple="field.multiple"
+                    :placeholder="field.placeholder || 'Chọn...'"
+                    :error-message="errors[field.name]"
+                    :searchable="field.searchable !== false"
+                    :clearable="field.clearable !== false"
+                  />
+
+                  <!-- Checkbox -->
+                  <div v-else-if="field.type === 'checkbox'" class="form-check">
+                    <input
+                      :id="field.name"
+                      v-model="form[field.name]"
+                      type="checkbox"
+                      class="form-check-input"
+                      :class="{ 'is-invalid': errors[field.name] }"
+                    >
+                    <label :for="field.name" class="form-check-label">
+                      {{ field.checkboxLabel || field.label }}
+                    </label>
+                  </div>
+
+                  <!-- File Upload -->
+                  <input
+                    v-else-if="field.type === 'file'"
+                    :id="field.name"
+                    @change="handleFileChange($event, field.name)"
+                    type="file"
+                    class="form-control"
+                    :class="{ 'is-invalid': errors[field.name] }"
+                    :accept="field.accept"
+                    :multiple="field.multiple"
+                  >
+
+                  <!-- Help text -->
+                  <div v-if="field.help" class="form-text">{{ field.help }}</div>
+
+                  <!-- Error message -->
+                  <div v-if="errors[field.name]" class="invalid-feedback">
+                    {{ errors[field.name] }}
+                  </div>
+                </template>
               </div>
             </slot>
 
@@ -135,11 +173,15 @@
 <script>
 import { ref, reactive, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import VueSelect from './VueSelect.vue'
+import StatusSelect from './StatusSelect.vue'
+import BaseSelect from './BaseSelect.vue'
 
 export default {
   name: 'FormModal',
   components: {
-    VueSelect
+    VueSelect,
+    StatusSelect,
+    BaseSelect
   },
   props: {
     modalId: {

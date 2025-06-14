@@ -8,8 +8,6 @@ export default defineConfig({
             input: [
                 // Vue SPA entry point
                 'resources/js/app-vue.js',
-                // CSS files
-                'resources/css/app.css',
             ],
             refresh: true,
         }),
@@ -25,18 +23,17 @@ export default defineConfig({
     build: {
         rollupOptions: {
             output: {
-                manualChunks: undefined, // Disable manual chunks for faster builds
+                manualChunks: {
+                    vendor: ['vue', 'vue-router'],
+                    bootstrap: ['bootstrap']
+                }
             }
         },
         cssCodeSplit: true, // Enable CSS code splitting
         sourcemap: false,
-        minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
-        terserOptions: {
-            compress: {
-                drop_console: true,
-                drop_debugger: true,
-            },
-        },
+        minify: 'esbuild', // Use esbuild for faster minification
+        target: 'es2015',
+        chunkSizeWarningLimit: 1000,
     },
     server: {
         hmr: {
@@ -46,7 +43,10 @@ export default defineConfig({
         port: 5173,
     },
     optimizeDeps: {
-        include: ['bootstrap'],
+        include: ['vue', 'vue-router', 'bootstrap'],
         exclude: ['@fortawesome/fontawesome-free']
+    },
+    esbuild: {
+        drop: ['console', 'debugger'],
     }
 });

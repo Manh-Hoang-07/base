@@ -2,28 +2,18 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import router from './router'
 import App from './App.vue'
+import { useAuthStore } from './stores/auth'
 
 // Import bootstrap and axios configuration
 import './bootstrap'
 
-// Import CSS
+// Import CSS (app.css already includes Bootstrap and FontAwesome)
 import '../css/app.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import '@fortawesome/fontawesome-free/css/all.min.css'
 
 // Import Bootstrap JS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 
-
-// Error handling
-window.addEventListener('error', (e) => {
-  console.error('Global error:', e.error)
-})
-
-window.addEventListener('unhandledrejection', (e) => {
-  console.error('Unhandled promise rejection:', e.reason)
-})
 
 // Error handling
 window.addEventListener('error', (e) => {
@@ -68,10 +58,8 @@ function initVueApp() {
     // Initialize auth store after mount
     setTimeout(() => {
       try {
-        import('./stores/auth').then(({ useAuthStore }) => {
-          const authStore = useAuthStore()
-          authStore.initializeAuth()
-        })
+        const authStore = useAuthStore()
+        authStore.initializeAuth()
       } catch (error) {
         console.error('Auth store initialization error:', error)
       }

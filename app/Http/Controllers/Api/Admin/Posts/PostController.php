@@ -37,6 +37,9 @@ class PostController extends BaseController
         $perPage = $request->get('per_page', 10);
         $options['per_page'] = min($perPage, 100);
 
+        // Chỉ select các cột cần thiết để tối ưu hiệu suất
+        $options['columns'] = ['id', 'name', 'description', 'image', 'status', 'created_at', 'updated_at'];
+
         if ($request->has('search') && !empty($request->get('search'))) {
             $filters['search'] = $request->get('search');
         }
