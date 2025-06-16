@@ -1,4 +1,6 @@
-/* Bootstrap CSS imported via JS bundle */
+/* Import Bootstrap CSS */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
 /* FontAwesome loaded via CDN */
 
 @tailwind base;

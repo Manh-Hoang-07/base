@@ -13,7 +13,7 @@
     <!-- Preload critical resources -->
     <link rel="preload" href="{{ asset('fonts/inter.woff2') }}" as="font" type="font/woff2" crossorigin>
     @if(app()->environment('production'))
-        <link rel="preload" href="{{ asset('build/assets/style-CE92bu2X.css') }}" as="style">
+        <link rel="preload" href="{{ asset('build/assets/style-DOonG-rZ.css') }}" as="style">
         <link rel="preload" href="{{ asset('build/assets/vendor-CZLBW6tN.js') }}" as="script">
         <link rel="preload" href="{{ asset('build/assets/app-vue-DsSBuBOP.js') }}" as="script">
     @endif
@@ -171,7 +171,7 @@
     @if(app()->environment('local'))
         @vite(['resources/js/app-vue.js'])
     @else
-        <link rel="stylesheet" href="{{ asset('build/assets/style-CE92bu2X.css') }}">
+        <link rel="stylesheet" href="{{ asset('build/assets/style-DOonG-rZ.css') }}">
         <script type="module" src="{{ asset('build/assets/vendor-CZLBW6tN.js') }}"></script>
         <script type="module" src="{{ asset('build/assets/bootstrap-B07eJUmN.js') }}"></script>
         <script type="module" src="{{ asset('build/assets/app-vue-DsSBuBOP.js') }}"></script>

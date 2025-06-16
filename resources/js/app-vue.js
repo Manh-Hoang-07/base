@@ -10,8 +10,8 @@ import './bootstrap'
 // Import Bootstrap JS
 import 'bootstrap'
 
-// Import SCSS (includes Bootstrap CSS and custom styles)
-import '../scss/app.scss'
+// Import CSS (includes Bootstrap CSS and custom styles)
+import '../css/app.css'
 
 
 
