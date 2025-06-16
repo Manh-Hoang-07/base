@@ -1,4 +1,5 @@
-/* Bootstrap and FontAwesome loaded via CDN */
+/* Bootstrap CSS imported via JS bundle */
+/* FontAwesome loaded via CDN */
 
 @tailwind base;
 @tailwind components;

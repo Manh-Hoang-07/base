@@ -7,10 +7,11 @@ import { useAuthStore } from './stores/auth'
 // Import axios configuration
 import './bootstrap'
 
-// Import CSS (app.css includes custom styles, Bootstrap loaded via CDN)
-import '../css/app.css'
+// Import Bootstrap JS
+import 'bootstrap'
 
-// Bootstrap JS loaded via CDN
+// Import SCSS (includes Bootstrap CSS and custom styles)
+import '../scss/app.scss'
 
 
 
