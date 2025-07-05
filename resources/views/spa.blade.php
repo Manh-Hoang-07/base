@@ -13,7 +13,7 @@
     <!-- Preload critical resources -->
     <link rel="preload" href="{{ asset('fonts/inter.woff2') }}" as="font" type="font/woff2" crossorigin>
     @if(app()->environment('production'))
-        <link rel="preload" href="{{ asset('build/assets/style-DOonG-rZ.css') }}" as="style">
+        <link rel="preload" href="{{ asset('build/assets/style-CiV0KICV.css') }}" as="style">
         <link rel="preload" href="{{ asset('build/assets/vendor-CZLBW6tN.js') }}" as="script">
         <link rel="preload" href="{{ asset('build/assets/app-vue-DsSBuBOP.js') }}" as="script">
     @endif
